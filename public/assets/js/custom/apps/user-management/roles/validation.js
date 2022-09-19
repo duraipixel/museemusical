@@ -72,7 +72,6 @@ var KTUsersAddRole = function () {
                 validator.validate().then(function (status) {
                     if (status == 'Valid') {
                         const formData = $( '#add_role_form').serialize();
-                        
                         // Show loading indication
                         submitButton.setAttribute('data-kt-indicator', 'on');
                         // Disable button to avoid multiple click 

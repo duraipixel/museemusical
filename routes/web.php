@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 Auth::routes();
 Route::middleware(['auth'])->group(function(){
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -25,4 +25,9 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/roles/save', [App\Http\Controllers\Settings\RoleController::class, 'saveForm'])->name('roles.save');
     Route::get('/roles/export/excel', [App\Http\Controllers\Settings\RoleController::class, 'export'])->name('roles.export.excel');
     Route::get('/roles/export/pdf', [App\Http\Controllers\Settings\RoleController::class, 'exportPdf'])->name('roles.export.pdf');
+
+    Route::get('/global', [App\Http\Controllers\GlobalSettingController::class, 'index'])->name('global');
+    Route::post('/global/save', [App\Http\Controllers\GlobalSettingController::class, 'saveForm'])->name('global.save');
+
+
 });

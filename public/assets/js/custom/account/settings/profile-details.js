@@ -14,17 +14,24 @@ var KTAccountSettingsProfileDetails = function () {
             form,
             {
                 fields: {
-                    fname: {
+                    site_name: {
                         validators: {
                             notEmpty: {
-                                message: 'First name is required'
+                                message: 'Site name is required'
                             }
                         }
                     },
-                    lname: {
+                    site_mobile_no: {
                         validators: {
                             notEmpty: {
-                                message: 'Last name is required'
+                                message: 'Contact phone number is required'
+                            }
+                        }
+                    },
+                    site_email: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Contact Email is required'
                             }
                         }
                     },
@@ -35,41 +42,7 @@ var KTAccountSettingsProfileDetails = function () {
                             }
                         }
                     },
-                    phone: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Contact phone number is required'
-                            }
-                        }
-                    },
-                    country: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select a country'
-                            }
-                        }
-                    },
-                    timezone: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select a timezone'
-                            }
-                        }
-                    },
-                    'communication[]': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select at least one communication method'
-                            }
-                        }
-                    },
-                    language: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select a language'
-                            }
-                        }
-                    },
+                    
                 },
                 plugins: {
                     trigger: new FormValidation.plugins.Trigger(),
@@ -84,29 +57,64 @@ var KTAccountSettingsProfileDetails = function () {
             }
         );
 
-        // Select2 validation integration
-        $(form.querySelector('[name="country"]')).on('change', function() {
-            // Revalidate the color field when an option is chosen
-            validation.revalidateField('country');
-        });
-
-        $(form.querySelector('[name="language"]')).on('change', function() {
-            // Revalidate the color field when an option is chosen
-            validation.revalidateField('language');
-        });
-
-        $(form.querySelector('[name="timezone"]')).on('change', function() {
-            // Revalidate the color field when an option is chosen
-            validation.revalidateField('timezone');
-        });
-    }
-
-    var handleForm = function () {
+        const submitButton = document.querySelector('#kt_account_global_submit');
         submitButton.addEventListener('click', function (e) {
             e.preventDefault();
-
+            console.log( global_form_submit_url );
             validation.validate().then(function (status) {
                 if (status == 'Valid') {
+
+                    var form = $('#kt_account_global_form')[0]; 
+                    var formData = new FormData(form);
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });  
+                    $.ajax({
+                        url: global_form_submit_url,
+                        type:"POST",
+                        data: formData,
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        beforeSend: function() {
+                        },
+                        success: function(res) {
+                            if( res.error == 1 ) {
+                                // Remove loading indication
+                                submitButton.removeAttribute('data-kt-indicator');
+                                 // Enable button
+                                submitButton.disabled = false;
+                                let error_msg = res.message
+                                Swal.fire({
+                                    text: res.message,
+                                    icon: "error",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                 });
+                            } else {
+                                dtTable.ajax.reload();
+                                Swal.fire({
+                                    text: "Form has been successfully submitted!",
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                }).then(function (result) {
+                                    if (result.isConfirmed) {
+                                        console.log('teste');                                        
+                                    }
+                                });
+                            }
+                        }
+                    });
 
                     swal.fire({
                         text: "Thank you! You've updated your basic info",
@@ -131,13 +139,17 @@ var KTAccountSettingsProfileDetails = function () {
                 }
             });
         });
+        
+
     }
+
+    
 
     // Public methods
     return {
         init: function () {
-            form = document.getElementById('kt_account_profile_details_form');
-            submitButton = form.querySelector('#kt_account_profile_details_submit');
+            form = document.getElementById('kt_account_global_form');
+            
 
             initValidation();
         }

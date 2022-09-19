@@ -42,25 +42,18 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Overview</span>
+                            <span class="menu-title">My Info</span>
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="../account/settings.html">
+                        <a class="menu-link" href="{{ route('global') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title">Settings</span>
                         </a>
                     </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="../account/api-keys.html">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">API Keys</span>
-                        </a>
-                    </div>
+                    
                     <div class="menu-item">
                         <a class="menu-link" href="../account/logs.html">
                             <span class="menu-bullet">
