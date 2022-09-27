@@ -21,6 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image',
+        'mobile_no',
+        'address',
+        'role_id',
+        'added_by',
+        'country_code',
+        'status',
     ];
 
     /**
@@ -41,4 +48,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function added()
+    {
+        return $this->hasOne(User::class, 'id', 'added_by');
+    }
+    public function role()
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
 }

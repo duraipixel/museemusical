@@ -15,6 +15,7 @@ class AddFieldsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->text('image')->after('password')->nullable();
+            $table->text('country_code')->after('image')->nullable();
             $table->string('mobile_no')->after('image')->nullable();
             $table->text('address')->after('mobile_no')->nullable();
             $table->unsignedBigInteger('role_id')->nullable()->after('address');
@@ -24,6 +25,7 @@ class AddFieldsToUsers extends Migration
             $table->unsignedBigInteger('added_by')->after('status')->nullable();
             $table->foreign('added_by')->references('id')->on('users');
             $table->integer('is_super_admin')->default(0);
+        
         });
     }
 

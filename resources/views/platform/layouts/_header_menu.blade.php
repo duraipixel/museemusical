@@ -2,7 +2,7 @@
     <!--begin::Menu-->
     <div class="menu-title mt-2">
         <h3 class="mt-5">
-            AMALORPAVAM EDUCATIONAL WELFARE SOCEITY PAYROLL SYSTEM
+            Musee Musical
         </h3>
     </div>
     <!--end::Menu-->

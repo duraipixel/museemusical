@@ -29,5 +29,11 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/global', [App\Http\Controllers\GlobalSettingController::class, 'index'])->name('global');
     Route::post('/global/save', [App\Http\Controllers\GlobalSettingController::class, 'saveForm'])->name('global.save');
 
+    Route::post('/users/addOrEdit', [App\Http\Controllers\UserController::class, 'modalAddEdit'])->name('users.add.edit');
+    Route::post('/users/delete', [App\Http\Controllers\UserController::class, 'delete'])->name('users.delete');
+    Route::post('/users/status', [App\Http\Controllers\UserController::class, 'changeStatus'])->name('users.status');
+    Route::post('/users/save', [App\Http\Controllers\UserController::class, 'saveForm'])->name('users.save');
+    Route::get('/users/export/excel', [App\Http\Controllers\UserController::class, 'export'])->name('users.export.excel');
+    Route::get('/users/export/pdf', [App\Http\Controllers\UserController::class, 'exportPdf'])->name('users.export.pdf');
 
 });
