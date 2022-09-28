@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 use Hash;
 use Auth;
 use Excel;
@@ -100,10 +101,15 @@ class UserController extends Controller
         if ($validator->passes()) {
 
             if ($request->file('avatar')) {
-// dd("11");
-// dd($request->all());
                 $filename       = time() . '_' . $request->avatar->getClientOriginalName();
                 $folder_name    = 'user/' . $request->user_email . '/profile/';
+                
+                $existID = '';
+                $existID = User::find($id);
+                $deleted_file = $existID->image;
+                if(File::exists($deleted_file)) {
+                    File::delete($deleted_file);
+                }
                 $path           = $folder_name . $filename;
                 $request->avatar->move(public_path($folder_name), $filename);
                 $ins['image']   = $path;
@@ -121,7 +127,6 @@ class UserController extends Controller
             $ins['added_by']        = Auth::id();
             $ins['status']          = 1;
             $error                  = 0;
-// dd($ins);
 
             $info                   = User::updateOrCreate(['id' => $id], $ins);
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
@@ -137,7 +142,9 @@ class UserController extends Controller
         $id         = $request->id;
         $info       = User::find($id);
         $info->delete();
-        echo 1;
+
+        return response()->json(['message'=>"Successfully deleted user!",'status'=>1]);
+
     }
     public function changeStatus(Request $request)
     {
@@ -146,7 +153,9 @@ class UserController extends Controller
         $info           = User::find($id);
         $info->status   = $status;
         $info->update();
-        echo 1;
+
+        return response()->json(['message'=>"You changed the user status!",'status'=>1]);
+
     }
     
     public function export()

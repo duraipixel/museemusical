@@ -330,6 +330,14 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
+                        <a class="menu-link" href="{{ route('order-status') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title"> Order Status </span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
                         <a class="menu-link" href="../apps/contacts/getting-started.html">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>

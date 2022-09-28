@@ -22,6 +22,16 @@
                    'pdf': "{{ route('users.export.pdf') }}",
                }
           },
+          'order-status': {
+               
+               'delete': "{{ route('order-status.delete') }}",
+               'status': "{{ route('order-status.status') }}",
+               'add': "{{ route('order-status.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('order-status.export.excel') }}",
+                   'pdf': "{{ route('order-status.export.pdf') }}",
+               }
+          },
        }
    };
 </script>

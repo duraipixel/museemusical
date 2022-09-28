@@ -19,7 +19,7 @@ class RoleController extends Controller
     {
         $title = "Roles";
         if ($request->ajax()) {
-            $data = Role::select('*', DB::raw(" IIF(status = 2, 'Inactive', 'Active') as role_status"));
+            $data = Role::select('*', DB::raw(" IF(status = 2, 'Inactive', 'Active') as role_status"));
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             
@@ -117,7 +117,8 @@ class RoleController extends Controller
         $id = $request->id;
         $info = Role::find($id);
         $info->delete();
-        echo 1;
+        return response()->json(['message'=>"Successfully deleted role!",'status'=>1]);
+
     }
 
     public function changeStatus(Request $request) {
@@ -126,7 +127,9 @@ class RoleController extends Controller
         $info = Role::find($id);
         $info->status = $status;
         $info->update();
-        echo 1;
+        return response()->json(['message'=>"You changed the role status!",'status'=>1]);
+
+        
     }
 
     public function export() 
@@ -135,7 +138,7 @@ class RoleController extends Controller
     }
 
     public function exportPdf() {
-        $list = Role::select('*', DB::raw(" IIF(status = 2, 'Inactive', 'Active') as role_status"))->get();
+        $list = Role::select('*', DB::raw(" IF(status = 2, 'Inactive', 'Active') as role_status"))->get();
         
         $pdf = PDF::loadView('platform.exports.roles.excel', array('list' => $list, 'from' => 'pdf') )->setPaper('a4', 'landscape');;
         return $pdf->download('roles.pdf');

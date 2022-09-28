@@ -22,7 +22,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        
+
         $.ajax({
             url: config.routes[module_type].add,
             type: 'POST',
@@ -65,7 +65,7 @@
                         dtTable.ajax.reload();
                         Swal.fire({
                             title: "Deleted!",
-                            text: "You deleted the role!",
+                            text: res.message,
                             icon: "success",
                             confirmButtonText: "Ok, got it!",
                             customClass: {
@@ -107,7 +107,7 @@
                         dtTable.ajax.reload();
                         Swal.fire({
                             title: "Updated!",
-                            text: "You changed the role status!",
+                            text: res.message,
                             icon: "success",
                             confirmButtonText: "Ok, got it!",
                             customClass: {

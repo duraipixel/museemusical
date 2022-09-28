@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users');
     Route::get('/roles', [App\Http\Controllers\Settings\RoleController::class, 'index'])->name('roles');
+    Route::get('/order-status', [App\Http\Controllers\Master\OrderStatusController::class, 'index'])->name('order-status');
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
     Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
     Route::post('/roles/status', [App\Http\Controllers\Settings\RoleController::class, 'changeStatus'])->name('roles.status');
@@ -36,4 +37,10 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/users/export/excel', [App\Http\Controllers\UserController::class, 'export'])->name('users.export.excel');
     Route::get('/users/export/pdf', [App\Http\Controllers\UserController::class, 'exportPdf'])->name('users.export.pdf');
 
+    Route::post('/order-status/addOrEdit', [App\Http\Controllers\Master\OrderStatusController::class, 'modalAddEdit'])->name('order-status.add.edit');
+    Route::post('/order-status/status', [App\Http\Controllers\Master\OrderStatusController::class, 'changeStatus'])->name('order-status.status');
+    Route::post('/order-status/delete', [App\Http\Controllers\Master\OrderStatusController::class, 'delete'])->name('order-status.delete');
+    Route::post('/order-status/save', [App\Http\Controllers\Master\OrderStatusController::class, 'saveForm'])->name('order-status.save');
+    Route::get('/order-status/export/excel', [App\Http\Controllers\Master\OrderStatusController::class, 'export'])->name('order-status.export.excel');
+    Route::get('/order-status/export/pdf', [App\Http\Controllers\Master\OrderStatusController::class, 'exportPdf'])->name('order-status.export.pdf');
 });
