@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users');
     Route::get('/roles', [App\Http\Controllers\Settings\RoleController::class, 'index'])->name('roles');
     Route::get('/order-status', [App\Http\Controllers\Master\OrderStatusController::class, 'index'])->name('order-status');
+    Route::get('/country', [App\Http\Controllers\Master\CountryController::class, 'index'])->name('country');
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
     Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
     Route::post('/roles/status', [App\Http\Controllers\Settings\RoleController::class, 'changeStatus'])->name('roles.status');
@@ -43,4 +44,11 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/order-status/save', [App\Http\Controllers\Master\OrderStatusController::class, 'saveForm'])->name('order-status.save');
     Route::get('/order-status/export/excel', [App\Http\Controllers\Master\OrderStatusController::class, 'export'])->name('order-status.export.excel');
     Route::get('/order-status/export/pdf', [App\Http\Controllers\Master\OrderStatusController::class, 'exportPdf'])->name('order-status.export.pdf');
+
+    Route::post('/country/addOrEdit', [App\Http\Controllers\Master\CountryController::class, 'modalAddEdit'])->name('country.add.edit');
+    Route::post('/country/status', [App\Http\Controllers\Master\CountryController::class, 'changeStatus'])->name('country.status');
+    Route::post('/country/delete', [App\Http\Controllers\Master\CountryController::class, 'delete'])->name('country.delete');
+    Route::post('/country/save', [App\Http\Controllers\Master\CountryController::class, 'saveForm'])->name('country.save');
+    Route::get('/country/export/excel', [App\Http\Controllers\Master\CountryController::class, 'export'])->name('country.export.excel');
+    Route::get('/country/export/pdf', [App\Http\Controllers\Master\CountryController::class, 'exportPdf'])->name('country.export.pdf');
 });

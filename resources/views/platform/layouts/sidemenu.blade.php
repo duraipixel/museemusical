@@ -338,6 +338,14 @@
                         </a>
                     </div>
                     <div class="menu-item">
+                        <a class="menu-link" href="{{ route('country') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title"> Country </span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
                         <a class="menu-link" href="../apps/contacts/getting-started.html">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>

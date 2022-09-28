@@ -32,6 +32,16 @@
                    'pdf': "{{ route('order-status.export.pdf') }}",
                }
           },
+          'country': {
+               
+               'delete': "{{ route('country.delete') }}",
+               'status': "{{ route('country.status') }}",
+               'add': "{{ route('country.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('country.export.excel') }}",
+                   'pdf': "{{ route('country.export.pdf') }}",
+               }
+          },
        }
    };
 </script>
