@@ -21,6 +21,11 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/roles', [App\Http\Controllers\Settings\RoleController::class, 'index'])->name('roles');
     Route::get('/order-status', [App\Http\Controllers\Master\OrderStatusController::class, 'index'])->name('order-status');
     Route::get('/country', [App\Http\Controllers\Master\CountryController::class, 'index'])->name('country');
+    Route::get('/state', [App\Http\Controllers\Master\StateController::class, 'index'])->name('state');
+    Route::get('/pincode', [App\Http\Controllers\Master\PincodeController::class, 'index'])->name('pincode');
+    Route::get('/city', [App\Http\Controllers\Master\CityController::class, 'index'])->name('city');
+    Route::get('/brands', [App\Http\Controllers\Master\BrandController::class, 'index'])->name('brand');
+
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
     Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
     Route::post('/roles/status', [App\Http\Controllers\Settings\RoleController::class, 'changeStatus'])->name('roles.status');
@@ -51,4 +56,32 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/country/save', [App\Http\Controllers\Master\CountryController::class, 'saveForm'])->name('country.save');
     Route::get('/country/export/excel', [App\Http\Controllers\Master\CountryController::class, 'export'])->name('country.export.excel');
     Route::get('/country/export/pdf', [App\Http\Controllers\Master\CountryController::class, 'exportPdf'])->name('country.export.pdf');
+
+    Route::post('/state/addOrEdit', [App\Http\Controllers\Master\StateController::class, 'modalAddEdit'])->name('state.add.edit');
+    Route::post('/state/status', [App\Http\Controllers\Master\StateController::class, 'changeStatus'])->name('state.status');
+    Route::post('/state/delete', [App\Http\Controllers\Master\StateController::class, 'delete'])->name('state.delete');
+    Route::post('/state/save', [App\Http\Controllers\Master\StateController::class, 'saveForm'])->name('state.save');
+    Route::get('/state/export/excel', [App\Http\Controllers\Master\StateController::class, 'export'])->name('state.export.excel');
+    Route::get('/state/export/pdf', [App\Http\Controllers\Master\StateController::class, 'exportPdf'])->name('state.export.pdf');
+
+    Route::post('/city/addOrEdit', [App\Http\Controllers\Master\CityController::class, 'modalAddEdit'])->name('city.add.edit');
+    Route::post('/city/status', [App\Http\Controllers\Master\CityController::class, 'changeStatus'])->name('city.status');
+    Route::post('/city/delete', [App\Http\Controllers\Master\CityController::class, 'delete'])->name('city.delete');
+    Route::post('/city/save', [App\Http\Controllers\Master\CityController::class, 'saveForm'])->name('city.save');
+    Route::get('/city/export/excel', [App\Http\Controllers\Master\CityController::class, 'export'])->name('city.export.excel');
+    Route::get('/city/export/pdf', [App\Http\Controllers\Master\CityController::class, 'exportPdf'])->name('city.export.pdf');
+
+    Route::post('/pincode/addOrEdit', [App\Http\Controllers\Master\PincodeController::class, 'modalAddEdit'])->name('pincode.add.edit');
+    Route::post('/pincode/status', [App\Http\Controllers\Master\PincodeController::class, 'changeStatus'])->name('pincode.status');
+    Route::post('/pincode/delete', [App\Http\Controllers\Master\PincodeController::class, 'delete'])->name('pincode.delete');
+    Route::post('/pincode/save', [App\Http\Controllers\Master\PincodeController::class, 'saveForm'])->name('pincode.save');
+    Route::get('/pincode/export/excel', [App\Http\Controllers\Master\PincodeController::class, 'export'])->name('pincode.export.excel');
+    Route::get('/pincode/export/pdf', [App\Http\Controllers\Master\PincodeController::class, 'exportPdf'])->name('pincode.export.pdf');
+
+    Route::post('/brand/addOrEdit', [App\Http\Controllers\Master\BrandController::class, 'modalAddEdit'])->name('brand.add.edit');
+    Route::post('/brand/status', [App\Http\Controllers\Master\BrandController::class, 'changeStatus'])->name('brand.status');
+    Route::post('/brand/delete', [App\Http\Controllers\Master\BrandController::class, 'delete'])->name('brand.delete');
+    Route::post('/brand/save', [App\Http\Controllers\Master\BrandController::class, 'saveForm'])->name('brand.save');
+    Route::get('/brand/export/excel', [App\Http\Controllers\Master\BrandController::class, 'export'])->name('brand.export.excel');
+    Route::get('/brand/export/pdf', [App\Http\Controllers\Master\BrandController::class, 'exportPdf'])->name('brand.export.pdf');
 });

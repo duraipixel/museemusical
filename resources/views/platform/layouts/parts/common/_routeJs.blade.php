@@ -42,6 +42,46 @@
                    'pdf': "{{ route('country.export.pdf') }}",
                }
           },
+          'state': {
+               
+               'delete': "{{ route('state.delete') }}",
+               'status': "{{ route('state.status') }}",
+               'add': "{{ route('state.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('state.export.excel') }}",
+                   'pdf': "{{ route('state.export.pdf') }}",
+               }
+          },
+          'pincode': {
+               
+               'delete': "{{ route('pincode.delete') }}",
+               'status': "{{ route('pincode.status') }}",
+               'add': "{{ route('pincode.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('pincode.export.excel') }}",
+                   'pdf': "{{ route('pincode.export.pdf') }}",
+               }
+          },
+          'city': {
+               
+               'delete': "{{ route('city.delete') }}",
+               'status': "{{ route('city.status') }}",
+               'add': "{{ route('city.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('city.export.excel') }}",
+                   'pdf': "{{ route('city.export.pdf') }}",
+               }
+          },
+          'brand': {
+               
+               'delete': "{{ route('brand.delete') }}",
+               'status': "{{ route('brand.status') }}",
+               'add': "{{ route('brand.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('brand.export.excel') }}",
+                   'pdf': "{{ route('brand.export.pdf') }}",
+               }
+          },
        }
    };
 </script>

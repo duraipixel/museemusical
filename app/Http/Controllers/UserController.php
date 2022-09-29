@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\UserExport;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Master\Country;
 use App\Models\Settings\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,8 @@ class UserController extends Controller
     {
         $title = "Users";
         if ($request->ajax()) {
+            
+
             $data = User::select('users.*', 'roles.name as role_name', DB::raw(" IF(users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
@@ -81,11 +84,12 @@ class UserController extends Controller
         $info               = '';
         $modal_title        = 'Add User';
         $role               = Role::select('id', 'name')->get();
+        $country_code = Country::select('phone_code')->where('status',1)->get();
         if (isset($id) && !empty($id)) {
             $info           = User::find($id);
             $modal_title    = 'Update User';
         }
-        return view('platform.settings.user.add_edit_modal', compact('info', 'modal_title', 'role'));
+        return view('platform.settings.user.add_edit_modal', compact('info', 'modal_title', 'role','country_code'));
     }
 
     public function saveForm(Request $request,$id = null)

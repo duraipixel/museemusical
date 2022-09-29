@@ -45,9 +45,9 @@
                                 <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
                         </div>
                         <div class="fv-row mb-7">
-                            <label class=" fw-bold fs-6 mb-2">Order</label>
+                            <label class=" fw-bold fs-6 mb-2">Shoring Order</label>
                             <input type="number" name="order" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Order" value="{{ $info->order ?? '' }}" />
+                                placeholder="Shorting Order" value="{{ $info->order ?? '' }}" />
                         </div>
                        
                        
