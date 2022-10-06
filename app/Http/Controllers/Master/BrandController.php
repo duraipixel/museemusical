@@ -28,7 +28,7 @@ class BrandController extends Controller
             $datatables =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('status', 'like', "%{$status}%");
+                        return $query->where('brands.status', 'like', "%{$status}%");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
