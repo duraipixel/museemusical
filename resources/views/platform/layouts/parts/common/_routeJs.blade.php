@@ -92,6 +92,16 @@
                    'pdf': "{{ route('main_category.export.pdf') }}",
                }
           },
+          'sub_category': {
+               
+               'delete': "{{ route('sub_category.delete') }}",
+               'status': "{{ route('sub_category.status') }}",
+               'add': "{{ route('sub_category.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('sub_category.export.excel') }}",
+                   'pdf': "{{ route('sub_category.export.pdf') }}",
+               }
+          },
        }
    };
 </script>

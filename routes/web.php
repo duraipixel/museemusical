@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/city', [App\Http\Controllers\Master\CityController::class, 'index'])->name('city');
     Route::get('/brands', [App\Http\Controllers\Master\BrandController::class, 'index'])->name('brand');
     Route::get('/main_category', [App\Http\Controllers\Category\MainCategoryController::class, 'index'])->name('main_category');
-    Route::get('/sub_category', [App\Http\Controllers\Category\MainCategoryController::class, 'index'])->name('sub_category');
+    Route::get('/sub_category', [App\Http\Controllers\Category\SubCategoryController::class, 'index'])->name('sub_category');
 
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
     Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
@@ -93,4 +93,13 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/main_category/save', [App\Http\Controllers\Category\MainCategoryController::class, 'saveForm'])->name('main_category.save');
     Route::get('/main_category/export/excel', [App\Http\Controllers\Category\MainCategoryController::class, 'export'])->name('main_category.export.excel');
     Route::get('/main_category/export/pdf', [App\Http\Controllers\Category\MainCategoryController::class, 'exportPdf'])->name('main_category.export.pdf');
+
+    Route::post('/sub_category/addOrEdit', [App\Http\Controllers\Category\SubCategoryController::class, 'modalAddEdit'])->name('sub_category.add.edit');
+    Route::post('/sub_category/status', [App\Http\Controllers\Category\SubCategoryController::class, 'changeStatus'])->name('sub_category.status');
+    Route::post('/sub_category/delete', [App\Http\Controllers\Category\SubCategoryController::class, 'delete'])->name('sub_category.delete');
+    Route::post('/sub_category/save', [App\Http\Controllers\Category\SubCategoryController::class, 'saveForm'])->name('sub_category.save');
+    Route::get('/sub_category/export/excel', [App\Http\Controllers\Category\SubCategoryController::class, 'export'])->name('sub_category.export.excel');
+    Route::get('/sub_category/export/pdf', [App\Http\Controllers\Category\SubCategoryController::class, 'exportPdf'])->name('sub_category.export.pdf');
 });
+
+
