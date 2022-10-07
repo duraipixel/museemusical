@@ -94,7 +94,7 @@ class PincodeController extends Controller
                 $ins['status']          = 1;
             }
             else{
-                $ins['status']          = 0;
+                $ins['status']          = 2;
             }
             $error                  = 0;
 

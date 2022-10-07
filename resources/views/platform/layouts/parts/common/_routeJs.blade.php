@@ -82,6 +82,16 @@
                    'pdf': "{{ route('brand.export.pdf') }}",
                }
           },
+          'main_category': {
+               
+               'delete': "{{ route('main_category.delete') }}",
+               'status': "{{ route('main_category.status') }}",
+               'add': "{{ route('main_category.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('main_category.export.excel') }}",
+                   'pdf': "{{ route('main_category.export.pdf') }}",
+               }
+          },
        }
    };
 </script>
