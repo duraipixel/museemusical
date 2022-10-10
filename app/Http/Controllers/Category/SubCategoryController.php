@@ -21,21 +21,30 @@ class SubCategoryController extends Controller
 {
     public function index(Request $request)
     { $title = "Sub Category";
+        $category    = MainCategory::where('status','!=',0)->get();
+        //   $s =  SubCategory::select('parent_id')->where('status','!=', 0)->groupBy('parent_id')->get();
         if ($request->ajax()) {
             $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name', DB::raw(" IF(sub_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by');
+            $filter_category  ='';
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
+            $filter_category   = $request->get('filter_category');
             $datatables =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords, $status) {
+                ->filter(function ($query) use ($keywords, $status,$filter_category) {
                     if ($status) {
                         return $query->where('sub_categories.status', 'like', "%{$status}%");
+                    }
+                    if ($filter_category) {
+                        return $query->where('main_categories.category_name', 'like', "%{$filter_category}%")->orWhere('sub_categories.status', 'like', "%{$status}%");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         return $query->where('sub_categories.name', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('main_categories.category_name', 'like', "%{$keywords}%")->orWhere('sub_categories.slug', 'like', "%{$keywords}%")->orWhereDate("sub_categories.created_at", $date);
                     }
+                  
                 })
                 ->addIndexColumn()
+
                 ->editColumn('image', function ($row) {
                     if ($row->image) {
 
@@ -55,6 +64,7 @@ class SubCategoryController extends Controller
                     }
                     return $status;
                 })
+                
 
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
@@ -74,7 +84,7 @@ class SubCategoryController extends Controller
             return $datatables->make(true);
         }
        
-        return view('platform.category.sub_category.index');
+        return view('platform.category.sub_category.index',compact('category'));
 
     }
     public function modalAddEdit(Request $request)
@@ -106,7 +116,7 @@ class SubCategoryController extends Controller
                 $folder_name    = 'categories/sub_category/' . str_replace(' ', '', $request->name) .'/';
                 $existID        = '';
                 $filename       = str_replace(' ', '', $filename);
-                
+
                 if($id)
                 {
                     $existID        = SubCategory::find($id);

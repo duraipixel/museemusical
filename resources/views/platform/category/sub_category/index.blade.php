@@ -76,6 +76,17 @@
                                             <option value="2">Inactive</option>
                                         </select>
                                     </div>
+                                    <div class="mb-10">
+                                        <label class="form-label fs-6 fw-bold">Category:</label>
+                                        <select name="filter_category" class="form-select form-select-solid fw-bolder"
+                                            data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
+                                            data-kt-sub_category-table-filter="order" data-hide-search="true">
+                                            <option value="0">All</option>
+                                           @foreach($category as $key=>$val)
+                                            <option value="{{ $val->category_name }}">{{ $val->category_name }}</option>
+                                           @endforeach
+                                        </select>
+                                    </div>
                                     <div class="d-flex justify-content-end">
                                         <button type="reset"
                                             class="btn btn-light btn-active-light-primary fw-bold me-2 px-6"
@@ -154,7 +165,7 @@
 
     <script>
         var dtTable = $('#sub_category-table').DataTable({
-
+      
             processing: true,
             serverSide: true,
             type: 'POST',
@@ -162,6 +173,7 @@
                 "url": "{{ route('sub_category') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
+                    d.filter_category = $('select[name=filter_category]').val();
                 }
             },
 
@@ -226,6 +238,7 @@
         });
         $('#search-form').on('reset', function(e) {
             $('select[name=filter_status]').val(0).change();
+            $('select[name=filter_category]').val(0).change();
 
             dtTable.draw();
             e.preventDefault();
