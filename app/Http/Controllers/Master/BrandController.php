@@ -90,10 +90,10 @@ class BrandController extends Controller
     {
         $id                 = $request->id;
         $info               = '';
-        $modal_title        = 'Add State';
+        $modal_title        = 'Add Brand';
         if (isset($id) && !empty($id)) {
             $info           = Brands::find($id);
-            $modal_title    = 'Update State';
+            $modal_title    = 'Update Brand';
         }
         
         return view('platform.master.brand.add_edit_modal', compact('info', 'modal_title'));

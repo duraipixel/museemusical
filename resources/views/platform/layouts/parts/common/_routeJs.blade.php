@@ -102,6 +102,17 @@
                    'pdf': "{{ route('sub_category.export.pdf') }}",
                }
           },
+          'testimonials': {
+               
+               'delete': "{{ route('testimonials.delete') }}",
+               'status': "{{ route('testimonials.status') }}",
+               'add': "{{ route('testimonials.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('testimonials.export.excel') }}",
+                   'pdf': "{{ route('testimonials.export.pdf') }}",
+               }
+          },
+          
        }
    };
 </script>

@@ -27,6 +27,9 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/brands', [App\Http\Controllers\Master\BrandController::class, 'index'])->name('brand');
     Route::get('/main_category', [App\Http\Controllers\Category\MainCategoryController::class, 'index'])->name('main_category');
     Route::get('/sub_category', [App\Http\Controllers\Category\SubCategoryController::class, 'index'])->name('sub_category');
+    Route::get('/testimonials', [App\Http\Controllers\TestimonialsController::class, 'index'])->name('testimonials');
+    Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('product');
+    
 
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
     Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
@@ -100,6 +103,20 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/sub_category/save', [App\Http\Controllers\Category\SubCategoryController::class, 'saveForm'])->name('sub_category.save');
     Route::get('/sub_category/export/excel', [App\Http\Controllers\Category\SubCategoryController::class, 'export'])->name('sub_category.export.excel');
     Route::get('/sub_category/export/pdf', [App\Http\Controllers\Category\SubCategoryController::class, 'exportPdf'])->name('sub_category.export.pdf');
+
+    Route::post('/testimonials/addOrEdit', [App\Http\Controllers\TestimonialsController::class, 'modalAddEdit'])->name('testimonials.add.edit');
+    Route::post('/testimonials/status', [App\Http\Controllers\TestimonialsController::class, 'changeStatus'])->name('testimonials.status');
+    Route::post('/testimonials/delete', [App\Http\Controllers\TestimonialsController::class, 'delete'])->name('testimonials.delete');
+    Route::post('/testimonials/save', [App\Http\Controllers\TestimonialsController::class, 'saveForm'])->name('testimonials.save');
+    Route::get('/testimonials/export/excel', [App\Http\Controllers\TestimonialsController::class, 'export'])->name('testimonials.export.excel');
+    Route::get('/testimonials/export/pdf', [App\Http\Controllers\TestimonialsController::class, 'exportPdf'])->name('testimonials.export.pdf');
+
+    Route::post('/product/addOrEdit', [App\Http\Controllers\Product\ProductController::class, 'modalAddEdit'])->name('product.add.edit');
+    Route::post('/product/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('product.status');
+    Route::post('/product/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('product.delete');
+    Route::post('/product/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('product.save');
+    Route::get('/product/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('product.export.excel');
+    Route::get('/product/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('product.export.pdf');
 });
 
 
