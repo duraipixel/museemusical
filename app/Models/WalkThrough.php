@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Models\Category;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SubCategory extends Model
+class WalkThrough extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
-        'parent_id',
-        'name',
+        'title',
+        'video_url',
+        'file_path',
         'description',
-        'image',
-        'slug',
+        'type',
         'order_by',
         'status',
         'added_by',
-        'tagline',
     ];
 }

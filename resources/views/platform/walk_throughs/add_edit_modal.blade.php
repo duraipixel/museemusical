@@ -18,7 +18,7 @@
 </div>
 <!--end::Header-->
 <!--begin::Body-->
-<form id="add_main_category_form" class="form" action="#" enctype="multipart/form-data">
+<form id="add_walk_throughs_form" class="form" action="#" enctype="multipart/form-data">
 
     <div class="card-body position-relative" id="kt_activities_body">
         <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
@@ -36,68 +36,23 @@
 
                       
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Category Name</label>
-                            <input type="text" name="category_name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Category Name" value="{{ $info->category_name ?? '' }}" />
+                            <label class="required fw-bold fs-6 mb-2">Title</label>
+                            <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Title" value="{{ $info->title ?? '' }}" />
                         </div>
-                        <div class="col-md-4">
 
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Image</label>
-
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
-                            </div>
-                            <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
-                            <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->image ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('/') . $info->image }});">
-                                    </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar" id="readUrl"
-                                        accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
-                                </label>
-
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
-                                </span>
-                            </div>
+                        <br>
+                        <div class="fv-row mb-7">
+                            <label class="fw-bold fs-6 mb-2">Video Link</label>
+                            <input type="text" name="video_url" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Video Link" value="{{ $info->video_url ?? '' }}" />
                         </div>
                         <br>
-                     
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                            <label class="fw-bold fs-6 mb-2">Discription</label>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Discription" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
                         </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Tagline</label>
-                            <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
-                        </div>
+                       
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Shoring Order</label>
                             <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
@@ -136,30 +91,6 @@
         margin: 0;
     }
 </style>
-<script>
-    //image image script
-     document.getElementById('readUrl').addEventListener('change', function() {
-        // console.log("111");
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#manual-image').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
-        $('#image_remove_image').val("yes");
-        $('#manual-image').css({
-            'background-image': ''
-        });
-    });
-   
-</script>
 
 <script>
     $('#country').select2();
@@ -174,13 +105,13 @@
             }
         }
     );
-    var add_url = "{{ route('main_category.save') }}";
+    var add_url = "{{ route('walk_throughs.save') }}";
 
     // Class definition
     var KTUsersAddRole = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
-        const form = element.querySelector('#add_main_category_form');
+        const form = element.querySelector('#add_walk_throughs_form');
         const modal = new bootstrap.Modal(element);
 
         const drawerEl = document.querySelector("#kt_common_add_form");
@@ -194,10 +125,10 @@
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'category_name': {
+                        'title': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Category name is required'
+                                    message: 'Title is required'
                                 }
                             }
                         },
@@ -240,7 +171,7 @@
             // Submit button handler
             const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
-            $('#add_main_category_form').submit(function(e) {
+            $('#add_walk_throughs_form').submit(function(e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
@@ -249,7 +180,7 @@
                         if (status == 'Valid') {
 
                             var formData = new FormData(document.getElementById(
-                                "add_main_category_form"));
+                                "add_walk_throughs_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;

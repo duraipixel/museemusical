@@ -112,6 +112,27 @@
                    'pdf': "{{ route('testimonials.export.pdf') }}",
                }
           },
+          'product': {
+               
+               'delete': "{{ route('product.delete') }}",
+               'status': "{{ route('product.status') }}",
+               'add': "{{ route('product.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('product.export.excel') }}",
+                   'pdf': "{{ route('product.export.pdf') }}",
+               }
+          },
+          'walk_throughs': {
+               
+               'delete': "{{ route('walk_throughs.delete') }}",
+               'status': "{{ route('walk_throughs.status') }}",
+               'add': "{{ route('walk_throughs.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('walk_throughs.export.excel') }}",
+                   'pdf': "{{ route('walk_throughs.export.pdf') }}",
+               }
+          },
+          
           
        }
    };

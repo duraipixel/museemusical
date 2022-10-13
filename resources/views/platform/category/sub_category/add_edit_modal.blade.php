@@ -110,7 +110,11 @@
                             <label class="fw-bold fs-6 mb-2">Short Discription</label>
                                 <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
                         </div>
-                        
+                        <div class="fv-row mb-7">
+                            <label class="fw-bold fs-6 mb-2">Tagline</label>
+                            <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
+                        </div>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Shoring Order</label>
                             <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"

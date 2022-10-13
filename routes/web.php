@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/sub_category', [App\Http\Controllers\Category\SubCategoryController::class, 'index'])->name('sub_category');
     Route::get('/testimonials', [App\Http\Controllers\TestimonialsController::class, 'index'])->name('testimonials');
     Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('product');
+    Route::get('/walk_throughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walk_throughs');
     
 
     Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -111,12 +112,20 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/testimonials/export/excel', [App\Http\Controllers\TestimonialsController::class, 'export'])->name('testimonials.export.excel');
     Route::get('/testimonials/export/pdf', [App\Http\Controllers\TestimonialsController::class, 'exportPdf'])->name('testimonials.export.pdf');
 
+    Route::get('/product_add', [App\Http\Controllers\Product\ProductController::class, 'modalAddEdit'])->name('product_add'); // product add url
     Route::post('/product/addOrEdit', [App\Http\Controllers\Product\ProductController::class, 'modalAddEdit'])->name('product.add.edit');
     Route::post('/product/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('product.status');
     Route::post('/product/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('product.delete');
     Route::post('/product/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('product.save');
     Route::get('/product/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('product.export.excel');
     Route::get('/product/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('product.export.pdf');
+
+    Route::post('/walk_throughs/addOrEdit', [App\Http\Controllers\WalkThroughController::class, 'modalAddEdit'])->name('walk_throughs.add.edit');
+    Route::post('/walk_throughs/status', [App\Http\Controllers\WalkThroughController::class, 'changeStatus'])->name('walk_throughs.status');
+    Route::post('/walk_throughs/delete', [App\Http\Controllers\WalkThroughController::class, 'delete'])->name('walk_throughs.delete');
+    Route::post('/walk_throughs/save', [App\Http\Controllers\WalkThroughController::class, 'saveForm'])->name('walk_throughs.save');
+    Route::get('/walk_throughs/export/excel', [App\Http\Controllers\WalkThroughController::class, 'export'])->name('walk_throughs.export.excel');
+    Route::get('/walk_throughs/export/pdf', [App\Http\Controllers\WalkThroughController::class, 'exportPdf'])->name('walk_throughs.export.pdf');
 });
 
 

@@ -88,7 +88,6 @@ class TestimonialsController extends Controller
     }
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
@@ -101,7 +100,6 @@ class TestimonialsController extends Controller
             if ($request->file('avatar')) {
                 $filename       = time() . '_' . $request->avatar->getClientOriginalName();
                 $folder_name    = 'testimonial/' . str_replace(' ', '', $request->title) . '/';
-                // dd($folder_name);
                 $existID = '';
                 if($id)
                 {
@@ -115,7 +113,6 @@ class TestimonialsController extends Controller
                
                 $path           = $folder_name . $filename;
                 $request->avatar->move(public_path($folder_name), $filename);
-                // dd($path);
                 $ins['image']   = $path;
             }
 
@@ -153,7 +150,6 @@ class TestimonialsController extends Controller
         $id         = $request->id;
         $info       = Testimonials::find($id);
         $info->delete();
-        // echo 1;
         return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
     }
     public function changeStatus(Request $request)
@@ -164,7 +160,6 @@ class TestimonialsController extends Controller
         $info           = Testimonials::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
         return response()->json(['message'=>"You changed the state status!",'status'=>1]);
 
     }

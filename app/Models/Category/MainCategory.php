@@ -17,6 +17,7 @@ class MainCategory extends Model
         'order_by',
         'status',
         'added_by',
+        'tagline',
         
     ];
 }
