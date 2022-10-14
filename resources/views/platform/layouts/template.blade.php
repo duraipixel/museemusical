@@ -20,8 +20,9 @@
 					<!--begin::Brand-->
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
+						<?php $data= DB::table('global_settings')->first();  ?>
 						<a href="javascript:void(0)">
-							<img alt="Logo" src="{{ asset('assets/logo/logo.png') }}" class="w-200px logo" />
+							<img alt="Logo" src="{{ asset($data->logo) }}" class="w-200px logo" />
 						</a> 
 						<!--end::Logo-->
 						<!--begin::Aside toggler-->

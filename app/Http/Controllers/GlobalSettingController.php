@@ -5,31 +5,100 @@ namespace App\Http\Controllers;
 use App\Models\GlobalSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use Image;
 
 class GlobalSettingController extends Controller
 {
     public function index(Request $request)
     {
-        return view('platform.global.index');
+        $data = GlobalSettings::first();
+        return view('platform.global.index',compact('data'));
     }
 
     public function saveForm(Request $request)
     {
+        // dd($request->all());
+        
         $validator = Validator::make($request->all(), [
             'site_name' => 'required|string|max:255',
-            'site_mobile_no' => 'required|string|max:12',
+            'site_mobile_number' => 'required|string|max:10',
             'site_email' => 'required|email',
-            'website' => 'url'
+           
         ]);
+        $id             = $request->id;
 
         if ($validator->passes()) {
-            $id = '';
+           
             $ins['site_name'] = $request->site_name;
+            $ins['site_mobile_no'] = $request->site_mobile_number;
             $ins['site_email'] = $request->site_email;
-            $ins['site_mobile_no'] = $request->site_mobile_no;
             $ins['copyrights'] = $request->copyrights;
-            $ins['website'] = $request->website;
-            
+
+            if ($request->file('favicon')) {
+                $filename       = time() . '_' . $request->favicon->getClientOriginalName();
+                $folder_name    = 'assets/global_setting/favicon/';
+
+                if (!file_exists($folder_name)) {
+                    mkdir($folder_name, 666, true);
+                }
+                $existID = '';
+                if($id)
+                {
+                    $existID = GlobalSettings::find($id);
+                    $deleted_file = $existID->favicon;
+                    if(File::exists($deleted_file)) {
+                        File::delete($deleted_file);
+                    }
+                }
+                if (!file_exists($folder_name)) {
+                    mkdir($folder_name, 666, true);
+                }
+                 //resize function start
+                 $img = Image::make($request->favicon->getRealPath());
+                 $img->resize(512, 512, function ($constraint) {
+                     $constraint->aspectRatio();
+                 })->save($folder_name.$filename);
+                 //resize function end
+
+                $path           = $folder_name.$filename;
+                // $request->favicon->move(public_path($folder_name), $filename);
+                $ins['favicon']   = $path;
+            }
+            if ($request->image_remove_favicon == "yes") {
+                $ins['favicon'] = '';
+            }
+
+            if ($request->file('logo')) {
+                $filename       = time() . '_' . $request->logo->getClientOriginalName();
+                $folder_name    = 'assets/global_setting/logo/';
+                $existID = '';
+                if($id)
+                {
+                    $existID = GlobalSettings::find($id);
+                    $deleted_file = $existID->logo;
+                    if(File::exists($deleted_file)) {
+                        File::delete($deleted_file);
+                    }
+                }
+                if (!file_exists($folder_name)) {
+                    mkdir($folder_name, 666, true);
+                }
+             
+                $img1 = Image::make($request->logo->getRealPath());
+                $img1->resize(200, 80, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($folder_name.$filename);
+               
+                $path           = $folder_name.$filename;
+                // $request->logo->move(public_path($folder_name), $filename);
+                $ins['logo']   = $path;
+            }
+            if ($request->image_remove_logo == "yes") {
+                $ins['logo'] = '';
+            }
+
+
             $error = 0;
             $info = GlobalSettings::updateOrCreate(['id' => $id],$ins);
             $message = (isset($id) && !empty($id)) ? 'Updated Successfully' :'Added successfully';

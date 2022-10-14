@@ -98,9 +98,10 @@ var KTAccountSettingsProfileDetails = function () {
                                     }
                                  });
                             } else {
-                                dtTable.ajax.reload();
+
                                 Swal.fire({
-                                    text: "Form has been successfully submitted!",
+                                    // text: "Form has been successfully submitted!",
+                                    text: "Thank you! You've updated your basic info",
                                     icon: "success",
                                     buttonsStyling: false,
                                     confirmButtonText: "Ok, got it!",
@@ -109,23 +110,24 @@ var KTAccountSettingsProfileDetails = function () {
                                     }
                                 }).then(function (result) {
                                     if (result.isConfirmed) {
-                                        console.log('teste');                                        
+                                        console.log('teste');   
+                                        window.location.reload();                                     
                                     }
                                 });
                             }
                         }
                     });
 
-                    swal.fire({
-                        text: "Thank you! You've updated your basic info",
-                        icon: "success",
-                        buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
-                        customClass: {
-                            confirmButton: "btn fw-bold btn-light-primary"
-                        }
-                    });
-
+                    // swal.fire({
+                    //     text: "Thank you! You've updated your basic info",
+                    //     icon: "success",
+                    //     buttonsStyling: false,
+                    //     confirmButtonText: "Ok, got it!",
+                    //     customClass: {
+                    //         confirmButton: "btn fw-bold btn-light-primary"
+                    //     }
+                        
+                    // });
                 } else {
                     swal.fire({
                         text: "Sorry, looks like there are some errors detected, please try again.",
