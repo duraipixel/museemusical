@@ -37,7 +37,7 @@ var KTVisTimelineStyle = function () {
             },
             {
                 start: new Date(2010, 7, 23, 23, 0, 0),
-                content: getContent('Mail from boss', hostUrl + '/media/avatars/300-1.jpg')
+                content: getContent('Mail from boss', hostUrl + '')
             },
             { start: new Date(2010, 7, 24, 16, 0, 0), content: "Report" },
             {

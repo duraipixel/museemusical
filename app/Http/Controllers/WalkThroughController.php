@@ -67,10 +67,10 @@ class WalkThroughController extends Controller
     {
         $id                 = $request->id;
         $info               = '';
-        $modal_title        = 'Add Testimonials';
+        $modal_title        = 'Add Walk Throughs';
         if (isset($id) && !empty($id)) {
             $info           = WalkThrough::find($id);
-            $modal_title    = 'Update Testimonials';
+            $modal_title    = 'Update Walk Throughs';
         }
         
         return view('platform.walk_throughs.add_edit_modal', compact('info', 'modal_title'));

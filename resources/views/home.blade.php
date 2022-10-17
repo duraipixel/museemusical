@@ -249,7 +249,7 @@
                                     <span class="symbol-label bg-danger text-inverse-danger fw-bolder">P</span>
                                 </div>
                                 <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title="Barry Walter">
-                                    <img alt="Pic" src="../assets/media/avatars/300-12.jpg" />
+                                    <img alt="Pic" src="" />
                                 </div>
                                 <a href="#" class="symbol symbol-35px symbol-circle" data-bs-toggle="modal" data-bs-target="#kt_modal_view_users">
                                     <span class="symbol-label bg-light text-gray-400 fs-8 fw-bolder">+42</span>
@@ -1561,7 +1561,7 @@
                             <!--begin::Item-->
                             <div class="d-flex flex-stack">
                                 <!--begin::Flag-->
-                                <img src="../assets/media/flags/united-states.svg" class="me-4 w-25px" style="border-radius: 4px" alt="" />
+                                <img src="" class="me-4 w-25px" style="border-radius: 4px" alt="" />
                                 <!--end::Flag-->
                                 <!--begin::Section-->
                                 <div class="d-flex flex-stack flex-row-fluid d-grid gap-2">
@@ -2233,7 +2233,7 @@
 </div>
 @endsection
 @section('add_on_script')
-    <!--begin::Page Vendors Javascript(used by this page)-->
+    <!--begin::Page Vendors Javascript(used by this page)-->   
 		<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 		<script src="{{ asset('assets/plugins/custom/vis-timeline/vis-timeline.bundle.js') }}"></script>
 		<script src="http://cdn.amcharts.com/lib/5/index.js"></script>
