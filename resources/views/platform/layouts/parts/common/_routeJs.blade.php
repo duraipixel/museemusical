@@ -132,8 +132,8 @@
                    'pdf': "{{ route('walk_throughs.export.pdf') }}",
                }
           },
-          
-          
+       
+                
        }
    };
 </script>

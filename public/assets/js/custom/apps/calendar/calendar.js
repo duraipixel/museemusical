@@ -25,6 +25,13 @@ var KTAppCalendar = function () {
     var startFlatpickr;
     var endDatepicker;
     var endFlatpickr;
+
+    var productStartDatepicker;
+    var productStartFlatpickr;
+    var productEndDatepicker;
+    var productEndFlatpickr;
+    var kt_calendar_datepicker_product_start_date;
+    
     var startTimepicker;
     var startTimeFlatpickr;
     var endTimepicker
@@ -32,6 +39,7 @@ var KTAppCalendar = function () {
     var modal;
     var modalTitle;
     var form;
+    var productForm;
     var validator;
     var addButton;
     var submitButton;
@@ -344,11 +352,24 @@ var KTAppCalendar = function () {
 
     // Initialize datepickers --- more info: https://flatpickr.js.org/
     const initDatepickers = () => {
+        kt_calendar_datepicker_product_start_date = flatpickr(kt_calendar_datepicker_product_start_date, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
         startFlatpickr = flatpickr(startDatepicker, {
             enableTime: false,
             dateFormat: "Y-m-d",
         });
+        productStartFlatpickr = flatpickr(productStartDatepicker, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
 
+        productEndFlatpickr = flatpickr(productEndDatepicker, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
+        
         endFlatpickr = flatpickr(endDatepicker, {
             enableTime: false,
             dateFormat: "Y-m-d",
@@ -847,21 +868,25 @@ var KTAppCalendar = function () {
         init: function () {
             // Define variables
             // Add event modal
-            const element = document.getElementById('kt_modal_add_event');
-            form = element.querySelector('#kt_modal_add_event_form');
-            eventName = form.querySelector('[name="calendar_event_name"]');
-            eventDescription = form.querySelector('[name="calendar_event_description"]');
-            eventLocation = form.querySelector('[name="calendar_event_location"]');
-            startDatepicker = form.querySelector('#kt_calendar_datepicker_start_date');
-            endDatepicker = form.querySelector('#kt_calendar_datepicker_end_date');
-            startTimepicker = form.querySelector('#kt_calendar_datepicker_start_time');
-            endTimepicker = form.querySelector('#kt_calendar_datepicker_end_time');
-            addButton = document.querySelector('[data-kt-calendar="add"]');
-            submitButton = form.querySelector('#kt_modal_add_event_submit');
-            cancelButton = form.querySelector('#kt_modal_add_event_cancel');
-            closeButton = element.querySelector('#kt_modal_add_event_close');
-            modalTitle = form.querySelector('[data-kt-calendar="title"]');
-            modal = new bootstrap.Modal(element);
+            // const element = document.getElementById('kt_modal_add_event');
+            // form = element.querySelector('#kt_modal_add_event_form');
+            // eventName = form.querySelector('[name="calendar_event_name"]');
+            // eventDescription = form.querySelector('[name="calendar_event_description"]');
+            // eventLocation = form.querySelector('[name="calendar_event_location"]');
+            // startDatepicker = form.querySelector('#kt_calendar_datepicker_start_date');
+            // endDatepicker = form.querySelector('#kt_calendar_datepicker_end_date');
+            // startTimepicker = form.querySelector('#kt_calendar_datepicker_start_time');
+            // endTimepicker = form.querySelector('#kt_calendar_datepicker_end_time');
+            // addButton = document.querySelector('[data-kt-calendar="add"]');
+            // submitButton = form.querySelector('#kt_modal_add_event_submit');
+            // cancelButton = form.querySelector('#kt_modal_add_event_cancel');
+            // closeButton = element.querySelector('#kt_modal_add_event_close');
+            // modalTitle = form.querySelector('[data-kt-calendar="title"]');
+            // modal = new bootstrap.Modal(element);
+
+        
+           
+          
 
             // View event modal
             const viewElement = document.getElementById('kt_modal_view_event');

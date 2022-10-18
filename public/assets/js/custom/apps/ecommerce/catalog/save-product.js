@@ -9,8 +9,14 @@ var KTAppEcommerceSaveProduct = function () {
     const initQuill = () => {
         // Define all elements for quill editor
         const elements = [
-            '#kt_ecommerce_add_product_description',
-            '#kt_ecommerce_add_product_meta_description'
+            '#kt_ecommerce_add_product_meta_description',
+            '#kt_ecommerce_add_product_short_description',
+            '#kt_ecommerce_add_product_long_description',
+            '#kt_ecommerce_add_product_technical_specification',
+            '#kt_ecommerce_add_product_features',
+            '#kt_ecommerce_add_product_benefits',
+            '#kt_ecommerce_add_product_content',
+
         ];
 
         // Loop all elements
@@ -148,7 +154,22 @@ var KTAppEcommerceSaveProduct = function () {
             }
         });
     }
-
+    const initBrochureDropzone = () => {
+        var myDropzone = new Dropzone("#kt_ecommerce_add_product_brochure", {
+            url: "https://keenthemes.com/scripts/void.php", // Set the url for your upload script location
+            paramName: "file", // The name that will be used to transfer the file
+            maxFiles: 10,
+            maxFilesize: 10, // MB
+            addRemoveLinks: true,
+            accept: function (file, done) {
+                if (file.name == "wow.jpg") {
+                    done("Naha, you don't.");
+                } else {
+                    done();
+                }
+            }
+        });
+    }
     // Handle discount options
     const handleDiscount = () => {
         const discountOptions = document.querySelectorAll('input[name="discount_option"]');
@@ -173,6 +194,31 @@ var KTAppEcommerceSaveProduct = function () {
                     default: {
                         percentageEl.classList.add('d-none');
                         fixedEl.classList.add('d-none');
+                        break;
+                    }
+                }
+            });
+        });
+    }
+
+    const handleTaxDiscount = () => {
+        const discountOptions = document.querySelectorAll('input[name="discount_tax_option"]');
+        const percentageEl = document.getElementById('kt_ecommerce_add_product_tax_fixed');
+        // const fixedEl = document.getElementById('kt_ecommerce_add_product_discount_fixed');
+
+        discountOptions.forEach(option => {
+            option.addEventListener('change', e => {
+                const value = e.target.value;
+
+                switch (value) {
+                    case '2': {
+                        percentageEl.classList.remove('d-none');
+                        // fixedEl.classList.add('d-none');
+                        break;
+                    }
+                    default: {
+                        percentageEl.classList.add('d-none');
+                        // fixedEl.classList.add('d-none');
                         break;
                     }
                 }
@@ -398,12 +444,14 @@ var KTAppEcommerceSaveProduct = function () {
             initSlider();
             initFormRepeater();
             initDropzone();
+            initBrochureDropzone();
             initConditionsSelect2();
 
             // Handle forms
             handleStatus();
             handleConditions();
             handleDiscount();
+            handleTaxDiscount();
             handleShipping();
             handleSubmit();
         }
