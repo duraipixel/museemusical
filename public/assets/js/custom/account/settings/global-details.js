@@ -21,24 +21,22 @@ var KTAccountSettingsProfileDetails = function () {
                             }
                         }
                     },
-                    site_mobile_no: {
+                    site_mobile_number: {
                         validators: {
                             notEmpty: {
-                                message: 'Contact phone number is required'
-                            }
+                                message: 'Site phone number is required'
+                            },
+                            stringLength: {
+                                max: 10,
+                                min: 10,
+                                message: 'The phone number must be 10 characters',
+                            },
                         }
                     },
                     site_email: {
                         validators: {
                             notEmpty: {
-                                message: 'Contact Email is required'
-                            }
-                        }
-                    },
-                    company: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Company name is required'
+                                message: 'Site Email is required'
                             }
                         }
                     },
@@ -52,7 +50,12 @@ var KTAccountSettingsProfileDetails = function () {
                         rowSelector: '.fv-row',
                         eleInvalidClass: '',
                         eleValidClass: ''
-                    })
+                    }),
+                    icon: new FormValidation.plugins.Icon({
+                        valid: 'fa fa-check',
+                        invalid: 'fa fa-times',
+                        validating: 'fa fa-refresh',
+                    }),
                 }
             }
         );
@@ -60,10 +63,8 @@ var KTAccountSettingsProfileDetails = function () {
         const submitButton = document.querySelector('#kt_account_global_submit');
         submitButton.addEventListener('click', function (e) {
             e.preventDefault();
-            console.log( global_form_submit_url );
             validation.validate().then(function (status) {
                 if (status == 'Valid') {
-
                     var form = $('#kt_account_global_form')[0]; 
                     var formData = new FormData(form);
 
@@ -80,6 +81,8 @@ var KTAccountSettingsProfileDetails = function () {
                         cache: false,
                         processData:false,
                         beforeSend: function() {
+                            submitButton.setAttribute('data-kt-indicator', 'on');
+                            submitButton.disabled = true;
                         },
                         success: function(res) {
                             if( res.error == 1 ) {
@@ -101,7 +104,7 @@ var KTAccountSettingsProfileDetails = function () {
 
                                 Swal.fire({
                                     // text: "Form has been successfully submitted!",
-                                    text: "Thank you! You've updated your basic info",
+                                    text: "Thank you! You've updated Global Settings",
                                     icon: "success",
                                     buttonsStyling: false,
                                     confirmButtonText: "Ok, got it!",
@@ -117,17 +120,7 @@ var KTAccountSettingsProfileDetails = function () {
                             }
                         }
                     });
-
-                    // swal.fire({
-                    //     text: "Thank you! You've updated your basic info",
-                    //     icon: "success",
-                    //     buttonsStyling: false,
-                    //     confirmButtonText: "Ok, got it!",
-                    //     customClass: {
-                    //         confirmButton: "btn fw-bold btn-light-primary"
-                    //     }
-                        
-                    // });
+                    
                 } else {
                     swal.fire({
                         text: "Sorry, looks like there are some errors detected, please try again.",
@@ -141,18 +134,12 @@ var KTAccountSettingsProfileDetails = function () {
                 }
             });
         });
-        
-
     }
-
     
-
     // Public methods
     return {
         init: function () {
             form = document.getElementById('kt_account_global_form');
-            
-
             initValidation();
         }
     }

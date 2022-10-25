@@ -29,7 +29,7 @@
                 <td>{{ $item->long_description }}</td>
                 <td>{{ $item->order_by }}</td>
                 <td>{{ $item->users_name }}</td>
-                <td>{{  $item->user_status }}</td>
+                <td>{{  $item->status }}</td>
                 
             </tr>
             @endforeach

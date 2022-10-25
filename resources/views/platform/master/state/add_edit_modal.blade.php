@@ -58,7 +58,7 @@
                         </div>
                         <div class="fv-row mb-7">
                             <label class="required fw-bold fs-6 mb-2">State Code</label>
-                            <input type="text" name="state_code"  class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                            <input type="text" name="state_code"  class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="State Code" value="{{ $info->state_code ?? '' }}" />
                         </div>
                      

@@ -13,7 +13,7 @@ class PincodeExport implements FromView
 {
     public function view(): View
     {
-        $list = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
+        $list = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         return view('platform.exports.pincode.excel', compact('list'));
     }
 }

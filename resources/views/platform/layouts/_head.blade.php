@@ -7,8 +7,7 @@
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <?php $data= DB::table('global_settings')->first();  ?>
-    <link rel="shortcut icon" href="{{ asset($data->favicon) }}" />
+    <link rel="shortcut icon" href="{{ asset(gSetting('favicon')) }}" />
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
     <!--end::Fonts-->

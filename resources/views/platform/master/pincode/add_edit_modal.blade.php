@@ -31,20 +31,16 @@
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
 
-                     
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
 
-                      
                         <div class="fv-row mb-7">
                             <label class="required fw-bold fs-6 mb-2">Pincode</label>
-                            <input type="text" name="pincode" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="State Name" value="{{ $info->pincode ?? '' }}" />
+                            <input type="text" name="pincode" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                placeholder="Pincode here" value="{{ $info->pincode ?? '' }}" />
                         </div>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Description</label>
-                            {{-- <input type="text" name="description"  class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="State Code" value="{{ $info->description ?? '' }}" /> --}}
-                                <textarea name="description"  placeholder="Description" class="form-control form-control-solid mb-3 mb-lg-0" id="description" cols="30" rows="10">{{ $info->description ?? '' }}</textarea>
+                            <textarea name="description"  placeholder="Description" class="form-control form-control-solid mb-3 mb-lg-0" id="description" cols="30" rows="10">{{ $info->description ?? '' }}</textarea>
                         </div>
                      
                         <div class="fv-row mb-7">
@@ -53,10 +49,6 @@
                                 <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
                             </div>
                         </div>
-                       
-                       
-                       
-                     
                     </div>
                 </div>
             </div>

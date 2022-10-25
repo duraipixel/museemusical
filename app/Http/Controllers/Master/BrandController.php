@@ -22,7 +22,7 @@ class BrandController extends Controller
     {
         $title = "Brand";
         if ($request->ajax()) {
-            $data =Brands::select('brands.*','users.name as users_name',DB::raw(" IF(brands.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'brands.added_by');
+            $data =Brands::select('brands.*','users.name as users_name')->join('users', 'users.id', '=', 'brands.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -38,11 +38,7 @@ class BrandController extends Controller
                 ->addIndexColumn()
                
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'brand\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'brand\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'brand\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 ->editColumn('brand_logo', function ($row) {
@@ -84,8 +80,11 @@ class BrandController extends Controller
                 ->rawColumns(['action', 'status', 'brand_logo','brand_banner']);
             return $datatables->make(true);
         }
-        return view('platform.master.brand.index');
+        $breadCrum  = array('Masters', 'Brands');
+        $title      = 'Brands';
+        return view('platform.master.brand.index', compact('breadCrum', 'title'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -110,7 +109,7 @@ class BrandController extends Controller
 
         if ($validator->passes()) {
             
-            if ($request->file('avatar_logo')) {
+            if ($request->hasFile('avatar_logo')) {
                 $filename       = time() . '_' . $request->avatar_logo->getClientOriginalName();
                 $folder_name    = 'brand/' . $request->brand_name . '/brand_logo/';
                 // dd($folder_name);
@@ -131,12 +130,10 @@ class BrandController extends Controller
                 $ins['brand_logo']   = $path;
             }
 
-            if ($request->file('avatar_banner')) {
+            if ($request->hasFile('avatar_banner')) {
                 $filename       = time() . '_' . $request->avatar_banner->getClientOriginalName();
                 $folder_name    = 'brand/' . $request->brand_name . '/brand_banner/';
-                
                 $existID = '';
-
                 if($id)
                 {
                     $existID = Brands::find($id);
@@ -208,7 +205,7 @@ class BrandController extends Controller
     public function exportPdf()
     {
         // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = Brands::select('brands.*','users.name as users_name',DB::raw(" IF(brands.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'brands.added_by')->get();
+        $list       = Brands::select('brands.*','users.name as users_name')->join('users', 'users.id', '=', 'brands.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.brand.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('brand.pdf');
     }

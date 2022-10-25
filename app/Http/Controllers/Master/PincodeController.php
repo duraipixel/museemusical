@@ -21,7 +21,7 @@ class PincodeController extends Controller
     {
         $title = "Country";
         if ($request->ajax()) {
-            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
+            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -62,7 +62,9 @@ class PincodeController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.master.pincode.index');
+        $breadCrum  = array('Masters', 'PostCodes');
+        $title      = 'PostCodes';
+        return view('platform.master.pincode.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
@@ -134,7 +136,7 @@ class PincodeController extends Controller
     public function exportPdf()
     {
         // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
+        $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.pincode.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('pincode.pdf');
     }

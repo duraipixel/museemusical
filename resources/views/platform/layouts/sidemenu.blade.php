@@ -1,4 +1,7 @@
-
+@php
+    // $routeName = \Route::currentRouteName();
+    // dd(  );
+@endphp
 <div class="aside-menu flex-column-fluid">
     <div class="hover-scroll-overlay-y my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
         <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true" data-kt-menu-expand="false">
@@ -307,9 +310,9 @@
                     <span class="menu-title">NewsLetter</span>
                 </a>
             </div>
-           
+            
             <div class="menu-item">
-                <a class="menu-link" href="{{ route('testimonials') }}">
+                <a class="menu-link @if(  request()->routeIs(['testimonials'])) active @endif" href="{{ route('testimonials') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -325,7 +328,7 @@
             </div>
             
             <div class="menu-item">
-                <a class="menu-link" href="#">
+                <a class="menu-link " href="#">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -337,7 +340,7 @@
                     <span class="menu-title">Video Booking</span>
                 </a>
             </div>
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['global', 'my-profile', 'my-profile.*', 'users', 'roles'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -351,26 +354,24 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
-                   
-                    
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('global') }}">
+                        <a class="menu-link @if( request()->routeIs(['global'])) active @endif" href="{{ route('global') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title"> Global Site Settings </span>
+                            <span class="menu-title"> Global Settings </span>
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('my-profile') }}">
+                        <a class="menu-link @if( request()->routeIs([ 'my-profile.*' ])) active @endif" href="{{ route('my-profile') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title"> My Info </span>
+                            <span class="menu-title"> My Account </span>
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('users') }}">
+                        <a class="menu-link @if( request()->routeIs(['users'])) active @endif" href="{{ route('users') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -378,7 +379,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('roles') }}">
+                        <a class="menu-link @if(  request()->routeIs(['roles'])) active @endif" href="{{ route('roles') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -389,7 +390,7 @@
                   
                 </div>
             </div>
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brand', 'city', 'state', 'pincode', 'main_category', 'sub_category'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -404,63 +405,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('country') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Country</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('state') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">States</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('city') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Cities</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('pincode') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Postcodes</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="#">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Pages</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('main_category') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Dynamic Categories </span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('sub_category') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Dynamic SubCategories </span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="{{ route('brand') }}">
+                        <a class="menu-link @if( request()->routeIs(['brand'])) active @endif" href="{{ route('brand') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -468,22 +413,58 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['city'])) active @endif" href="{{ route('city') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Overall Design</span>
+                            <span class="menu-title">Cities</span>
                         </a>
                     </div>
-                  
-                   
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['country'])) active @endif" href="{{ route('country') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Country</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['state'])) active @endif" href="{{ route('state') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">States</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['pincode'])) active @endif" href="{{ route('pincode') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Postcodes</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['main_category'])) active @endif" href="{{ route('main_category') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Dynamic Categories </span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['sub_category'])) active @endif" href="{{ route('sub_category') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Dynamic SubCategories </span>
+                        </a>
+                    </div>
                 </div>
             </div>
-          
-          
         </div>
     </div>
 </div>
 <div class="aside-footer flex-column-auto pt-5 pb-7 px-5" id="kt_aside_footer">
-    <span class="btn-label">@ Pixel</span>
+    {{-- <span class="btn-label">@ Pixel</span> --}}
 </div>

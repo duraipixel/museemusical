@@ -25,7 +25,7 @@ class CityController extends Controller
         $title = "City";
         if ($request->ajax()) {
            $pincode = Pincode :: where('status',1)->get();
-            $data = City::select('cities.*', 'countries.name as country_name','states.state_name as state_name','pincodes.pincode as pincode','users.name as users_name',DB::raw(" IF(cities.status = 2, 'Inactive', 'Active') as user_status"))->join('pincodes', 'pincodes.id', '=', 'cities.pincode_id')->join('states', 'states.id', '=', 'cities.state_id')->join('countries', 'countries.id', '=', 'cities.country_id')->join('users', 'users.id', '=', 'cities.added_by');
+            $data = City::select('cities.*', 'countries.name as country_name','states.state_name as state_name','pincodes.pincode as pincode','users.name as users_name',DB::raw(" IF(mm_cities.status = 2, 'Inactive', 'Active') as user_status"))->join('pincodes', 'pincodes.id', '=', 'cities.pincode_id')->join('states', 'states.id', '=', 'cities.state_id')->join('countries', 'countries.id', '=', 'cities.country_id')->join('users', 'users.id', '=', 'cities.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -66,8 +66,11 @@ class CityController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.master.city.index');
+        $breadCrum  = array('Masters', 'Cities');
+        $title      = 'Cities';
+        return view('platform.master.city.index', compact('breadCrum', 'title'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -147,7 +150,7 @@ class CityController extends Controller
     public function exportPdf()
     {
         // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = City::select('cities.*', 'countries.name as country_name','states.state_name as state_name','pincodes.pincode as pincode','users.name as users_name',DB::raw(" IF(cities.status = 2, 'Inactive', 'Active') as user_status"))->join('pincodes', 'pincodes.id', '=', 'cities.pincode_id')->join('states', 'states.id', '=', 'cities.state_id')->join('countries', 'countries.id', '=', 'cities.country_id')->join('users', 'users.id', '=', 'cities.added_by')->get();
+        $list       = City::select('cities.*', 'countries.name as country_name','states.state_name as state_name','pincodes.pincode as pincode','users.name as users_name',DB::raw(" IF(mm_cities.status = 2, 'Inactive', 'Active') as user_status"))->join('pincodes', 'pincodes.id', '=', 'cities.pincode_id')->join('states', 'states.id', '=', 'cities.state_id')->join('countries', 'countries.id', '=', 'cities.country_id')->join('users', 'users.id', '=', 'cities.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.city.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');
         return $pdf->download('city.pdf');
     }

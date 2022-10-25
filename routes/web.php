@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/global/save', [App\Http\Controllers\GlobalSettingController::class, 'saveForm'])->name('global.save');
 
     Route::get('/my-profile', [App\Http\Controllers\MyProfileController::class, 'index'])->name('my-profile');
+    Route::get('/my-profile/password', [App\Http\Controllers\MyProfileController::class, 'getPasswordTab'])->name('my-profile.password');
     Route::post('/my-profile/getTab', [App\Http\Controllers\MyProfileController::class, 'getTab'])->name('my-profile.get.tab');
     Route::post('/my-profile/save', [App\Http\Controllers\MyProfileController::class, 'saveForm'])->name('my-profile.save');
 

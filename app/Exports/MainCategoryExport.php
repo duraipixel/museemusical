@@ -13,7 +13,7 @@ class MainCategoryExport implements FromView
 {
     public function view(): View
     {
-        $list = MainCategory::select('main_categories.*', 'users.name as users_name',DB::raw(" IF(main_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'main_categories.added_by')->get();
+        $list = MainCategory::select('main_categories.*', 'users.name as users_name')->join('users', 'users.id', '=', 'main_categories.added_by')->get();
         return view('platform.exports.category.excel', compact('list'));
     }
 }

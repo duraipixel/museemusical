@@ -22,9 +22,7 @@ class UserController extends Controller
     {
         $title = "Users";
         if ($request->ajax()) {
-            
-
-            $data = User::select('users.*', 'roles.name as role_name', DB::raw(" IF(users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id');
+            $data = User::select('users.*', 'roles.name as role_name', DB::raw(" IF(mm_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -75,7 +73,9 @@ class UserController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.settings.user.index');
+        $breadCrum = array('User Management', 'Users');
+        $title      = 'Users';
+        return view('platform.settings.user.index', compact('breadCrum', 'title'));
     }
 
     public function modalAddEdit(Request $request)
@@ -97,23 +97,23 @@ class UserController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'user_name' => 'required|string',
-                                'user_email' => 'required|email|unique:users,email,' . $id . ',id,deleted_at,NULL',
+                                'user_email' => 'required|email|unique:users,email,' . $id . ',id',
                                 'user_role' => 'required',
-                                'mobile_no' => 'required|numeric|digits:10|unique:users,mobile_no,'. $id . ',id,deleted_at,NULL'
+                                'mobile_no' => 'required|numeric|digits:10|unique:users,mobile_no,'. $id . ',id'
                             ]);
 
         if ($validator->passes()) {
 
-            if ($request->file('avatar')) {
+            if ($request->hasFile('avatar')) {
                 $filename       = time() . '_' . $request->avatar->getClientOriginalName();
                 $folder_name    = 'user/' . $request->user_email . '/profile/';
-                
-                $existID = '';
-                $existID = User::find($id);
-                $deleted_file = $existID->image;
-                if(File::exists($deleted_file)) {
-                    File::delete($deleted_file);
-                }
+                if( isset( $id ) && !empty( $id ) ) {
+                    $existID = User::find($id);
+                    $deleted_file = $existID->image;
+                    if(File::exists($deleted_file)) {
+                        File::delete($deleted_file);
+                    }
+                } 
                 $path           = $folder_name . $filename;
                 $request->avatar->move(public_path($folder_name), $filename);
                 $ins['image']   = $path;
@@ -134,13 +134,13 @@ class UserController extends Controller
 
             $info                   = User::updateOrCreate(['id' => $id], $ins);
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
-        } 
-        else {
+        } else {
             $error      = 1;
             $message    = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -169,7 +169,7 @@ class UserController extends Controller
 
     public function exportPdf()
     {
-        $list       = User::select('users.name', 'users.added_by', 'email', 'mobile_no', 'address', 'users.created_at', 'roles.name as role_name', DB::raw(" IF(users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id')->where('users.is_super_admin', '!=', 1)->get();
+        $list       = User::select('users.name', 'users.added_by', 'email', 'mobile_no', 'address', 'users.created_at', 'roles.name as role_name', DB::raw(" IF(mm_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id')->where('users.is_super_admin', '!=', 1)->get();
         $pdf        = PDF::loadView('platform.exports.users.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('users.pdf');
     }

@@ -20,27 +20,23 @@ class TestimonialsController extends Controller
     {
         $title = "Testimonials";
         if ($request->ajax()) {
-            $data =Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by');
-            $status = $request->get('status');
-            $keywords = $request->get('search')['value'];
-            $datatables =  Datatables::of($data)
+            $data               = Testimonials::select('testimonials.*','users.name as users_name')->join('users', 'users.id', '=', 'testimonials.added_by');
+            $status             = $request->get('status');
+            $keywords           = $request->get('search')['value'];
+            $datatables         =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
                         return $query->where('testimonials.status', 'like', "%{$status}%");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('testimonials.title', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('testimonials.short_description', 'like', "%{$keywords}%")->orWhere('testimonials.long_description', 'like', "%{$keywords}%")->orWhere("testimonials.order_by",'like', "%{$keywords}%")->orWhereDate("testimonials.created_at", $date);
+                        return $query->where('testimonials.title', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('testimonials.short_description', 'like', "%{$keywords}%")->orWhere('testimonials.long_description', 'like', "%{$keywords}%")->orWhere('testimonials.status', 'like', "%{$keywords}%")->orWhere("testimonials.order_by",'like', "%{$keywords}%")->orWhereDate("testimonials.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
                
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'testimonials\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'testimonials\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'testimonials\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 ->editColumn('image', function ($row) {
@@ -72,7 +68,9 @@ class TestimonialsController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.testimonials.index');
+        $breadCrum = array('Testimonials');
+        $title      = 'Testimonials';
+        return view('platform.testimonials.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
@@ -88,51 +86,48 @@ class TestimonialsController extends Controller
     }
     public function saveForm(Request $request,$id = null)
     {
-        $id             = $request->id;
-        $validator      = Validator::make($request->all(), [
-                                'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
-                                'avatar' => 'mimes:jpeg,png,jpg',
-                                
-                            ]);
+        $id                         = $request->id;
+        $validator                  = Validator::make($request->all(), [
+                                        'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
+                                        'avatar' => 'mimes:jpeg,png,jpg',
+                                        
+                                    ]);
 
         if ($validator->passes()) {
             
             if ($request->file('avatar')) {
-                $filename       = time() . '_' . $request->avatar->getClientOriginalName();
-                $folder_name    = 'testimonial/' . str_replace(' ', '', $request->title) . '/';
-                $existID = '';
+
+                $filename           = time() . '_' . $request->avatar->getClientOriginalName();
+                $folder_name        = 'testimonial/' . str_replace(' ', '', $request->title) . '/';
+                $existID            = '';
                 if($id)
                 {
-                  
-                    $existID = Testimonials::find($id);
-                    $deleted_file = $existID->image;
+                    $existID        = Testimonials::find($id);
+                    $deleted_file   = $existID->image;
                     if(File::exists($deleted_file)) {
                         File::delete($deleted_file);
                     }
                 }
                
-                $path           = $folder_name . $filename;
+                $path               = $folder_name . $filename;
                 $request->avatar->move(public_path($folder_name), $filename);
-                $ins['image']   = $path;
+                $ins['image']       = $path;
             }
-
             
             if ($request->image_remove_logo == "yes") {
-                $ins['image'] = '';
+                $ins['image']           = '';
             }
-            
 
-            $ins['title']                        = $request->title;
-            $ins['short_description']                   = $request->short_description;
-            $ins['long_description']                   = $request->long_description;
-            $ins['order_by']                         = $request->order_by;
-            $ins['added_by']        = Auth::id();
+            $ins['title']               = $request->title;
+            $ins['short_description']   = $request->short_description;
+            $ins['long_description']    = $request->long_description;
+            $ins['order_by']            = $request->order_by;
+            $ins['added_by']            = Auth::id();
             if($request->status == "1")
             {
-                $ins['status']          = 1;
-            }
-            else{
-                $ins['status']          = 2;
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
             }
             $error                  = 0;
 
@@ -169,7 +164,7 @@ class TestimonialsController extends Controller
     }
     public function exportPdf()
     {
-        $list       = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
+        $list       = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(mm_testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.testimonials.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('testimonial.pdf');
     }

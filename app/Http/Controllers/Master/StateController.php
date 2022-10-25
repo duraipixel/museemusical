@@ -23,7 +23,7 @@ class StateController extends Controller
     {
         $title = "State";
         if ($request->ajax()) {
-            $data =State::select('states.*', 'countries.name as country_name','users.name as users_name',DB::raw(" IF(states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by');
+            $data =State::select('states.*', 'countries.name as country_name','users.name as users_name',DB::raw(" IF(mm_states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -64,7 +64,9 @@ class StateController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.master.state.index');
+        $breadCrum = array('Masters', 'States');
+        $title      = 'States';
+        return view('platform.master.state.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
@@ -142,7 +144,7 @@ class StateController extends Controller
     public function exportPdf()
     {
         // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = State::select('states.*',  'countries.name as country_name','users.name as users_name',DB::raw(" IF(states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by')->get();
+        $list       = State::select('states.*',  'countries.name as country_name','users.name as users_name',DB::raw(" IF(mm_states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.state.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('state.pdf');
     }

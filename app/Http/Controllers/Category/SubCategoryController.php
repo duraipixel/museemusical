@@ -20,11 +20,11 @@ use PDF;
 class SubCategoryController extends Controller
 {
     public function index(Request $request)
-    { $title = "Sub Category";
+    { 
+        $title = "Sub Category";
         $category    = MainCategory::where('status','!=',0)->get();
-        //   $s =  SubCategory::select('parent_id')->where('status','!=', 0)->groupBy('parent_id')->get();
         if ($request->ajax()) {
-            $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name', DB::raw(" IF(sub_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by');
+            $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by');
             $filter_category  ='';
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
@@ -57,11 +57,7 @@ class SubCategoryController extends Controller
                     return $image;
                 })
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'sub_category\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'sub_category\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'sub_category\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 
@@ -83,8 +79,9 @@ class SubCategoryController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-       
-        return view('platform.category.sub_category.index',compact('category'));
+        $breadCrum  = array('Masters', 'Dynamic Sub Category');
+        $title      = 'Sub Category';
+        return view('platform.category.sub_category.index',compact('category', 'breadCrum', 'title'));
 
     }
     public function modalAddEdit(Request $request)
@@ -184,7 +181,7 @@ class SubCategoryController extends Controller
 
     public function exportPdf()
     {
-        $list       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name',DB::raw(" IF(main_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by')->get();
+        $list       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.sub_category.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('subCategory.pdf');
     }

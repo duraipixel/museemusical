@@ -13,7 +13,7 @@ class TestimonialsExport implements FromView
 {
     public function view(): View
     {
-        $list = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
+        $list = Testimonials::select('testimonials.*','users.name as users_name')->join('users', 'users.id', '=', 'testimonials.added_by')->get();
         return view('platform.exports.testimonials.excel', compact('list'));
     }
 }

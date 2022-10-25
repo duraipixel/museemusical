@@ -13,7 +13,9 @@ class GlobalSettingController extends Controller
     public function index(Request $request)
     {
         $data = GlobalSettings::first();
-        return view('platform.global.index',compact('data'));
+        $breadCrum = array('Authentication', 'Global Settings');
+        $title      = 'Global Settings';
+        return view('platform.global.index',compact('data', 'breadCrum', 'title'));
     }
 
     public function saveForm(Request $request)

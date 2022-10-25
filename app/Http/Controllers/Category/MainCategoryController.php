@@ -19,9 +19,10 @@ use PDF;
 class MainCategoryController extends Controller
 {
     public function index(Request $request)
-    { $title = "Order Status";
+    { 
+        
         if ($request->ajax()) {
-            $data = MainCategory::select('main_categories.*','users.name as users_name', DB::raw(" IF(main_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'main_categories.added_by');
+            $data = MainCategory::select('main_categories.*','users.name as users_name')->join('users', 'users.id', '=', 'main_categories.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -47,11 +48,7 @@ class MainCategoryController extends Controller
                     return $image;
                 })
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'main_category\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'main_category\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'main_category\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
 
@@ -72,8 +69,9 @@ class MainCategoryController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-       
-        return view('platform.category.main_category.index');
+        $breadCrum  = array('Masters', 'Dynamic Main Category');
+        $title      = 'Main Category';
+        return view('platform.category.main_category.index', compact('breadCrum', 'title'));
 
     }
     public function modalAddEdit(Request $request)
@@ -85,7 +83,6 @@ class MainCategoryController extends Controller
             $info           = MainCategory::find($id);
             $modal_title    = 'Update Main Category';
         }
-        
         return view('platform.category.main_category.add_edit_modal', compact('info', 'modal_title'));
     }
     public function saveForm(Request $request,$id = null)
@@ -101,8 +98,8 @@ class MainCategoryController extends Controller
             if ($request->file('avatar')) {
                 $filename       = time() . '_' . $request->avatar->getClientOriginalName();
                 $folder_name    = 'categories/main_category/' . str_replace(' ', '', $request->category_name) .'/';
-                $existID = '';
-                $filename = str_replace(' ', '', $filename);
+                $existID        = '';
+                $filename       = str_replace(' ', '', $filename);
                 
                 if($id)
                 {
@@ -121,18 +118,18 @@ class MainCategoryController extends Controller
                 $ins['image'] = '';
             }
            
-            $ins['category_name']                        = $request->category_name;
-            $ins['slug']                        = \Str::slug($request->category_name);
-            $ins['description']                   = $request->description;
-            $ins['tagline']                   = $request->tagline;
-            $ins['order_by']                         = $request->order_by;
+            $ins['category_name']   = $request->category_name;
+            $ins['slug']            = \Str::slug($request->category_name);
+            $ins['description']     = $request->description;
+            $ins['tagline']         = $request->tagline;
+            $ins['order_by']        = $request->order_by;
             $ins['added_by']        = Auth::id();
             if($request->status == "1")
             {
-                $ins['status']          = 1;
+                $ins['status']      = 1;
             }
             else{
-                $ins['status']          = 2;
+                $ins['status']      = 2;
             }
             $error                  = 0;
 
@@ -150,7 +147,6 @@ class MainCategoryController extends Controller
         $id         = $request->id;
         $info       = MainCategory::find($id);
         $info->delete();
-        // echo 1;
         return response()->json(['message'=>"Successfully deleted Main Category!",'status'=>1]);
     }
     public function changeStatus(Request $request)
@@ -160,7 +156,6 @@ class MainCategoryController extends Controller
         $info           = MainCategory::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
         return response()->json(['message'=>"You changed the Main Category status!",'status'=>1]);
 
     }
@@ -171,8 +166,7 @@ class MainCategoryController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = MainCategory::select('main_categories.*','users.name as users_name',DB::raw(" IF(main_categories.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'main_categories.added_by')->get();
+        $list       = MainCategory::select('main_categories.*','users.name as users_name')->join('users', 'users.id', '=', 'main_categories.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.category.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('category.pdf');
     }

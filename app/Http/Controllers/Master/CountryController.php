@@ -62,7 +62,9 @@ class CountryController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.master.country.index');
+        $breadCrum = array('Masters', 'Countries');
+        $title      = 'Countries';
+        return view('platform.master.country.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {

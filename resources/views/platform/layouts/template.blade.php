@@ -20,9 +20,8 @@
 					<!--begin::Brand-->
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
-						<?php $data= DB::table('global_settings')->first();  ?>
 						<a href="javascript:void(0)">
-							<img alt="Logo" src="{{ asset($data->logo) }}" class="w-200px logo" />
+							<img alt="Logo" src="{{ asset(gSetting('logo')) }}" class="w-200px logo" />
 						</a> 
 						<!--end::Logo-->
 						<!--begin::Aside toggler-->
@@ -135,6 +134,42 @@
         @yield('add_on_script')
 		<!--end::Javascript-->
 	</body>
-	<!--end::Body-->
+	<style>
+		#loading {
+			width: 100%;
+			height: 100%;
+			top: 0px;
+			left: 0px;
+			position: fixed;
+			display: block;
+			opacity: 0.7;
+			background-color: #fff;
+			z-index: 102;
+			text-align: center;
+		}
 
+		#loading-content {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			text-align: center;
+			z-index: 100;
+		}
+		.loading-hide{
+			display: none !important;
+		}
+	</style>
+	<div id="loading" class="loading-hide">
+		<div id="loading-content">
+		  Loading...
+		</div>
+	  </div>
+	<!--end::Body-->
+	  <script>
+		$(document).ajaxStart(function(){
+			$("#loading").removeClass('loading-hide');
+		}).ajaxStop(function(){
+			$("#loading").addClass('loading-hide');
+		});
+	  </script>
 </html>

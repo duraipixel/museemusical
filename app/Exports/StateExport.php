@@ -13,7 +13,7 @@ class StateExport implements FromView
 {
     public function view(): View
     {
-        $list = State::select('states.*', 'countries.name as country_name','users.name as users_name', DB::raw(" IF(states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by')->get();
+        $list = State::select('states.*', 'countries.name as country_name','users.name as users_name', DB::raw(" IF(mm_states.status = 2, 'Inactive', 'Active') as user_status"))->join('countries', 'countries.id', '=', 'states.country_id')->join('users', 'users.id', '=', 'states.added_by')->get();
         return view('platform.exports.state.excel', compact('list'));
     }
 }

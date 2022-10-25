@@ -1,34 +1,13 @@
 @extends('platform.layouts.template')
-@section('content')
-    <div class="toolbar" id="kt_toolbar">
-        <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
-            <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
-                data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
-                class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Brand List</h1>
-                <span class="h-20px border-gray-300 border-start mx-4"></span>
-
-                <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
-                    <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('home') }}" class="text-muted text-hover-primary">Home</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                    </li>
-                    <li class="breadcrumb-item text-muted">Master</li>
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                    </li>
-                    <li class="breadcrumb-item text-muted">Brand</li>
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                    </li>
-                    <li class="breadcrumb-item text-dark">Brand List</li>
-                </ul>
-
-            </div>
-        </div>
+@section('toolbar')
+<div class="toolbar" id="kt_toolbar">
+    <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+        @include('platform.layouts.parts._breadcrum')
     </div>
+</div>
+@endsection
+@section('content')
+
     <style>
         .paginate_button {
             padding: 5px 14px;
@@ -72,8 +51,8 @@
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-brand-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
-                                            <option value="1">Active</option>
-                                            <option value="2">Inactive</option>
+                                            <option value="published">Published</option>
+                                            <option value="unpublished">Unpublished</option>
                                         </select>
                                     </div>
                                     <div class="d-flex justify-content-end">
