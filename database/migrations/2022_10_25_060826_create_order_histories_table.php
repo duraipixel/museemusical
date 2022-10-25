@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderStatusesTable extends Migration
+class CreateOrderHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateOrderStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_statuses', function (Blueprint $table) {
+        Schema::create('order_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('status_name');
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->string('action');
             $table->string('description')->nullable();
-            $table->integer('order');
-            $table->unsignedBigInteger('added_by');
-            $table->enum( 'status', ['published', 'unpublished'])->default('published');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateOrderStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_statuses');
+        Schema::dropIfExists('order_histories');
     }
 }

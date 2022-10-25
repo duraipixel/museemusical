@@ -22,7 +22,7 @@ class CreateSubCategoriesTable extends Migration
             $table->string('image')->nullable();
             $table->string('slug')->nullable();
             $table->integer('order_by');
-            $table->integer('status')->default(1)->comment('1-active,2-inactive');
+            $table->enum( 'status', ['published', 'unpublished'])->default('published');
             $table->unsignedBigInteger('added_by')->nullable();
             $table->softDeletes();           
             $table->timestamps();

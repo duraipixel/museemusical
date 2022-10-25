@@ -20,7 +20,7 @@ class CreateTestimonialsTable extends Migration
             $table->string('short_description')->nullable();
             $table->string('long_description')->nullable();
             $table->integer('order_by');
-            $table->integer('status')->default(1)->comment('1-active,2-inactive');
+            $table->enum( 'status', ['published', 'unpublished'])->default('published');
             $table->unsignedBigInteger('added_by')->nullable();
             $table->softDeletes(); 
             $table->timestamps();

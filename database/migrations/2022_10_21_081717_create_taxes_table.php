@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderStatusesTable extends Migration
+class CreateTaxesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateOrderStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_statuses', function (Blueprint $table) {
+        Schema::create('taxes', function (Blueprint $table) {
             $table->id();
-            $table->string('status_name');
-            $table->string('description')->nullable();
-            $table->integer('order');
-            $table->unsignedBigInteger('added_by');
-            $table->enum( 'status', ['published', 'unpublished'])->default('published');
+            $table->string( 'title' );
+            $table->decimal('pecentage', 8,2);
+            $table->tinyInteger('order_by');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +30,6 @@ class CreateOrderStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_statuses');
+        Schema::dropIfExists('taxes');
     }
 }

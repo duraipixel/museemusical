@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMainCategoriesTable extends Migration
+class CreateProductWithAttributeSetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateMainCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('main_categories', function (Blueprint $table) {
+        Schema::create('product_with_attribute_sets', function (Blueprint $table) {
             $table->id();
-            $table->string('category_name');
-            $table->string('description')->nullable();
-            $table->string('image')->nullable();
-            $table->string('slug')->nullable();
-            $table->integer('order_by');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_attribute_set_id');
+            $table->string( 'attribute_values' )->nullable();
+            $table->integer( 'order_by' )->nullable();
             $table->enum( 'status', ['published', 'unpublished'])->default('published');
-            $table->unsignedBigInteger('added_by')->nullable();
-            $table->softDeletes();            
             $table->timestamps();
         });
     }
@@ -34,6 +31,6 @@ class CreateMainCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('main_categories');
+        Schema::dropIfExists('product_with_attribute_sets');
     }
 }
