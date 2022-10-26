@@ -1,6 +1,20 @@
 <div class="card-header">
-    <div class="card-title">
-        <h2>Categories</h2>
+    <div class="card-title w-100">
+        <h2 class="w-100">
+            Categories
+            <span class="float-end">
+                <a href="add-category.html" class="btn btn-light-primary btn-sm">
+                    <span class="svg-icon svg-icon-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
+                            <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </a>
+            </span>
+
+        </h2>
     </div>
 </div>
 <div class="card-body pt-0">
@@ -17,15 +31,5 @@
         <option value="Wines">Wines</option>
         <option value="Sandals">Sandals</option>
     </select>
-    <div class="text-muted fs-7 mb-7">Add product to a category.</div>
-    <a href="add-category.html" class="btn btn-light-primary btn-sm mb-10">
-    <span class="svg-icon svg-icon-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
-            <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
-        </svg>
-    </span>
-    <!--end::Svg Icon-->Create new category</a>
-    <label class="form-label d-block">Tags</label>
-    <input id="kt_ecommerce_add_product_tags" name="kt_ecommerce_add_product_tags" class="form-control mb-2" value="" />
+    <div class="text-muted fs-7">Add product to a category.</div>
 </div>

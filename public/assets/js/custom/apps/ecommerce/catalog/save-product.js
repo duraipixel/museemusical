@@ -13,6 +13,7 @@ var KTAppEcommerceSaveProduct = function () {
             '#kt_ecommerce_add_product_short_description',
             '#kt_ecommerce_add_product_long_description',
             '#kt_ecommerce_add_product_technical_specification',
+            '#kt_ecommerce_add_product_specification',
             '#kt_ecommerce_add_product_features',
             '#kt_ecommerce_add_product_benefits',
             '#kt_ecommerce_add_product_content',
