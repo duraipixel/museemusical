@@ -112,24 +112,23 @@
                    'pdf': "{{ route('testimonials.export.pdf') }}",
                }
           },
-          'product': {
-               
-               'delete': "{{ route('product.delete') }}",
-               'status': "{{ route('product.status') }}",
-               'add': "{{ route('product.add.edit') }}",
+          'products': {
+               'delete': "{{ route('products.delete') }}",
+               'status': "{{ route('products.status') }}",
+               'add': "{{ route('products.add.edit') }}",
                'export': {
-                   'excel': "{{ route('product.export.excel') }}",
-                   'pdf': "{{ route('product.export.pdf') }}",
+                   'excel': "{{ route('products.export.excel') }}",
+                   'pdf': "{{ route('products.export.pdf') }}",
                }
           },
-          'walk_throughs': {
+          'walkthroughs': {
                
-               'delete': "{{ route('walk_throughs.delete') }}",
-               'status': "{{ route('walk_throughs.status') }}",
-               'add': "{{ route('walk_throughs.add.edit') }}",
+               'delete': "{{ route('walkthroughs.delete') }}",
+               'status': "{{ route('walkthroughs.status') }}",
+               'add': "{{ route('walkthroughs.add.edit') }}",
                'export': {
-                   'excel': "{{ route('walk_throughs.export.excel') }}",
-                   'pdf': "{{ route('walk_throughs.export.pdf') }}",
+                   'excel': "{{ route('walkthroughs.export.excel') }}",
+                   'pdf': "{{ route('walkthroughs.export.pdf') }}",
                }
           },
        

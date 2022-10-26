@@ -31,36 +31,42 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('product');
     Route::get('/walk_throughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walk_throughs');
     
-
-    Route::post('/roles/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
-    Route::post('/roles/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
-    Route::post('/roles/status', [App\Http\Controllers\Settings\RoleController::class, 'changeStatus'])->name('roles.status');
-    Route::post('/roles/save', [App\Http\Controllers\Settings\RoleController::class, 'saveForm'])->name('roles.save');
-    Route::get('/roles/export/excel', [App\Http\Controllers\Settings\RoleController::class, 'export'])->name('roles.export.excel');
-    Route::get('/roles/export/pdf', [App\Http\Controllers\Settings\RoleController::class, 'exportPdf'])->name('roles.export.pdf');
+    Route::prefix('roles')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
+        Route::post('/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
+        Route::post('/status', [App\Http\Controllers\Settings\RoleController::class, 'changeStatus'])->name('roles.status');
+        Route::post('/save', [App\Http\Controllers\Settings\RoleController::class, 'saveForm'])->name('roles.save');
+        Route::get('/export/excel', [App\Http\Controllers\Settings\RoleController::class, 'export'])->name('roles.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Settings\RoleController::class, 'exportPdf'])->name('roles.export.pdf');
+    });
 
     Route::get('/global', [App\Http\Controllers\GlobalSettingController::class, 'index'])->name('global');
     Route::post('/global/save', [App\Http\Controllers\GlobalSettingController::class, 'saveForm'])->name('global.save');
 
-    Route::get('/my-profile', [App\Http\Controllers\MyProfileController::class, 'index'])->name('my-profile');
-    Route::get('/my-profile/password', [App\Http\Controllers\MyProfileController::class, 'getPasswordTab'])->name('my-profile.password');
-    Route::post('/my-profile/getTab', [App\Http\Controllers\MyProfileController::class, 'getTab'])->name('my-profile.get.tab');
-    Route::post('/my-profile/save', [App\Http\Controllers\MyProfileController::class, 'saveForm'])->name('my-profile.save');
+    Route::prefix('my-profile')->group(function(){
+        Route::get('/', [App\Http\Controllers\MyProfileController::class, 'index'])->name('my-profile');
+        Route::get('/password', [App\Http\Controllers\MyProfileController::class, 'getPasswordTab'])->name('my-profile.password');
+        Route::post('/getTab', [App\Http\Controllers\MyProfileController::class, 'getTab'])->name('my-profile.get.tab');
+        Route::post('/save', [App\Http\Controllers\MyProfileController::class, 'saveForm'])->name('my-profile.save');
+    });
 
+    Route::prefix('users')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\UserController::class, 'modalAddEdit'])->name('users.add.edit');
+        Route::post('/delete', [App\Http\Controllers\UserController::class, 'delete'])->name('users.delete');
+        Route::post('/status', [App\Http\Controllers\UserController::class, 'changeStatus'])->name('users.status');
+        Route::post('/save', [App\Http\Controllers\UserController::class, 'saveForm'])->name('users.save');
+        Route::get('/export/excel', [App\Http\Controllers\UserController::class, 'export'])->name('users.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\UserController::class, 'exportPdf'])->name('users.export.pdf');
+    });
 
-    Route::post('/users/addOrEdit', [App\Http\Controllers\UserController::class, 'modalAddEdit'])->name('users.add.edit');
-    Route::post('/users/delete', [App\Http\Controllers\UserController::class, 'delete'])->name('users.delete');
-    Route::post('/users/status', [App\Http\Controllers\UserController::class, 'changeStatus'])->name('users.status');
-    Route::post('/users/save', [App\Http\Controllers\UserController::class, 'saveForm'])->name('users.save');
-    Route::get('/users/export/excel', [App\Http\Controllers\UserController::class, 'export'])->name('users.export.excel');
-    Route::get('/users/export/pdf', [App\Http\Controllers\UserController::class, 'exportPdf'])->name('users.export.pdf');
-
-    Route::post('/order-status/addOrEdit', [App\Http\Controllers\Master\OrderStatusController::class, 'modalAddEdit'])->name('order-status.add.edit');
-    Route::post('/order-status/status', [App\Http\Controllers\Master\OrderStatusController::class, 'changeStatus'])->name('order-status.status');
-    Route::post('/order-status/delete', [App\Http\Controllers\Master\OrderStatusController::class, 'delete'])->name('order-status.delete');
-    Route::post('/order-status/save', [App\Http\Controllers\Master\OrderStatusController::class, 'saveForm'])->name('order-status.save');
-    Route::get('/order-status/export/excel', [App\Http\Controllers\Master\OrderStatusController::class, 'export'])->name('order-status.export.excel');
-    Route::get('/order-status/export/pdf', [App\Http\Controllers\Master\OrderStatusController::class, 'exportPdf'])->name('order-status.export.pdf');
+    Route::prefix('order-status')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Master\OrderStatusController::class, 'modalAddEdit'])->name('order-status.add.edit');
+        Route::post('/status', [App\Http\Controllers\Master\OrderStatusController::class, 'changeStatus'])->name('order-status.status');
+        Route::post('/delete', [App\Http\Controllers\Master\OrderStatusController::class, 'delete'])->name('order-status.delete');
+        Route::post('/save', [App\Http\Controllers\Master\OrderStatusController::class, 'saveForm'])->name('order-status.save');
+        Route::get('/export/excel', [App\Http\Controllers\Master\OrderStatusController::class, 'export'])->name('order-status.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Master\OrderStatusController::class, 'exportPdf'])->name('order-status.export.pdf');
+    });
 
     Route::post('/country/addOrEdit', [App\Http\Controllers\Master\CountryController::class, 'modalAddEdit'])->name('country.add.edit');
     Route::post('/country/status', [App\Http\Controllers\Master\CountryController::class, 'changeStatus'])->name('country.status');
@@ -118,20 +124,24 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/testimonials/export/excel', [App\Http\Controllers\TestimonialsController::class, 'export'])->name('testimonials.export.excel');
     Route::get('/testimonials/export/pdf', [App\Http\Controllers\TestimonialsController::class, 'exportPdf'])->name('testimonials.export.pdf');
 
-    Route::get('/product_add', [App\Http\Controllers\Product\ProductController::class, 'modalAddEdit'])->name('product_add'); // product add url
-    Route::post('/product/addOrEdit', [App\Http\Controllers\Product\ProductController::class, 'modalAddEdit'])->name('product.add.edit');
-    Route::post('/product/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('product.status');
-    Route::post('/product/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('product.delete');
-    Route::post('/product/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('product.save');
-    Route::get('/product/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('product.export.excel');
-    Route::get('/product/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('product.export.pdf');
+    Route::prefix('products')->group(function(){
+        Route::get('/', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('products'); 
+        Route::get('/add', [App\Http\Controllers\Product\ProductController::class, 'addEditPage'])->name('products.add.edit'); 
+        Route::post('/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('products.status');
+        Route::post('/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('products.delete');
+        Route::post('/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('products.save');
+        Route::get('/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('products.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('products.export.pdf');
+    });
 
-    Route::post('/walk_throughs/addOrEdit', [App\Http\Controllers\WalkThroughController::class, 'modalAddEdit'])->name('walk_throughs.add.edit');
-    Route::post('/walk_throughs/status', [App\Http\Controllers\WalkThroughController::class, 'changeStatus'])->name('walk_throughs.status');
-    Route::post('/walk_throughs/delete', [App\Http\Controllers\WalkThroughController::class, 'delete'])->name('walk_throughs.delete');
-    Route::post('/walk_throughs/save', [App\Http\Controllers\WalkThroughController::class, 'saveForm'])->name('walk_throughs.save');
-    Route::get('/walk_throughs/export/excel', [App\Http\Controllers\WalkThroughController::class, 'export'])->name('walk_throughs.export.excel');
-    Route::get('/walk_throughs/export/pdf', [App\Http\Controllers\WalkThroughController::class, 'exportPdf'])->name('walk_throughs.export.pdf');
+    Route::prefix('walkthroughs')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\WalkThroughController::class, 'modalAddEdit'])->name('walkthroughs.add.edit');
+        Route::post('/status', [App\Http\Controllers\WalkThroughController::class, 'changeStatus'])->name('walkthroughs.status');
+        Route::post('/delete', [App\Http\Controllers\WalkThroughController::class, 'delete'])->name('walkthroughs.delete');
+        Route::post('/save', [App\Http\Controllers\WalkThroughController::class, 'saveForm'])->name('walkthroughs.save');
+        Route::get('/export/excel', [App\Http\Controllers\WalkThroughController::class, 'export'])->name('walkthroughs.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\WalkThroughController::class, 'exportPdf'])->name('walkthroughs.export.pdf');
+    });
 });
 
 

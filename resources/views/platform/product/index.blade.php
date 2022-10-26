@@ -1,43 +1,12 @@
 @extends('platform.layouts.template')
-@section('content')
-    <div class="toolbar" id="kt_toolbar">
-        <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
-            <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
-                data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
-                class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Product</h1>
-                <span class="h-20px border-gray-300 border-start mx-4"></span>
-
-                <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
-                    <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('home') }}" class="text-muted text-hover-primary">Home</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                    </li>
-                    <li class="breadcrumb-item text-muted">Product</li>
-                   
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                    </li>
-                    <li class="breadcrumb-item text-dark">Product List</li>
-                </ul>
-
-            </div>
-        </div>
+@section('toolbar')
+<div class="toolbar" id="kt_toolbar">
+    <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+        @include('platform.layouts.parts._breadcrum')
     </div>
-    <style>
-        .paginate_button {
-            padding: 5px 14px;
-        }
-
-        a.paginate_button.current {
-            background: #009EF7;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
-
+</div>
+@endsection
+@section('content')
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
@@ -101,7 +70,7 @@
                             Export
                         </button>
 
-                        <a type="button" class="btn btn-primary" href="{{ route('product_add') }}" >
+                        <a type="button" class="btn btn-primary" href="{{ route('products.add.edit') }}" >
                             Add Product
                         </a>
 

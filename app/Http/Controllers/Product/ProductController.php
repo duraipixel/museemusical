@@ -19,25 +19,19 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $title = "Product";
-       
-        return view('platform.product.index');
+        $title                  = "Product";
+        $breadCrum              = array('Products', 'Product');
+        return view('platform.product.index', compact('title', 'breadCrum'));
     }
-    public function modalAddEdit(Request $request)
-    {
-        // dd("!");
-        return view('platform.product.add_edit_modal');
 
-        // $id                 = $request->id;
-        // $info               = '';
-        // $modal_title        = 'Add Product';
-       
-        
-        // return view('platform.product.add_edit_modal');
+    public function addEditPage(Request $request)
+    {
+        $title                  = "Add Product";
+        $breadCrum              = array('Products', 'Add Product');
+        return view('platform.product.form.add_edit_form', compact('title', 'breadCrum'));
     }
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',

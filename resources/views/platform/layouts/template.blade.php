@@ -135,6 +135,15 @@
 		<!--end::Javascript-->
 	</body>
 	<style>
+		 .paginate_button {
+            padding: 5px 14px;
+        }
+
+        a.paginate_button.current {
+            background: #009EF7;
+            color: white;
+            border-radius: 5px;
+        }
 		#loading {
 			width: 100%;
 			height: 100%;

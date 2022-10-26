@@ -62,7 +62,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('product') }}">
+                        <a class="menu-link" href="{{ route('products') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -218,7 +218,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1">
                 <span class="menu-link">
@@ -449,7 +448,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Dynamic Categories </span>
+                            <span class="menu-title"> Dynamic Categories </span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -457,7 +456,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Dynamic SubCategories </span>
+                            <span class="menu-title"> Dynamic SubCategories </span>
                         </a>
                     </div>
                 </div>

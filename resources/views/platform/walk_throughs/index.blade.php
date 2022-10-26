@@ -152,7 +152,7 @@
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('walk_throughs') }}",
+                "url": "{{ route('walkthroughs') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
                 }
