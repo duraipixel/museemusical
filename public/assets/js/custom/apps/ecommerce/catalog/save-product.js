@@ -20,6 +20,17 @@ var KTAppEcommerceSaveProduct = function () {
 
         ];
 
+        $('#kt_product_sale_end_date').flatpickr({
+            altInput: true,
+            altFormat: "d F, Y",
+            dateFormat: "Y-m-d",
+        });
+        $('#kt_product_sale_start_date').flatpickr({
+            altInput: true,
+            altFormat: "d F, Y",
+            dateFormat: "Y-m-d",
+        });
+
         // Loop all elements
         elements.forEach(element => {
             // Get quill element
@@ -174,6 +185,7 @@ var KTAppEcommerceSaveProduct = function () {
     // Handle discount options
     const handleDiscount = () => {
         const discountOptions = document.querySelectorAll('input[name="discount_option"]');
+        const salePriceEL = document.getElementById('kt_ecommerce_add_product_sale_price');
         const percentageEl = document.getElementById('kt_ecommerce_add_product_discount_percentage');
         const fixedEl = document.getElementById('kt_ecommerce_add_product_discount_fixed');
 
@@ -184,17 +196,20 @@ var KTAppEcommerceSaveProduct = function () {
                 switch (value) {
                     case '2': {
                         percentageEl.classList.remove('d-none');
+                        salePriceEL.classList.remove('d-none');
                         fixedEl.classList.add('d-none');
                         break;
                     }
                     case '3': {
                         percentageEl.classList.add('d-none');
+                        salePriceEL.classList.remove('d-none');
                         fixedEl.classList.remove('d-none');
                         break;
                     }
                     default: {
                         percentageEl.classList.add('d-none');
                         fixedEl.classList.add('d-none');
+                        salePriceEL.classList.add('d-none');
                         break;
                     }
                 }

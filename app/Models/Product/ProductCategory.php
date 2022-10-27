@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\CategoryMetaTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,5 +19,14 @@ class ProductCategory extends Model
         'status',
         'order_by',
         'added_by',
+        'tag_line',
+        'tax_id',
+        'is_home_menu',
+        'updated_by'
     ];
+
+    public function meta()
+    {
+        return $this->belongsTo(CategoryMetaTags::class, 'category_id', 'id');
+    }
 }

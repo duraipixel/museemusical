@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\CategoryMetaTags;
 use Illuminate\Http\Request;
 use App\Models\Product\ProductCategory;
 use DataTables;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Auth;
 use Excel;
+use Illuminate\Support\Facades\Storage;
 use PDF;
 class ProductCategoryController extends Controller
 {
@@ -21,10 +23,12 @@ class ProductCategoryController extends Controller
         $breadCrum              = array('Products', 'Product Categories');
 
         if ($request->ajax()) {
-            $data =ProductCategory::select('product_categories.*','users.name as users_name')->join('users', 'users.id', '=', 'product_categories.added_by');
-            $status = $request->get('status');
-            $keywords = $request->get('search')['value'];
-            $datatables =  Datatables::of($data)
+            $data               = ProductCategory::select('product_categories.*','users.name as users_name', DB::raw('IF(mm_product_categories.parent_id = 0, "Parent", mm_parent_category.name ) as parent_name '))
+                                                    ->join('users', 'users.id', '=', 'product_categories.added_by')
+                                                    ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.id');
+            $status             = $request->get('status');
+            $keywords           = $request->get('search')['value'];
+            $datatables         =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
                         return $query->where('product_categories.status', 'like', "%{$status}%");
@@ -35,13 +39,8 @@ class ProductCategoryController extends Controller
                     }
                 })
                 ->addIndexColumn()
-               
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'walk_throughs\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'walk_throughs\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-category\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 
@@ -56,7 +55,6 @@ class ProductCategoryController extends Controller
                 </a>';
                     $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'product-category\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
-
                     return $edit_btn . $del_btn;
                 })
                 ->rawColumns(['action', 'status', 'image']);
@@ -67,78 +65,88 @@ class ProductCategoryController extends Controller
 
     public function modalAddEdit(Request $request)
     {
-        // dd("1");
-        $title                  = "Add Product Categories";
-        $breadCrum              = array('Products', 'Add Product Categories');
-
-
+        
+        $title              = "Add Product Categories";
+        $breadCrum          = array('Products', 'Add Product Categories');
 
         $id                 = $request->id;
+        $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Product Category';
         if (isset($id) && !empty($id)) {
             $info           = ProductCategory::find($id);
             $modal_title    = 'Update Product Category';
         }
-
-        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum'));
+        // dd( $info->meta);
+        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from'));
     }
     public function saveForm(Request $request,$id = null)
     {
+        
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
-                                'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
-                                'avatar' => 'mimes:jpeg,png,jpg',
-                                
-                            ]);
+                            'category_name' => 'required|string|unique:product_categories,name,' . $id . ',id,deleted_at,NULL',
+                            'avatar' => 'mimes:jpeg,png,jpg',
+                        ]);
 
         if ($validator->passes()) {
-            
-            if ($request->file('avatar')) {
-                $filename       = time() . '_' . $request->avatar->getClientOriginalName();
-                $folder_name    = 'testimonial/' . str_replace(' ', '', $request->title) . '/';
-                // dd($folder_name);
-                $existID = '';
-                if($id)
-                {
-                  
-                    $existID = Testimonials::find($id);
-                    $deleted_file = $existID->image;
-                    if(File::exists($deleted_file)) {
-                        File::delete($deleted_file);
-                    }
-                }
-               
-                $path           = $folder_name . $filename;
-                $request->avatar->move(public_path($folder_name), $filename);
-                // dd($path);
-                $ins['image']   = $path;
-            }
-
             
             if ($request->image_remove_logo == "yes") {
                 $ins['image'] = '';
             }
-            
+            if( !$request->is_parent ) {
+                $ins['parent_id'] = $request->parent_category;
+            }
+            if( $request->is_tax ) {
+                $ins['tax_id'] = $request->tax_id;
+            }
+            if( !$id ) {
+                $ins['added_by'] = Auth::id();
+            } else {
+                $ins['updated_by'] = Auth::id();
+            }
 
-            $ins['title']                        = $request->title;
-            $ins['short_description']                   = $request->short_description;
-            $ins['long_description']                   = $request->long_description;
-            $ins['order_by']                         = $request->order_by;
-            $ins['added_by']        = Auth::id();
-            if($request->status == "1")
+            $ins['name'] = $request->category_name;
+            $ins['description'] = $request->description;
+            $ins['order_by'] = $request->order_by;
+            $ins['tag_line'] = $request->tag_line;
+
+            if($request->status)
             {
-                $ins['status']          = 1;
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
             }
-            else{
-                $ins['status']          = 2;
-            }
-            $error                  = 0;
+            $error                      = 0;
+            $categeryInfo = ProductCategory::updateOrCreate(['id' => $id], $ins);
+            $categoryId = $categeryInfo->id;
 
-            $info                   = Testimonials::updateOrCreate(['id' => $id], $ins);
-            $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
-        } 
-        else {
+            if ($request->hasFile('categoryImage')) {
+               
+                $filename       = time() . '_' . $request->categoryImage->getClientOriginalName();
+                $directory      = 'productCategory/'.$categoryId;
+                $filename       = $directory.'/'.$filename.'/';
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->categoryImage));
+                
+                $categeryInfo->image = $filename;
+                $categeryInfo->save();
+            }
+
+            $meta_title = $request->meta_title;
+            $meta_keywords = $request->meta_keywords;
+            $meta_description = $request->meta_description;
+
+            if( !empty( $meta_title ) || !empty( $meta_keywords) || !empty( $meta_description ) ) {
+                CategoryMetaTags::where('category_id',$categoryId)->delete();
+                $metaIns['meta_title']          = $meta_title;
+                $metaIns['meta_keyword']       = $meta_keywords;
+                $metaIns['meta_description']    = $meta_description;
+                $metaIns['category_id']         = $categoryId;
+                CategoryMetaTags::create($metaIns);
+            }
+            $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+        } else {
             $error      = 1;
             $message    = $validator->errors()->all();
         }
@@ -147,8 +155,10 @@ class ProductCategoryController extends Controller
     public function delete(Request $request)
     {
         $id         = $request->id;
-        $info       = Testimonials::find($id);
+        $info       = ProductCategory::find($id);
         $info->delete();
+        $directory      = 'productCategory/'.$id;
+        Storage::deleteDirectory($directory);
         // echo 1;
         return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
     }
@@ -157,7 +167,7 @@ class ProductCategoryController extends Controller
         
         $id             = $request->id;
         $status         = $request->status;
-        $info           = Testimonials::find($id);
+        $info           = ProductCategory::find($id);
         $info->status   = $status;
         $info->update();
         // echo 1;
@@ -166,11 +176,11 @@ class ProductCategoryController extends Controller
     }
     public function export()
     {
-        return Excel::download(new TestimonialsExport, 'testimonials.xlsx');
+        return Excel::download(new ProductCategoryExport, 'testimonials.xlsx');
     }
     public function exportPdf()
     {
-        $list       = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
+        $list       = ProductCategory::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.testimonials.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('testimonial.pdf');
     }

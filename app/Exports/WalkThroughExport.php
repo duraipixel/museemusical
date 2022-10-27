@@ -13,7 +13,7 @@ class WalkThroughExport implements FromView
 {
     public function view(): View
     {
-        $list = WalkThrough::select('walk_throughs.*','users.name as users_name',DB::raw(" IF(walk_throughs.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'walk_throughs.added_by')->get();
+        $list = WalkThrough::select('walk_throughs.*','users.name as users_name')->join('users', 'users.id', '=', 'walk_throughs.added_by')->get();
         return view('platform.exports.walk_throughs.excel', compact('list'));
     }
 }

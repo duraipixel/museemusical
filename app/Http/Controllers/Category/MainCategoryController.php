@@ -122,7 +122,7 @@ class MainCategoryController extends Controller
             $ins['slug']            = \Str::slug($request->category_name);
             $ins['description']     = $request->description;
             $ins['tagline']         = $request->tagline;
-            $ins['order_by']        = $request->order_by;
+            $ins['order_by']        = $request->order_by ?? 0;
             $ins['added_by']        = Auth::id();
             if($request->status == "1")
             {

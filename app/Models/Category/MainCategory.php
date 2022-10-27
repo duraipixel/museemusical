@@ -20,4 +20,9 @@ class MainCategory extends Model
         'tagline',
         
     ];
+
+    public function subCategory()
+    {
+        return $this->hasMany(SubCategory::class, 'parent_id', 'id');
+    }
 }

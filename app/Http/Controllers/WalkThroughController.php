@@ -20,7 +20,7 @@ class WalkThroughController extends Controller
     {
         $title = "Walk Through";
         if ($request->ajax()) {
-            $data =WalkThrough::select('walk_throughs.*','users.name as users_name',DB::raw(" IF(walk_throughs.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'walk_throughs.added_by');
+            $data =WalkThrough::select('walk_throughs.*','users.name as users_name')->join('users', 'users.id', '=', 'walk_throughs.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -36,11 +36,7 @@ class WalkThroughController extends Controller
                 ->addIndexColumn()
                
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'walk_throughs\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'walk_throughs\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'walkthroughs\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 
@@ -50,10 +46,10 @@ class WalkThroughController extends Controller
                 })
 
                 ->addColumn('action', function ($row) {
-                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'walk_throughs\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'walkthroughs\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
                 </a>';
-                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'walk_throughs\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'walkthroughs\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
                     return $edit_btn . $del_btn;
@@ -61,7 +57,9 @@ class WalkThroughController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.walk_throughs.index');
+        $breadCrum = array('History Videos');
+        $title      = 'History Video';
+        return view('platform.walk_throughs.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
@@ -93,10 +91,9 @@ class WalkThroughController extends Controller
             $ins['added_by']        = Auth::id();
             if($request->status == "1")
             {
-                $ins['status']          = 1;
-            }
-            else{
-                $ins['status']          = 2;
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
             }
             $error                  = 0;
 
@@ -133,7 +130,7 @@ class WalkThroughController extends Controller
     }
     public function exportPdf()
     {
-        $list       = WalkThrough::select('walk_throughs.*','users.name as users_name',DB::raw(" IF(walk_throughs.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'walk_throughs.added_by')->get();
+        $list       = WalkThrough::select('walk_throughs.*','users.name as users_name')->join('users', 'users.id', '=', 'walk_throughs.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.walk_throughs.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('WalkThroughs.pdf');
     }

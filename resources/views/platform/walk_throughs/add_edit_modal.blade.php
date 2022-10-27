@@ -63,7 +63,7 @@
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2"> Status </label>
                             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
+                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == 'published') checked @endif />
                             </div>
                         </div>
                      

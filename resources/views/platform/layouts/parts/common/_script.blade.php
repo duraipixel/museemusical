@@ -15,7 +15,7 @@
         exportModal.hide();
     })
 
-    function openForm(module_type, id = '') {
+    function openForm(module_type, id = '', from = '') {
         
         $.ajaxSetup({
             headers: {
@@ -26,7 +26,7 @@
         $.ajax({
             url: config.routes[module_type].add,
             type: 'POST',
-            data: {id:id},
+            data: {id:id, from:from},
             success: function(res) {
                 $( '#form-common-content' ).html(res);
                 const drawerEl = document.querySelector("#kt_common_add_form");

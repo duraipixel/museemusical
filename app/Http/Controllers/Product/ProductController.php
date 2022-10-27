@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\TestimonialsExport;
+use App\Models\Category\MainCategory;
+use App\Models\Master\Brands;
+use App\Models\Product\ProductCategory;
 use App\Models\Testimonials;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -28,7 +31,12 @@ class ProductController extends Controller
     {
         $title                  = "Add Product";
         $breadCrum              = array('Products', 'Add Product');
-        return view('platform.product.form.add_edit_form', compact('title', 'breadCrum'));
+        $productCategory        = ProductCategory::where('status', 'published')->get();
+        $productLabels          = MainCategory::where(['slug' => 'product-labels', 'status' => 'published'])->first();
+        $productTags            = MainCategory::where(['slug' => 'product-tags', 'status' => 'published'])->first();
+        $brands                 = Brands::where('status', 'published')->get();
+        // dd( $productCategory );
+        return view('platform.product.form.add_edit_form', compact('title', 'breadCrum', 'productCategory', 'productLabels', 'productTags', 'brands' ));
     }
     public function saveForm(Request $request,$id = null)
     {

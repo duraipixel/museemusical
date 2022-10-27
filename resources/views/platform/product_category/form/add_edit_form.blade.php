@@ -16,170 +16,78 @@
         </button>
     </div>
 </div>
-<!--end::Header-->
-<!--begin::Body-->
-<form id="add_product_category_form" class="form" action="#" enctype="multipart/form-data">
 
-    <div class="card-body position-relative" id="kt_activities_body">
-        <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
-            data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_activities_body"
-            data-kt-scroll-dependencies="#kt_activities_header, #kt_activities_footer" data-kt-scroll-offset="5px">
-            <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_update_role_scroll">
-                <div class="fv-row mb-10">
-                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
-                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
-                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
-                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-
-                      
-                        <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-
-                      
-                        <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Category Name</label>
-                            <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Testimonial Title" value="{{ $info->title ?? '' }}" />
-                        </div>
-                        <div class="col-md-4">
-
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Image</label>
-
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
-                            </div>
-                            <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
-                            <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->image ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('/') . $info->image }});">
+<div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-0 align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link text-active-primary active" data-bs-toggle="tab" href="#kt_ecommerce_add_category_general">General</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-active-primary" data-bs-toggle="tab" href="#kt_ecommerce_add_category_meta">Meta</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <form id="add_product_category_form" class="form" enctype="multipart/form-data">
+                <div id="kt_activities_body">
+                    <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
+                        data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_activities_body"
+                        data-kt-scroll-dependencies="#kt_activities_header, #kt_activities_footer" data-kt-scroll-offset="5px">
+                        <div class="d-flex flex-column scroll-y me-n7 pe-7 " id="kt_modal_update_role_scroll">
+                            <div class="fv-row mb-1">
+                                <div class="d-flex flex-column scroll-y me-n7 pe-7 py-4" id="kt_modal_add_user_scroll"
+                                    data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                                    data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                                    data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                                    <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
+                                    <input type="hidden" name="from" value="{{ $info->from ?? '' }}">
+        
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="kt_ecommerce_add_category_general" role="tab-panel">
+                                            @include('platform.product_category.form._category_form')
+                                        </div>
+                                        <div class="tab-pane fade" id="kt_ecommerce_add_category_meta" role="tab-panel">
+                                            @include('platform.common.form._meta_form')
+                                        </div>
                                     </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar" id="readUrl"
-                                        accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
-                                </label>
-
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <br>
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Discription" name="description" id="short_description" cols="30" rows="5">{{ $info->short_description ?? '' }}</textarea>
-                        </div>
-                        
-                        
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
-                        </div>
-                        <div class="card card-flush py-4">
-                            <!--begin::Card header-->
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <h2>Meta Options</h2>
                                 </div>
                             </div>
-                            <!--end::Card header-->
-                            <!--begin::Card body-->
-                            <div class="card-body pt-0">
-                                <!--begin::Input group-->
-                                <div class="mb-10">
-                                    <!--begin::Label-->
-                                    <label class="form-label">Meta Tag Title</label>
-                                    <!--end::Label-->
-                                    <!--begin::Input-->
-                                    <input type="text" class="form-control mb-2" name="meta_title" placeholder="Meta tag name" />
-                                    <!--end::Input-->
-                                    <!--begin::Description-->
-                                    <div class="text-muted fs-7">Set a meta tag title. Recommended to be simple and precise keywords.</div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Input group-->
-                                <!--begin::Input group-->
-                                <div class="mb-10">
-                                    <!--begin::Label-->
-                                    <label class="form-label">Meta Tag Description</label>
-                                    <!--end::Label-->
-                                    <!--begin::Editor-->
-                                    <div id="kt_ecommerce_add_product_meta_description" name="kt_ecommerce_add_product_meta_description" class="min-h-100px mb-2"></div>
-                                    <!--end::Editor-->
-                                    <!--begin::Description-->
-                                    <div class="text-muted fs-7">Set a meta tag description to the product for increased SEO ranking.</div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Input group-->
-                                <!--begin::Input group-->
-                                <div>
-                                    <!--begin::Label-->
-                                    <label class="form-label">Meta Tag Keywords</label>
-                                    <!--end::Label-->
-                                    <!--begin::Editor-->
-                                    <input id="kt_ecommerce_add_product_meta_keywords" name="kt_ecommerce_add_product_meta_keywords" class="form-control mb-2" />
-                                    <!--end::Editor-->
-                                    <!--begin::Description-->
-                                    <div class="text-muted fs-7">Set a list of keywords that the product is related to. Separate the keywords by adding a comma 
-                                    <code>,</code>between each keyword.</div>
-                                    <!--end::Description-->
-                                </div>
-                                <!--end::Input group-->
-                            </div>
-                            <!--end::Card header-->
                         </div>
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
-                            </div>
+                    </div>
+                    <div class="card-footer py-5 text-center" id="kt_activities_footer">
+                        <div class="text-end px-8">
+                            <button type="reset" class="btn btn-light me-3" id="discard">Discard</button>
+                            <button type="submit" class="btn btn-primary" data-kt-order_status-modal-action="submit">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
                         </div>
-                     
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
-    </div>
-    <div class="card-footer py-5 text-center" id="kt_activities_footer">
-        <div class="text-end px-8">
-            <button type="reset" class="btn btn-light me-3" id="discard">Discard</button>
-            <button type="submit" class="btn btn-primary" data-kt-order_status-modal-action="submit">
-                <span class="indicator-label">Submit</span>
-                <span class="indicator-progress">Please wait...
-                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-            </button>
-        </div>
-    </div>
-</form>
-
-
+    </div> 
+</div>
 <script>
+    $('#is_parent').change(function(){
+        if($("#is_parent").prop('checked') == true){
+            $('#parent-tab').addClass('d-none');
+        } else {
+            $('#parent-tab').removeClass('d-none');
+        }
+    });
+
+    $('#is_tax').change(function(){
+        if($("#is_tax").prop('checked') == true){
+            $('#tax-tab').removeClass('d-none');
+        } else {
+            $('#tax-tab').addClass('d-none');
+        }
+    });
+   
     //image image script
      document.getElementById('readUrl').addEventListener('change', function() {
         // console.log("111");
@@ -202,25 +110,10 @@
         });
     });
    
-</script>
-
-<script>
-    $('#country').select2();
- $('.mobile_num').keypress(
-        function(event) {
-            if (event.keyCode == 46 || event.keyCode == 8) {
-                //do nothing
-            } else {
-                if (event.keyCode < 48 || event.keyCode > 57) {
-                    event.preventDefault();
-                }
-            }
-        }
-    );
-    var add_url = "{{ route('testimonials.save') }}";
-
+    $('#parent_category').select2();
+    var add_url = "{{ route('product-category.save') }}";
     // Class definition
-    var KTUsersAddRole = function() {
+    var KTProductCategory = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
         const form = element.querySelector('#add_product_category_form');
@@ -228,35 +121,36 @@
 
         const drawerEl = document.querySelector("#kt_common_add_form");
         const commonDrawer = KTDrawer.getInstance(drawerEl);
-
-
         // Init add schedule modal
         var initAddRole = () => {
-
             // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'title': {
+                        'category_name': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Title is required'
+                                    message: 'Category Name is required'
                                 }
                             }
                         },
                     },
-
                     plugins: {
                         trigger: new FormValidation.plugins.Trigger(),
+                        submitButton: new FormValidation.plugins.SubmitButton(),
                         bootstrap: new FormValidation.plugins.Bootstrap5({
                             rowSelector: '.fv-row',
                             eleInvalidClass: '',
                             eleValidClass: ''
-                        })
+                        }),
+                        icon: new FormValidation.plugins.Icon({
+                            valid: 'fa fa-check',
+                            invalid: 'fa fa-times',
+                            validating: 'fa fa-refresh',
+                        }),
                     }
                 }
             );
-
             // Cancel button handler
             const cancelButton = element.querySelector('#discard');
             cancelButton.addEventListener('click', e => {
@@ -283,20 +177,18 @@
             // Submit button handler
             const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
-            $('#add_product_category_form').submit(function(e) {
+            submitButton.addEventListener('click', function (e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
                 if (validator) {
                     validator.validate().then(function(status) {
+                        
                         if (status == 'Valid') {
-
-                            var formData = new FormData(document.getElementById(
-                                "add_product_category_form"));
+                            var form = $('#add_product_category_form')[0]; 
+                            var formData = new FormData(form);
                             submitButton.setAttribute('data-kt-indicator', 'on');
-                            // Disable button to avoid multiple click 
                             submitButton.disabled = true;
-
                             //call ajax call
                             $.ajax({
                                 url: add_url,
@@ -306,12 +198,9 @@
                                 contentType: false,
                                 beforeSend: function() {},
                                 success: function(res) {
-
-
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute(
-                                            'data-kt-indicator');
+                                        submitButton.removeAttribute('data-kt-indicator');
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
@@ -361,39 +250,18 @@
                     });
                 }
             });
-
-
         }
 
-        // Select all handler
-        // const handleSelectAll = () => {
-        //     // Define variables
-        //     const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-        //     const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-        //     // Handle check state
-        //     selectAll.addEventListener('change', e => {
-        //         // Apply check state to all checkboxes
-        //         allCheckboxes.forEach(c => {
-        //             c.checked = e.target.checked;
-        //         });
-        //     });
-
-        // }
-
-
-        // return {
-        //     // Public functions
-        //     init: function() {
-        //         initAddRole();
-        //         handleSelectAll();
-        //     }
-        // };
+        return {
+            init: function() {
+                initAddRole();
+            }
+        };
     }();
-
     // On document ready
-
-   
+    KTUtil.onDOMContentLoaded(function() {
+        KTProductCategory.init();
+    });
 
    
 </script>

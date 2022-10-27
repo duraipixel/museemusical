@@ -7,18 +7,6 @@
 </div>
 @endsection
 @section('content')
-    <style>
-        .paginate_button {
-            padding: 5px 14px;
-        }
-
-        a.paginate_button.current {
-            background: #009EF7;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
-
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
@@ -56,11 +44,8 @@
                             </span>
                             Add Product Categories
                         </button>
-
                     </div>
-
                 </div>
-
             </div>
             <!--end::Card header-->
             <!--begin::Card body-->
@@ -69,28 +54,25 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product_category-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                                <th> Category Image  </th>
+                                <th> Category  </th>
                                 <th> Parent Category  </th>
-                                <th> Discription </th>
-                                <th> Is Featured </th>
+                                <th> Tagline </th>
+                                <th> Is Taxed </th>
                                 <th> Created By </th>
                                 <th> Created Date </th>
                                 <th> Status </th>
-                                <th style="width: 75px;">Action</th>
+                                <th style="width: 75px;"> Action </th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-            <!--end::Card body-->
         </div>
-        <!--end::Card-->
     </div>
 @endsection
 @section('add_on_script')
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
-
     <script>
         var dtTable = $('#product_category-table').DataTable({
 
@@ -103,24 +85,22 @@
                     d.status = $('select[name=filter_status]').val();
                 }
             },
-
             columns: [
                 {
-                    data: 'image',
-                    name: 'image',
-                  
-                },
-                {
                     data: 'name',
-                    name: 'name'
+                    name: 'category',
                 },
                 {
-                    data: 'description',
-                    name: 'description'
+                    data: 'parent_name',
+                    name: 'parent_name'
                 },
                 {
-                    data: 'featured',
-                    name: 'featured'
+                    data: 'tag_line',
+                    name: 'tag_line'
+                },
+                {
+                    data: 'tax_id',
+                    name: 'tax'
                 },
                 {
                     data: 'users_name',
