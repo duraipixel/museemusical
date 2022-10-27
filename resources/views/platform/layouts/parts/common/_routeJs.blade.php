@@ -131,6 +131,15 @@
                    'pdf': "{{ route('walkthroughs.export.pdf') }}",
                }
           },
+          'product-category': {
+               'delete': "{{ route('product-category.delete') }}",
+               'status': "{{ route('product-category.status') }}",
+               'add': "{{ route('product-category.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('product-category.export.excel') }}",
+                   'pdf': "{{ route('product-category.export.pdf') }}",
+               }
+          },
        
                 
        }

@@ -38,7 +38,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link" href="{{ route('product-category') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -280,7 +280,7 @@
                 </a>
             </div>
             <div class="menu-item">
-                <a class="menu-link" href="{{ route('walk_throughs') }}">
+                <a class="menu-link" href="{{ route('walkthroughs') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

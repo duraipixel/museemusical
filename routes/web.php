@@ -29,7 +29,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/sub_category', [App\Http\Controllers\Category\SubCategoryController::class, 'index'])->name('sub_category');
     Route::get('/testimonials', [App\Http\Controllers\TestimonialsController::class, 'index'])->name('testimonials');
     Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('product');
-    Route::get('/walk_throughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walk_throughs');
+    Route::get('/walkthroughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walkthroughs');
+    Route::get('/product-category', [App\Http\Controllers\Product\ProductCategoryController::class, 'index'])->name('product-category');
     
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -142,6 +143,16 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/export/excel', [App\Http\Controllers\WalkThroughController::class, 'export'])->name('walkthroughs.export.excel');
         Route::get('/export/pdf', [App\Http\Controllers\WalkThroughController::class, 'exportPdf'])->name('walkthroughs.export.pdf');
     });
+
+    Route::prefix('product-category')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Product\ProductCategoryController::class, 'modalAddEdit'])->name('product-category.add.edit');
+        Route::post('/status', [App\Http\Controllers\Product\ProductCategoryController::class, 'changeStatus'])->name('product-category.status');
+        Route::post('/delete', [App\Http\Controllers\Product\ProductCategoryController::class, 'delete'])->name('product-category.delete');
+        Route::post('/save', [App\Http\Controllers\Product\ProductCategoryController::class, 'saveForm'])->name('product-category.save');
+        Route::get('/export/excel', [App\Http\Controllers\Product\ProductCategoryController::class, 'export'])->name('product-category.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Product\ProductCategoryController::class, 'exportPdf'])->name('product-category.export.pdf');
+    });
+
 });
 
 
