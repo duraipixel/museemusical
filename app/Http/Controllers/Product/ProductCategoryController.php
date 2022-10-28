@@ -25,7 +25,7 @@ class ProductCategoryController extends Controller
         if ($request->ajax()) {
             $data               = ProductCategory::select('product_categories.*','users.name as users_name', DB::raw('IF(mm_product_categories.parent_id = 0, "Parent", mm_parent_category.name ) as parent_name '))
                                                     ->join('users', 'users.id', '=', 'product_categories.added_by')
-                                                    ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.id');
+                                                    ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.parent_id');
             $status             = $request->get('status');
             $keywords           = $request->get('search')['value'];
             $datatables         =  Datatables::of($data)
@@ -73,12 +73,13 @@ class ProductCategoryController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Product Category';
+        $productCategory    = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
         if (isset($id) && !empty($id)) {
             $info           = ProductCategory::find($id);
             $modal_title    = 'Update Product Category';
         }
         // dd( $info->meta);
-        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from'));
+        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from', 'productCategory'));
     }
     public function saveForm(Request $request,$id = null)
     {
@@ -88,7 +89,7 @@ class ProductCategoryController extends Controller
                             'category_name' => 'required|string|unique:product_categories,name,' . $id . ',id,deleted_at,NULL',
                             'avatar' => 'mimes:jpeg,png,jpg',
                         ]);
-
+        $categoryId = '';
         if ($validator->passes()) {
             
             if ($request->image_remove_logo == "yes") {
@@ -150,7 +151,7 @@ class ProductCategoryController extends Controller
             $error      = 1;
             $message    = $validator->errors()->all();
         }
-        return response()->json(['error' => $error, 'message' => $message]);
+        return response()->json(['error' => $error, 'message' => $message, 'categoryId' => $categoryId]);
     }
     public function delete(Request $request)
     {

@@ -42,7 +42,7 @@
                                     data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                                     data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                                     <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-                                    <input type="hidden" name="from" value="{{ $info->from ?? '' }}">
+                                    <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
         
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="kt_ecommerce_add_category_general" role="tab-panel">
@@ -185,6 +185,7 @@
                     validator.validate().then(function(status) {
                         
                         if (status == 'Valid') {
+                            var from = $('#from').val();
                             var form = $('#add_product_category_form')[0]; 
                             var formData = new FormData(form);
                             submitButton.setAttribute('data-kt-indicator', 'on');
@@ -214,6 +215,10 @@
                                             }
                                         });
                                     } else {
+                                        if( from != '' ) {
+                                            getProductCategoryDropdown(res.categoryId);
+                                            return false;
+                                        }
                                         dtTable.ajax.reload();
                                         Swal.fire({
                                             text: res.message,

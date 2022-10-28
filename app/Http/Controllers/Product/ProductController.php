@@ -32,10 +32,11 @@ class ProductController extends Controller
         $title                  = "Add Product";
         $breadCrum              = array('Products', 'Add Product');
         $productCategory        = ProductCategory::where('status', 'published')->get();
+
         $productLabels          = MainCategory::where(['slug' => 'product-labels', 'status' => 'published'])->first();
         $productTags            = MainCategory::where(['slug' => 'product-tags', 'status' => 'published'])->first();
         $brands                 = Brands::where('status', 'published')->get();
-        // dd( $productCategory );
+        
         return view('platform.product.form.add_edit_form', compact('title', 'breadCrum', 'productCategory', 'productLabels', 'productTags', 'brands' ));
     }
     public function saveForm(Request $request,$id = null)
@@ -44,7 +45,6 @@ class ProductController extends Controller
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
                                 'avatar' => 'mimes:jpeg,png,jpg',
-                                
                             ]);
 
         if ($validator->passes()) {

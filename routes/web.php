@@ -153,6 +153,9 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductCategoryController::class, 'exportPdf'])->name('product-category.export.pdf');
     });
 
+    Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');
+
+
 });
 
 

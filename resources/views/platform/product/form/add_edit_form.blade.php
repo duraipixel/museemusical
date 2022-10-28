@@ -129,6 +129,7 @@
 {{-- <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script> --}}
 
 <script>
+    
     $(document).ready(function(){
         $(".turn-off-schedule").hide();
         // $(".from_to_date").hide();

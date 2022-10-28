@@ -29,4 +29,9 @@ class ProductCategory extends Model
     {
         return $this->belongsTo(CategoryMetaTags::class, 'category_id', 'id');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(ProductCategory::class, 'parent_id', 'id');
+    }
 }
