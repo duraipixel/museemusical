@@ -34,6 +34,7 @@ class ProductController extends Controller
         $productCategory        = ProductCategory::where('status', 'published')->get();
 
         $productLabels          = MainCategory::where(['slug' => 'product-labels', 'status' => 'published'])->first();
+        
         $productTags            = MainCategory::where(['slug' => 'product-tags', 'status' => 'published'])->first();
         $brands                 = Brands::where('status', 'published')->get();
         

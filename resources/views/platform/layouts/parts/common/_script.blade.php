@@ -15,7 +15,7 @@
         exportModal.hide();
     })
 
-    function openForm(module_type, id = '', from = '') {
+    function openForm(module_type, id = '', from = '', dynamicModel = '') {
         
         $.ajaxSetup({
             headers: {
@@ -26,7 +26,7 @@
         $.ajax({
             url: config.routes[module_type].add,
             type: 'POST',
-            data: {id:id, from:from},
+            data: {id:id, from:from, dynamicModel:dynamicModel},
             success: function(res) {
                 $( '#form-common-content' ).html(res);
                 const drawerEl = document.querySelector("#kt_common_add_form");
@@ -144,6 +144,53 @@
             data: {id:id},
             success: function(res) {
                 $( '#product-category' ).html(res);
+                const drawerEl = document.querySelector("#kt_common_add_form");
+                const commonDrawer = KTDrawer.getInstance(drawerEl);
+                commonDrawer.hide();
+                return false;
+            }
+            
+        });
+
+    }
+
+    function getProductBrandDropdown(id = '' ) {
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: '{{ route("common.brand.dropdown") }}',
+            type: 'POST',
+            data: {id:id},
+            success: function(res) {
+                $( '#product-brand' ).html(res);
+                const drawerEl = document.querySelector("#kt_common_add_form");
+                const commonDrawer = KTDrawer.getInstance(drawerEl);
+                commonDrawer.hide();
+                return false;
+            }
+            
+        });
+
+    }
+
+    function getProductDynamicDropdown(id = '', tag = '' ) {
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: '{{ route("common.dynamic.dropdown") }}',
+            type: 'POST',
+            data: {id:id, tag:tag},
+            success: function(res) {
+                $( '#'+tag ).html(res);
                 const drawerEl = document.querySelector("#kt_common_add_form");
                 const commonDrawer = KTDrawer.getInstance(drawerEl);
                 commonDrawer.hide();

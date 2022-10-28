@@ -87,25 +87,54 @@ class SubCategoryController extends Controller
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
+        $from               = $request->from;
+        $dynamicModel       = $request->dynamicModel;
         $info               = '';
+        $sub_title          = '';
         $modal_title        = 'Add Sub Category';
-        $category           = MainCategory::where('status',1)->get();
+        if( isset( $dynamicModel )&& !empty( $dynamicModel )) {
+            $sub_title      = ucwords( str_replace('-', ' ', $dynamicModel));
+            $category       = MainCategory::where('status', 'published')->where('slug', $dynamicModel)->first();
+            if( isset( $category ) && !empty( $category)) {
+
+            } else {
+                //insert new entry in maincategory
+                $ins['category_name']   = $sub_title;
+                $ins['slug']            = $dynamicModel;
+                $ins['order_by']        = 0;
+                $ins['added_by']        = Auth::id();
+                $ins['status']          = 'published';
+                $category               = MainCategory::create($ins);
+            }
+            $modal_title        = 'Add '.$sub_title;
+            
+        } else {
+            $category       = MainCategory::where('status', 'published')->get();
+        }
         if (isset($id) && !empty($id)) {
             $info           = SubCategory::find($id);
             $modal_title    = 'Update Sub Category';
         }
+        $params = array(
+                    'info' => $info,
+                    'modal_title' => $modal_title,
+                    'category' => $category,
+                    'dynamicModel' => $dynamicModel,
+                    'from' => $from,
+                    'sub_title' => $sub_title,
+                );
         
-        return view('platform.category.sub_category.add_edit_modal', compact('info', 'modal_title','category'));
+        return view('platform.category.sub_category.add_edit_modal', $params);
     }
     public function saveForm(Request $request,$id = null)
     {
-        $id             = $request->id;
-        $validator      = Validator::make($request->all(), [
-                                'name' => 'required|string|unique:sub_categories,name,' . $id . ',id,deleted_at,NULL',
-                                'category_name' => 'required',
-                                'avatar' => 'mimes:jpeg,png,jpg',
-                            ]);
-
+        $id                     = $request->id;
+        $validator              = Validator::make($request->all(), [
+                                        'name' => 'required|string|unique:sub_categories,name,' . $id . ',id,deleted_at,NULL',
+                                        'category_name' => 'required',
+                                        'avatar' => 'mimes:jpeg,png,jpg',
+                                    ]);
+        $sub_id                 = '';                    
         if ($validator->passes()) {
             
             if ($request->file('avatar')) {
@@ -135,26 +164,25 @@ class SubCategoryController extends Controller
             $ins['name']                        = $request->name;
             $ins['slug']                        = \Str::slug($request->name);
             $ins['description']                 = $request->description;
-            $ins['tagline']                   = $request->tagline;
-            $ins['order_by']                    = $request->order_by;
+            $ins['tagline']                     = $request->tagline;
+            $ins['order_by']                    = $request->order_by ?? 0;
             $ins['added_by']                    = Auth::id();
             if($request->status == "1")
             {
-                $ins['status']                  = 1;
-            }
-            else{
-                $ins['status']                  = 2;
+                $ins['status']                  = 'published';
+            } else {
+                $ins['status']                  = 'unpublished';
             }
             $error                              = 0;
-
             $info                               = SubCategory::updateOrCreate(['id' => $id], $ins);
+            $sub_id                             = $info->id;
             $message                            = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
         else {
             $error      = 1;
             $message    = $validator->errors()->all();
         }
-        return response()->json(['error' => $error, 'message' => $message]);
+        return response()->json(['error' => $error, 'message' => $message, 'id' => $sub_id]);
     }
     public function delete(Request $request)
     {

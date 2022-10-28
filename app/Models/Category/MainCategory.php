@@ -23,6 +23,6 @@ class MainCategory extends Model
 
     public function subCategory()
     {
-        return $this->hasMany(SubCategory::class, 'parent_id', 'id');
+        return $this->hasMany(SubCategory::class, 'parent_id', 'id')->where('status', 'published');
     }
 }

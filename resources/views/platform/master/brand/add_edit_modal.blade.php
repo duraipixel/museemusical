@@ -30,135 +30,131 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-
                       
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-
+                        <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
                       
                         <div class="fv-row mb-7">
                             <label class="required fw-bold fs-6 mb-2">Brand Name</label>
                             <input type="text" name="brand_name" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="State Name" value="{{ $info->brand_name ?? '' }}" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="row mb-7">
+                            <div class="col-md-6">
 
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Brand Log</label>
+                                <div class="mb-7">
+                                    <label class="d-block fw-bold fs-6 mb-5">Brand Log</label>
 
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
+                                    <div class="form-text">Allowed file types: png, jpg,
+                                        jpeg.</div>
+                                </div>
+                                <input id="image_remove_logo" type="hidden" name="image_remove_logo" value="no">
+                                <div class="image-input image-input-outline manual-image-logo" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                    @if ($info->brand_logo ?? '')
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-logo"
+                                            id="manual-image-logo"
+                                            style="background-image: url({{ asset('/') . $info->brand_logo }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-logo"
+                                            id="manual-image-logo"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                        </div>
+                                    @endif
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="avatar_logo" id="readUrllogo"
+                                            accept=".png, .jpg, .jpeg" />
+                                        {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
+                                        {{-- <input type="file" name="userImage" id="userImage"> --}}
+                                    </label>
+
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        title="Remove avatar1">
+                                        <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
+                                    </span>
+                                </div>
                             </div>
-                            <input id="image_remove_logo" type="hidden" name="image_remove_logo" value="no">
-                            <div class="image-input image-input-outline manual-image-logo" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->brand_logo ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image-logo"
-                                        id="manual-image-logo"
-                                        style="background-image: url({{ asset('/') . $info->brand_logo }});">
-                                    </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image-logo"
-                                        id="manual-image-logo"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar_logo" id="readUrllogo"
-                                        accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
-                                </label>
+                        
+                            <div class="col-md-6">
 
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
-                                </span>
+                                <div class="mb-7">
+                                    <label class="d-block fw-bold fs-6 mb-5">Brand Banner</label>
+
+                                    <div class="form-text">Allowed file types: png, jpg,
+                                        jpeg.</div>
+                                </div>
+                                <input id="image_remove_banner" type="hidden" name="image_remove_banner" value="no">
+                                <div class="image-input image-input-outline manual-image-banner" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                    @if ($info->brand_banner ?? '')
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
+                                            id="manual-image-banner"
+                                            style="background-image: url({{ asset('/') . $info->brand_banner }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
+                                            id="manual-image-banner"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                        </div>
+                                    @endif
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="avatar_banner" id="readUrlbanner"
+                                            accept=".png, .jpg, .jpeg" />
+                                    </label>
+
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        title="Remove avatar1">
+                                        <i class="bi bi-x fs-2" id="avatar_remove_banner"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <br>
-                        <div class="col-md-4">
-
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Brand Banner</label>
-
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
-                            </div>
-                            <input id="image_remove_banner" type="hidden" name="image_remove_banner" value="no">
-                            <div class="image-input image-input-outline manual-image-banner" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->brand_banner ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image-banner"
-                                        id="manual-image-banner"
-                                        style="background-image: url({{ asset('/') . $info->brand_banner }});">
-                                    </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image-banner"
-                                        id="manual-image-banner"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar_banner" id="readUrlbanner"
-                                        accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_banner" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
-                                </label>
-
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_banner"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <br>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="short_description" id="short_description" cols="30" rows="5">{{ $info->short_description ?? '' }}</textarea>
+                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
                         </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Notes</label>
-                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Notes" name="notes" id="notes" cols="30" rows="5">{{ $info->notes ?? '' }}</textarea>
-
-                        </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2">Notes</label>
+                                <input type="text" name="notes" id="notes" class="form-control form-control-solid mb-3 mb-lg-0" value="{{ $info->notes ?? '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
-                        </div>
-                        
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
                             </div>
                         </div>
-                     
+                        <div class="fv-row">
+                            <label class="fw-bold fs-6 mb-2"> Status </label>
+                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,7 +180,7 @@
     }
 </style>
 <script>
-    //logo image script
+    
      document.getElementById('readUrllogo').addEventListener('change', function() {
         console.log("111");
         if (this.files[0]) {
@@ -314,9 +310,8 @@
                 if (validator) {
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
-
-                            var formData = new FormData(document.getElementById(
-                                "add_brand_form"));
+                            var from = $('#from').val();
+                            var formData = new FormData(document.getElementById("add_brand_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
@@ -348,7 +343,11 @@
                                                 confirmButton: "btn btn-primary"
                                             }
                                         });
-                                    } else {
+                                    } else { 
+                                        if( from != '' ) {
+                                            getProductBrandDropdown(res.brand_id);
+                                            return false;
+                                        }
                                         dtTable.ajax.reload();
                                         Swal.fire({
                                             text: res.message,

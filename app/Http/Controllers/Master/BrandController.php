@@ -88,6 +88,7 @@ class BrandController extends Controller
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
+        $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Brand';
         if (isset($id) && !empty($id)) {
@@ -95,28 +96,28 @@ class BrandController extends Controller
             $modal_title    = 'Update Brand';
         }
         
-        return view('platform.master.brand.add_edit_modal', compact('info', 'modal_title'));
+        return view('platform.master.brand.add_edit_modal', compact('info', 'modal_title', 'from'));
     }
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
+        
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'brand_name' => 'required|string|unique:brands,brand_name,' . $id . ',id,deleted_at,NULL',
                                 'avatar_logo' => 'mimes:jpeg,png,jpg',
                                 'avatar_banner' => 'mimes:jpeg,png,jpg'
                             ]);
-
+        $brand_id = '';
         if ($validator->passes()) {
             
             if ($request->hasFile('avatar_logo')) {
+
                 $filename       = time() . '_' . $request->avatar_logo->getClientOriginalName();
                 $folder_name    = 'brand/' . $request->brand_name . '/brand_logo/';
-                // dd($folder_name);
-                $existID = '';
+                
+                $existID        = '';
                 if($id)
                 {
-                  
                     $existID = Brands::find($id);
                     $deleted_file = $existID->brand_logo;
                     if(File::exists($deleted_file)) {
@@ -126,7 +127,6 @@ class BrandController extends Controller
                
                 $path           = $folder_name . $filename;
                 $request->avatar_logo->move(public_path($folder_name), $filename);
-                // dd($path);
                 $ins['brand_logo']   = $path;
             }
 
@@ -153,30 +153,28 @@ class BrandController extends Controller
             if ($request->image_remove_banner == "yes") {
                 $ins['brand_banner'] = '';
             }
-           
 
-            $ins['brand_name']                        = $request->brand_name;
-            $ins['short_description']                   = $request->short_description;
-            $ins['notes']                         = $request->notes;
-            $ins['order_by']                         = $request->order_by;
-            $ins['added_by']        = Auth::id();
+            $ins['brand_name']          = $request->brand_name;
+            $ins['short_description']   = $request->short_description;
+            $ins['notes']               = $request->notes;
+            $ins['order_by']            = $request->order_by ?? 0;
+            $ins['added_by']            = Auth::id();
             if($request->status == "1")
             {
-                $ins['status']          = 1;
-            }
-            else{
-                $ins['status']          = 2;
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
             }
             $error                  = 0;
-
             $info                   = Brands::updateOrCreate(['id' => $id], $ins);
+            $brand_id               = $info->id;
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
         else {
             $error      = 1;
             $message    = $validator->errors()->all();
         }
-        return response()->json(['error' => $error, 'message' => $message]);
+        return response()->json(['error' => $error, 'message' => $message, 'brand_id' => $brand_id]);
     }
     public function delete(Request $request)
     {

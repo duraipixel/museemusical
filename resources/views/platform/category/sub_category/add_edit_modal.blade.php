@@ -30,18 +30,18 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-
                       
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-
+                        <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
+                        <input type="hidden" name="dynamicModel" id="dynamicModel" value="{{ $dynamicModel ?? '' }}">
+                        @if( isset($sub_title) && !empty( $sub_title))
+                        <input type="hidden" name="category_name" value="{{ $category->id }}">
+                        @else
                         <div class="d-flex flex-column mb-7 fv-row">
-                            <!--begin::Label-->
                             <label class="fs-6 fw-bold mb-2">
                                 <span class="required">Main Category</span>
-                                {{-- <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Country of origination"></i> --}}
                             </label>
-                            <!--end::Label-->
-                            <!--begin::Input-->
+                        
                             <select name="category_name" id="category_name" aria-label="Select a Country" class="form-select form-select-solid fw-bolder">
                                 <option value="">Select a Category...</option>
                                 @foreach($category as $key=>$val)
@@ -51,17 +51,17 @@
                             </select>
                             <!--end::Input-->
                         </div>
-                      
+                        @endif
+                        
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Sub Category Name</label>
+                            <label class="required fw-bold fs-6 mb-2">{{ $sub_title ?? 'Sub Category Name' }}</label>
                             <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="SubCategory Name" value="{{ $info->name ?? '' }}" />
+                                placeholder="{{ $sub_title ?? 'Sub Category Name' }}" value="{{ $info->name ?? '' }}" />
                         </div>
                         <div class="col-md-4">
 
                             <div class="fv-row mb-7">
                                 <label class="d-block fw-bold fs-6 mb-5">Image</label>
-
                                 <div class="form-text">Allowed file types: png, jpg,
                                     jpeg.</div>
                             </div>
@@ -86,8 +86,6 @@
                                     <i class="bi bi-pencil-fill fs-7"></i>
                                     <input type="file" name="avatar" id="readUrl"
                                         accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
                                 </label>
 
                                 <span
@@ -108,24 +106,25 @@
                      
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
                         </div>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Tagline</label>
                             <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
                         </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
-                        </div>
-                        
                      
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2"> Status </label>
+                                <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                    <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( (isset( $info->status) && $info->status == 'published') || !isset( $info->status) ) checked @endif />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                                    placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                             </div>
                         </div>
                      
@@ -270,13 +269,12 @@
                 if (validator) {
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
-
-                            var formData = new FormData(document.getElementById(
-                                "add_sub_category_form"));
+                            var from = $('#from').val();
+                            var dynamicModel = $('#dynamicModel').val();
+                            var formData = new FormData(document.getElementById( "add_sub_category_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
-
                             //call ajax call
                             $.ajax({
                                 url: add_url,
@@ -287,11 +285,9 @@
                                 beforeSend: function() {},
                                 success: function(res) {
 
-
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute(
-                                            'data-kt-indicator');
+                                        submitButton.removeAttribute( 'data-kt-indicator');
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
@@ -305,6 +301,10 @@
                                             }
                                         });
                                     } else {
+                                        if( from != '' ) {
+                                            getProductDynamicDropdown(res.id, dynamicModel);
+                                            return false;
+                                        }
                                         dtTable.ajax.reload();
                                         Swal.fire({
                                             text: res.message,

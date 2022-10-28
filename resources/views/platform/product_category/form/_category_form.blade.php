@@ -14,10 +14,10 @@
                 <select name="parent_category" id="parent_category" aria-label="Select a Language" data-control="select2" data-placeholder="Select a Language..." class="form-select mb-2">
 
                     @isset($productCategory)
-                    @foreach ($productCategory as $item)
-                        <option value="{{ $item->id }}" @if( isset( $info->parent_id ) && $info->parent_id == $item->id ) selected @endif>{{ $item->name }}</option>
-                    @endforeach
-                @endisset
+                        @foreach ($productCategory as $item)
+                            <option value="{{ $item->id }}" @if( isset( $info->parent_id ) && $info->parent_id == $item->id ) selected @endif>{{ $item->name }}</option>
+                        @endforeach
+                    @endisset
                 </select>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="mb-7 mt-10">
             <label class="fw-bold fs-6 mb-2"> Published </label>
             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == 'published') checked @endif />
+                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( (isset( $info->status) && $info->status == 'published') || (!isset($info->status)))  checked @endif />
             </div>
         </div>
     </div>

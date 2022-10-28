@@ -13,45 +13,7 @@
             <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="{{ route('products.save') }}">
 
                 <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
-                    <div class="card card-flush" >
-                        <div class="card-header">
-                            <div class="card-title w-100">
-                                <h2 class="w-100">
-                                    Categories
-                                    <span class="float-end">
-                                        <a href="javascript:void(0)" onclick="return openForm('product-category', '', 'product')" class="btn btn-light-primary btn-sm">
-                                            <span class="svg-icon svg-icon-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
-                                                    <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
-                                                </svg>
-                                            </span>
-                                            <!--end::Svg Icon-->
-                                        </a>
-                                    </span>
-                        
-                                </h2>
-                            </div>
-                        </div>
-                        <div id="product-category">
-                            @include('platform.product.form.parts._category')
-                        </div>
-                    </div>
-                    <div class="card card-flush" id="product-brand">
-                        @include('platform.product.form.parts._brand')
-                    </div>
-                    <div class="card card-flush" id="product-badges">
-                        @include('platform.product.form.parts._labels')
-                    </div>
-                    <div class="card card-flush" id="product-status">
-                        @include('platform.product.form.parts._status')
-                    </div>
-                    {{-- <div class="card card-flush" id="product-thumbnail">
-                        @include('platform.product.form.parts._thumbnail')
-                    </div> --}}
-                    <div class="card card-flush" id="product-brochure">
-                        @include('platform.product.form.parts._brochure')
-                    </div>
+                    @include('platform.product.form.parts._common_side')
                 </div>
              
                 <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">

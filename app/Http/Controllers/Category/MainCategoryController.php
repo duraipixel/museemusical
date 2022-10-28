@@ -124,15 +124,14 @@ class MainCategoryController extends Controller
             $ins['tagline']         = $request->tagline;
             $ins['order_by']        = $request->order_by ?? 0;
             $ins['added_by']        = Auth::id();
+
             if($request->status == "1")
             {
-                $ins['status']      = 1;
-            }
-            else{
-                $ins['status']      = 2;
+                $ins['status']      = 'published';
+            } else {
+                $ins['status']      = 'unpublished';
             }
             $error                  = 0;
-
             $info                   = MainCategory::updateOrCreate(['id' => $id], $ins);
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
