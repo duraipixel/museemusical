@@ -1,5 +1,5 @@
 
-<div class="card-body pt-0">
+<div class="card-body pt-0 fv-row">
     <select name="brand_id" id="brand_id" aria-label="Select a Brand" data-control="select2" data-placeholder="Select a Brand..." class="form-select mb-2 required">
         <option value=""></option>
         @isset($brands)

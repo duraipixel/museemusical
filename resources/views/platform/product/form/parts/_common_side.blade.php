@@ -63,7 +63,7 @@
                 </h2>
             </div>
         </div>
-        <div class="card-body pt-0" id="product-tags">
+        <div class="card-body pt-0 fv-row" id="product-tags">
             @include('platform.product.form.parts._tags')
         </div>
        
@@ -83,7 +83,7 @@
                 </h2>
             </div>
         </div>
-        <div class="card-body pt-0" id="product-labels">
+        <div class="card-body pt-0 fv-row" id="product-labels">
             @include('platform.product.form.parts._labels')
         </div>
     

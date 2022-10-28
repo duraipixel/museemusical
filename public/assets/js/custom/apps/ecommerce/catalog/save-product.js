@@ -65,17 +65,14 @@ var KTAppEcommerceSaveProduct = function () {
             '#kt_ecommerce_add_product_category',
             '#kt_ecommerce_add_product_tags'
         ];
-
         // Loop all elements
         elements.forEach(element => {
             // Get tagify element
             const tagify = document.querySelector(element);
-
             // Break if element not found
             if (!tagify) {
                 return;
             }
-
             // Init tagify --- more info: https://yaireo.github.io/tagify/
             new Tagify(tagify, {
                 whitelist: ["new", "trending", "sale", "discounted", "selling fast", "last 10"],
@@ -88,23 +85,18 @@ var KTAppEcommerceSaveProduct = function () {
             });
         });
     }
-
     // Init form repeater --- more info: https://github.com/DubFriend/jquery.repeater
     const initFormRepeater = () => {
         $('#kt_ecommerce_add_product_options').repeater({
             initEmpty: false,
-
             defaultValues: {
                 'text-input': 'foo'
             },
-
             show: function () {
                 $(this).slideDown();
-
                 // Init select2 on new repeated items
                 initConditionsSelect2();
             },
-
             hide: function (deleteElement) {
                 $(this).slideUp(deleteElement);
             }
@@ -359,34 +351,41 @@ var KTAppEcommerceSaveProduct = function () {
                             }
                         }
                     },
-                    'sku': {
+                    'qty': {
                         validators: {
                             notEmpty: {
-                                message: 'Product barcode is required'
+                                message: 'Quantity is required'
                             }
                         }
                     },
-                    'shelf': {
+                    'base_price': {
                         validators: {
                             notEmpty: {
-                                message: 'Shelf quantity is required'
+                                message: 'Base Price is required'
                             }
                         }
                     },
-                    'price': {
+                    'category_id': {
                         validators: {
                             notEmpty: {
-                                message: 'Product base price is required'
+                                message: 'Category is required'
                             }
                         }
                     },
-                    'tax': {
+                    'brand_id': {
                         validators: {
                             notEmpty: {
-                                message: 'Product tax class is required'
+                                message: 'Brand is required'
                             }
                         }
-                    }
+                    },
+                    'tag_id': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Tag is required'
+                            }
+                        }
+                    },
                 },
                 plugins: {
                     trigger: new FormValidation.plugins.Trigger(),
@@ -402,12 +401,10 @@ var KTAppEcommerceSaveProduct = function () {
         // Handle submit button
         submitButton.addEventListener('click', e => {
             e.preventDefault();
-
             // Validate form before submit
             if (validator) {
                 validator.validate().then(function (status) {
                     console.log('validated!');
-
                     if (status == 'Valid') {
                         submitButton.setAttribute('data-kt-indicator', 'on');
 
@@ -429,7 +426,6 @@ var KTAppEcommerceSaveProduct = function () {
                                 if (result.isConfirmed) {
                                     // Enable submit button after loading
                                     submitButton.disabled = false;
-
                                     // Redirect to customers list page
                                     window.location = form.getAttribute("data-kt-redirect");
                                 }

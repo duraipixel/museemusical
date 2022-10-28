@@ -10,8 +10,8 @@
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <div class="post d-flex flex-column-fluid" id="kt_post">
         <div id="kt_content_container" class="container-xxl">
-            <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="{{ route('products.save') }}">
-
+            <form id="kt_ecommerce_add_product_form" method="POST" class="form d-flex flex-column flex-lg-row" >
+                @csrf
                 <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
                     @include('platform.product.form.parts._common_side')
                 </div>
@@ -36,7 +36,6 @@
                         </li>
                     </ul>
                     <!--end:::Tabs-->
-
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
                             @include('platform.product.form.general.general')
@@ -61,7 +60,7 @@
                     <!--end::Tab content-->
                     <div class="d-flex justify-content-end">
                         <!--begin::Button-->
-                        <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancel</a>
+                        <a href="javascript:void(0);" id="kt_ecommerce_add_product_cancel"  class="btn btn-light me-5">Cancel</a>
                         <!--end::Button-->
                         <!--begin::Button-->
                         <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
@@ -83,32 +82,209 @@
     
 @endsection
 @section('add_on_script')
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src= '../../../../../../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-5FS8GGP');</script>
 <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
-<script src="{{ asset('assets/js/custom/apps/ecommerce/catalog/save-product.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/custom/apps/ecommerce/catalog/save-product.js') }}"></script> --}}
 {{-- <script src="{{ asset('assets/js/custom/apps/calendar/calendar.js') }}"></script> --}}
-<script src="{{ asset('assets/js/custom/apps/calendar/calendar.js') }}"></script>
-{{-- <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script> --}}
 
 <script>
-    
-    $(document).ready(function(){
-        $(".turn-off-schedule").hide();
-        // $(".from_to_date").hide();
+    var add_url = "{{ route('products.save') }}";
+    var KTProductSave = function() {
+        // Shared variables
+        const form = document.querySelector('#kt_ecommerce_add_product_form');
+        // Init add schedule modal
+        var initAddRole = () => {
+            // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
+            var validator = FormValidation.formValidation(
+                form, {
+                    fields: {
+                        'product_name': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Product Name is required'
+                                }
+                            }
+                        },
+                        'category_id': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Category is required'
+                                }
+                            }
+                        },
+                        'brand_id': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Brand is required'
+                                }
+                            }
+                        },
+                        'label_id': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Product Label is required'
+                                }
+                            }
+                        },
+                        'tag_id': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Product Tag is required'
+                                }
+                            }
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        submitButton: new FormValidation.plugins.SubmitButton(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: '.fv-row',
+                            eleInvalidClass: '',
+                            eleValidClass: ''
+                        }),
+                        icon: new FormValidation.plugins.Icon({
+                            valid: 'fa fa-check',
+                            invalid: 'fa fa-times',
+                            validating: 'fa fa-refresh',
+                        }),
+                    }
+                }
+            );
+            // Cancel button handler
+            const cancelButton = element.querySelector('#discard');
+            cancelButton.addEventListener('click', e => {
+                e.preventDefault();
+                Swal.fire({
+                    text: "Are you sure you would like to cancel?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes, cancel it!",
+                    cancelButtonText: "No, return",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                        cancelButton: "btn btn-active-light"
+                    }
+                }).then(function(result) {
+                    if (result.value) {
+                        commonDrawer.hide(); // Hide modal				
+                    }
+                });
+            });
 
-    });
-     $('.turn-on-schedule').on('click', event => {
-        $(".turn-on-schedule").hide();
-        $(".turn-off-schedule").show();
-        $(".from_to_date").show();
+            // Submit button handler
+            const submitButton = element.querySelector('#kt_ecommerce_add_product_submit');
+            // submitButton.addEventListener('click', function(e) {
+            submitButton.addEventListener('click', function (e) {
+                // Prevent default button action
+                e.preventDefault();
+                // Validate form before submit
+                if (validator) {
+                    validator.validate().then(function(status) {
+                        
+                        if (status == 'Valid') {
+                            var from = $('#from').val();
+                            var form = $('#kt_ecommerce_add_product_form')[0]; 
+                            var formData = new FormData(form);
+                            submitButton.setAttribute('data-kt-indicator', 'on');
+                            submitButton.disabled = true;
+                            //call ajax call
+                            $.ajax({
+                                url: add_url,
+                                type: "POST",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                beforeSend: function() {},
+                                success: function(res) {
+                                    if (res.error == 1) {
+                                        // Remove loading indication
+                                        submitButton.removeAttribute('data-kt-indicator');
+                                        // Enable button
+                                        submitButton.disabled = false;
+                                        let error_msg = res.message
+                                        Swal.fire({
+                                            text: res.message,
+                                            icon: "error",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn btn-primary"
+                                            }
+                                        });
+                                    } else {
+                                        if( from != '' ) {
+                                            getProductCategoryDropdown(res.categoryId);
+                                            return false;
+                                        }
+                                        dtTable.ajax.reload();
+                                        Swal.fire({
+                                            text: res.message,
+                                            icon: "success",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "Ok, got it!",
+                                            customClass: {
+                                                confirmButton: "btn btn-primary"
+                                            }
+                                        }).then(function(result) {
+                                            if (result
+                                                .isConfirmed) {
+                                                commonDrawer
+                                                    .hide();
 
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+                        } else {
+                            // Show popup warning. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+                            Swal.fire({
+                                text: "Sorry, looks like there are some errors detected, please try again.",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        const initBrochureDropzone = () => {
+            var myDropzone = new Dropzone("#kt_ecommerce_add_product_brochure", {
+                url: "{{ route('products.upload.brochure') }}", // Set the url for your upload script location
+                paramName: "file", // The name that will be used to transfer the file
+                maxFiles: 10,
+                maxFilesize: 10, // MB
+                addRemoveLinks: true,
+                accept: function (file, done) {
+                    if (file.name == "wow.jpg") {
+                        done("Naha, you don't.");
+                    } else {
+                        done();
+                    }
+                }
+            });
+        }
+
+        return {
+            init: function() {
+                initAddRole();
+                initBrochureDropzone();
+            }
+        };
+    }();
+    // On document ready
+    KTUtil.onDOMContentLoaded(function() {
+        KTProductSave.init();
     });
 
-    $('.turn-off-schedule').on('click', event => {
-        $(".turn-on-schedule").show();
-        $(".turn-off-schedule").hide();
-        $(".from_to_date").hide();
-    });
+
+
 
        
 </script>
