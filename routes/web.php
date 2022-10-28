@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/product', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('product');
     Route::get('/walkthroughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walkthroughs');
     Route::get('/product-category', [App\Http\Controllers\Product\ProductCategoryController::class, 'index'])->name('product-category');
+    Route::get('/tax', [App\Http\Controllers\Settings\TaxController::class, 'index'])->name('tax');
     
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -152,7 +153,15 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/export/excel', [App\Http\Controllers\Product\ProductCategoryController::class, 'export'])->name('product-category.export.excel');
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductCategoryController::class, 'exportPdf'])->name('product-category.export.pdf');
     });
-
+    Route::prefix('tax')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Settings\TaxController::class, 'modalAddEdit'])->name('tax.add.edit');
+        Route::post('/status', [App\Http\Controllers\Settings\TaxController::class, 'changeStatus'])->name('tax.status');
+        Route::post('/delete', [App\Http\Controllers\Settings\TaxController::class, 'delete'])->name('tax.delete');
+        Route::post('/save', [App\Http\Controllers\Settings\TaxController::class, 'saveForm'])->name('tax.save');
+        Route::get('/export/excel', [App\Http\Controllers\Settings\TaxController::class, 'export'])->name('tax.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Settings\TaxController::class, 'exportPdf'])->name('tax.export.pdf');
+    });
+    
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');
 
 
