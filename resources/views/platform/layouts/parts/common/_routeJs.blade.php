@@ -140,7 +140,15 @@
                    'pdf': "{{ route('product-category.export.pdf') }}",
                }
           },
-       
+          'tax': {
+               'delete': "{{ route('tax.delete') }}",
+               'status': "{{ route('tax.status') }}",
+               'add': "{{ route('tax.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('tax.export.excel') }}",
+                   'pdf': "{{ route('tax.export.pdf') }}",
+               }
+          },
                 
        }
    };
