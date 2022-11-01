@@ -20,7 +20,6 @@ class GlobalSettingController extends Controller
 
     public function saveForm(Request $request)
     {
-        // dd($request->all());
         
         $validator = Validator::make($request->all(), [
             'site_name' => 'required|string|max:255',
@@ -37,7 +36,7 @@ class GlobalSettingController extends Controller
             $ins['site_email'] = $request->site_email;
             $ins['copyrights'] = $request->copyrights;
 
-            if ($request->file('favicon')) {
+            if ($request->hasFile('favicon')) {
                 $filename       = time() . '_' . $request->favicon->getClientOriginalName();
                 $folder_name    = 'assets/global_setting/favicon/';
 
@@ -47,10 +46,12 @@ class GlobalSettingController extends Controller
                 $existID = '';
                 if($id)
                 {
-                    $existID = GlobalSettings::find($id);
-                    $deleted_file = $existID->favicon;
-                    if(File::exists($deleted_file)) {
-                        File::delete($deleted_file);
+                    $existID        = GlobalSettings::find($id);
+                    $deleted_file   = $existID->favicon ?? '';
+                    if( $deleted_file ) {
+                        if( File::exists( $deleted_file ) ) {
+                            File::delete( $deleted_file );
+                        }
                     }
                 }
                 if (!file_exists($folder_name)) {
@@ -71,17 +72,20 @@ class GlobalSettingController extends Controller
                 $ins['favicon'] = '';
             }
 
-            if ($request->file('logo')) {
+            if ($request->hasFile('logo')) {
                 $filename       = time() . '_' . $request->logo->getClientOriginalName();
                 $folder_name    = 'assets/global_setting/logo/';
                 $existID = '';
                 if($id)
                 {
                     $existID = GlobalSettings::find($id);
-                    $deleted_file = $existID->logo;
-                    if(File::exists($deleted_file)) {
-                        File::delete($deleted_file);
+                    $deleted_file = $existID->logo ?? '';
+                    if( $deleted_file ) {
+                        if(File::exists($deleted_file)) {
+                            File::delete($deleted_file);
+                        }
                     }
+                    
                 }
                 if (!file_exists($folder_name)) {
                     mkdir($folder_name, 666, true);

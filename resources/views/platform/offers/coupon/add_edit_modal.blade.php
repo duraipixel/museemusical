@@ -36,7 +36,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Coupon Name</label>
                                     <input type="text" name="coupon_name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                        placeholder="Tax Name" value="{{ $info->coupon_name ?? '' }}" />
+                                        placeholder="Coupon Name" value="{{ $info->coupon_name ?? '' }}" />
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -64,7 +64,7 @@
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Coupon Value</label>
-                                    <input type="text" name="calculate_value" class="form-control form-control-solid mb-3 mb-lg-0 number"
+                                    <input type="text" name="calculate_value" class="form-control form-control-solid mb-3 mb-lg-0 decimal"
                                         placeholder="Coupon Value" value="{{ $info->calculate_value ?? '' }}" />
                                 </div>
                             </div>
@@ -111,14 +111,14 @@
                            
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Minimum Order Value</label>
+                                    <label class="required fw-bold fs-6 mb-2">Minimum Order Value</label>
                                     <input type="text" name="minimum_order_value" class="form-control form-control-solid mb-3 mb-lg-0 decimal"
                                         placeholder="Minimum Order Value" value="{{ $info->minimum_order_value ?? '' }}" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Quantity</label>
+                                    <label class="required fw-bold fs-6 mb-2">Quantity</label>
                                     <input type="text" name="quantity" class="form-control form-control-solid mb-3 mb-lg-0 number"
                                         placeholder="Quantity" value="{{ $info->quantity ?? '' }}" />
                                 </div>
@@ -129,13 +129,13 @@
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                                    <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                                    <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 number"
                                         placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Repeated Coupon</label>
+                                    <label class="required fw-bold fs-6 mb-2">Repeated Coupon</label>
                                     <input type="text" name="repeated_coupon" class="form-control form-control-solid mb-3 mb-lg-0 number"
                                         placeholder="Repeated Coupon" value="{{ $info->repeated_coupon ?? '' }}" />
                                 </div>
@@ -179,7 +179,7 @@
     }
 </style>
 <script>
-     $(".number").on("input", function(evt) {
+        $(".number").on("input", function(evt) {
             var self = $(this);
             self.val(self.val().replace(/\D/g, ""));
             if ((evt.which < 48 || evt.which > 57)) 
@@ -187,13 +187,17 @@
                 evt.preventDefault();
             }
         });
-        $('.decimal').keyup(function () { 
-    this.value = this.value.replace(/[^0-9\.]/g,'');
-});
-        // $(document).ready(function(){
-        //     $('couponData').hide();
-        // });
-      function couponGendrate()
+
+        $(".decimal").on("input", function(evt) {
+            var self = $(this);
+            self.val(self.val().replace(/[^0-9\.]/g,''));
+            if ((evt.which < 48 || evt.which > 57)) 
+            {
+                evt.preventDefault();
+            }
+        });
+
+        function couponGendrate()
         {
             $.ajax({
                 type: "GET",
@@ -299,6 +303,27 @@
                             validators: {
                                 notEmpty: {
                                     message: 'Select Item is required'
+                                }
+                            }
+                        },
+                        'minimum_order_value': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Minimum Order Value is required'
+                                }
+                            }
+                        },
+                        'quantity': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Quantity is required'
+                                }
+                            }
+                        },
+                        'repeated_coupon': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Repeated Coupon is required'
                                 }
                             }
                         },

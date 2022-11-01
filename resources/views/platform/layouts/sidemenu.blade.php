@@ -127,14 +127,7 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
-                    <div class="menu-item">
-                        <a class="menu-link" href="#">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Offers</span>
-                        </a>
-                    </div>
+                   
                     <div class="menu-item">
                         <a class="menu-link" href="{{ route('coupon') }}">
                             <span class="menu-bullet">
