@@ -21,7 +21,7 @@ class CreateCouponsTable extends Migration
             $table->date( 'start_date' );
             $table->date( 'end_date' )->nullable();
             $table->integer( 'quantity' );
-            $table->integer( 'used_quantity' );
+            $table->integer( 'used_quantity' )->nullable();
             $table->enum( 'calculate_type', ['percentage', 'fixed_amount'] );
             $table->decimal( 'calculate_value' );
             $table->decimal( 'minimum_order_value' )->nullable();
