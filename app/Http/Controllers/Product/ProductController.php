@@ -46,4 +46,10 @@ class ProductController extends Controller
         dd( $request->all() );
     }
 
+    public function uploadBrochure(Request $request)
+    {
+        // dd( $request->all() );
+        echo true;
+    }
+
 }

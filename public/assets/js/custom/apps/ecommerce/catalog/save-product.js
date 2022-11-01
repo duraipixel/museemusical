@@ -117,8 +117,6 @@ var KTAppEcommerceSaveProduct = function () {
             }
         });
     }
-
-
     // Init noUIslider
     const initSlider = () => {
         var slider = document.querySelector("#kt_ecommerce_add_product_discount_slider");
@@ -144,7 +142,7 @@ var KTAppEcommerceSaveProduct = function () {
     // Init DropzoneJS --- more info:
     const initDropzone = () => {
         var myDropzone = new Dropzone("#kt_ecommerce_add_product_media", {
-            url: "https://keenthemes.com/scripts/void.php", // Set the url for your upload script location
+            url: gallery_upload_url, // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
             maxFiles: 10,
             maxFilesize: 10, // MB
@@ -156,13 +154,15 @@ var KTAppEcommerceSaveProduct = function () {
                     done();
                 }
             }
+           
         });
     }
+   
     const initBrochureDropzone = () => {
         var myDropzone = new Dropzone("#kt_ecommerce_add_product_brochure", {
-            url: "https://keenthemes.com/scripts/void.php", // Set the url for your upload script location
+            url: brochure_upload_url, // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
-            maxFiles: 10,
+            maxFiles: 1,
             maxFilesize: 10, // MB
             addRemoveLinks: true,
             accept: function (file, done) {
@@ -171,6 +171,34 @@ var KTAppEcommerceSaveProduct = function () {
                 } else {
                     done();
                 }
+            },
+            sending: function(file, xhr, formData) {
+                formData.append("_token", $("meta[name='csrf-token']").attr("content"));
+            },
+            success: function(file, serverFileName) {
+                // let fileList[file.name] = {"fid" : serverFileName };
+                console.log( serverFileName );
+                console.log( file );
+               
+            },
+            removedfile: function(file) {
+                Swal.fire({
+                    text: "Are you sure you would like to remove?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes, remove it!",
+                    cancelButtonText: "No, return",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                        cancelButton: "btn btn-active-light"
+                    }
+                }).then(function(result) {
+                    if (result.value) {
+                        file.previewElement.remove();
+                    }
+                });
+                
             }
         });
     }
@@ -327,11 +355,9 @@ var KTAppEcommerceSaveProduct = function () {
     const handleSubmit = () => {
         // Define variables
         let validator;
-
         // Get elements
         const form = document.getElementById('kt_ecommerce_add_product_form');
         const submitButton = document.getElementById('kt_ecommerce_add_product_submit');
-
         // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
         validator = FormValidation.formValidation(
             form,
@@ -340,28 +366,7 @@ var KTAppEcommerceSaveProduct = function () {
                     'product_name': {
                         validators: {
                             notEmpty: {
-                                message: 'Product name is required'
-                            }
-                        }
-                    },
-                    'sku': {
-                        validators: {
-                            notEmpty: {
-                                message: 'SKU is required'
-                            }
-                        }
-                    },
-                    'qty': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Quantity is required'
-                            }
-                        }
-                    },
-                    'base_price': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Base Price is required'
+                                message: 'Product Name is required'
                             }
                         }
                     },
@@ -379,21 +384,34 @@ var KTAppEcommerceSaveProduct = function () {
                             }
                         }
                     },
+                    'label_id': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Product Label is required'
+                            }
+                        }
+                    },
                     'tag_id': {
                         validators: {
                             notEmpty: {
-                                message: 'Tag is required'
+                                message: 'Product Tag is required'
                             }
                         }
                     },
                 },
                 plugins: {
                     trigger: new FormValidation.plugins.Trigger(),
+                    submitButton: new FormValidation.plugins.SubmitButton(),
                     bootstrap: new FormValidation.plugins.Bootstrap5({
                         rowSelector: '.fv-row',
                         eleInvalidClass: '',
                         eleValidClass: ''
-                    })
+                    }),
+                    icon: new FormValidation.plugins.Icon({
+                        valid: 'fa fa-check',
+                        invalid: 'fa fa-times',
+                        validating: 'fa fa-refresh',
+                    }),
                 }
             }
         );

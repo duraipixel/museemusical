@@ -5,7 +5,6 @@
 </div>
 <div class="card-body pt-0">
     <div class="card card-flush">
-       
         <div class="card-body pt-0">
             <div class="fv-row">
                 <div class="dropzone" id="kt_ecommerce_add_product_brochure">
