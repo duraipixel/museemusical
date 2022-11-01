@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTaxesTable extends Migration
+class AddCouponsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddTaxesTable extends Migration
      */
     public function up()
     {
-        Schema::table('taxes', function (Blueprint $table) {
+        Schema::table('coupons', function (Blueprint $table) {
+            $table->integer('order_by')->after('repeated_use_count');
             $table->enum( 'status', ['published', 'unpublished'])->after('order_by')->default('published');
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +27,8 @@ class AddTaxesTable extends Migration
      */
     public function down()
     {
-        Schema::table('taxes', function (Blueprint $table) {
-        
+        Schema::table('coupons', function (Blueprint $table) {
+            //
         });
     }
 }

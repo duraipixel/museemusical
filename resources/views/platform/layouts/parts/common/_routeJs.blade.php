@@ -149,6 +149,15 @@
                    'pdf': "{{ route('tax.export.pdf') }}",
                }
           },
+          'coupon': {
+               'delete': "{{ route('coupon.delete') }}",
+               'status': "{{ route('coupon.status') }}",
+               'add': "{{ route('coupon.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('coupon.export.excel') }}",
+                   'pdf': "{{ route('coupon.export.pdf') }}",
+               }
+          },
                 
        }
    };

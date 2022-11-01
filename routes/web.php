@@ -32,6 +32,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/walkthroughs', [App\Http\Controllers\WalkThroughController::class, 'index'])->name('walkthroughs');
     Route::get('/product-category', [App\Http\Controllers\Product\ProductCategoryController::class, 'index'])->name('product-category');
     Route::get('/tax', [App\Http\Controllers\Settings\TaxController::class, 'index'])->name('tax');
+    Route::get('/coupon', [App\Http\Controllers\Offers\CouponController::class, 'index'])->name('coupon');
     
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -162,11 +163,21 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/export/excel', [App\Http\Controllers\Settings\TaxController::class, 'export'])->name('tax.export.excel');
         Route::get('/export/pdf', [App\Http\Controllers\Settings\TaxController::class, 'exportPdf'])->name('tax.export.pdf');
     });
+
+    Route::prefix('coupon')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Offers\CouponController::class, 'modalAddEdit'])->name('coupon.add.edit');
+        Route::post('/status', [App\Http\Controllers\Offers\CouponController::class, 'changeStatus'])->name('coupon.status');
+        Route::post('/delete', [App\Http\Controllers\Offers\CouponController::class, 'delete'])->name('coupon.delete');
+        Route::post('/save', [App\Http\Controllers\Offers\CouponController::class, 'saveForm'])->name('coupon.save');
+        Route::get('/export/excel', [App\Http\Controllers\Offers\CouponController::class, 'export'])->name('coupon.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Offers\CouponController::class, 'exportPdf'])->name('coupon.export.pdf');
+        Route::get('/coupon-gendrate', [App\Http\Controllers\Offers\CouponController::class, 'couponGendrate'])->name('coupon.coupon-gendrate');
+        Route::post('/coupon-apply', [App\Http\Controllers\Offers\CouponController::class, 'couponType'])->name('coupon.coupon-apply'); 
+    });
     
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');
     Route::post('/getProduct/brand/list', [App\Http\Controllers\CommonController::class, 'getProductBrandList'])->name('common.brand.dropdown');
     Route::post('/getProduct/dynamic/list', [App\Http\Controllers\CommonController::class, 'getProductDynamicList'])->name('common.dynamic.dropdown');
-
 
 });
 
