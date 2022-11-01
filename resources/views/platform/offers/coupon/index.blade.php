@@ -24,7 +24,7 @@
             <div class="card-toolbar w-100">
                 <div class="d-flex justify-content-end w-100" data-kt-coupon-table-toolbar="base">
 
-                   @include('platform.offers.coupon._filter')
+                   {{-- @include('platform.offers.coupon._filter') --}}
 
                     <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('coupon')">
                         <span class="svg-icon svg-icon-2">
