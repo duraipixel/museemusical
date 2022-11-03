@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/product-category', [App\Http\Controllers\Product\ProductCategoryController::class, 'index'])->name('product-category');
     Route::get('/tax', [App\Http\Controllers\Settings\TaxController::class, 'index'])->name('tax');
     Route::get('/coupon', [App\Http\Controllers\Offers\CouponController::class, 'index'])->name('coupon');
+    Route::get('/email-template', [App\Http\Controllers\Master\EmailTemplateController::class, 'index'])->name('email-template');
     
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -173,6 +174,12 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/export/pdf', [App\Http\Controllers\Offers\CouponController::class, 'exportPdf'])->name('coupon.export.pdf');
         Route::get('/coupon-gendrate', [App\Http\Controllers\Offers\CouponController::class, 'couponGendrate'])->name('coupon.coupon-gendrate');
         Route::post('/coupon-apply', [App\Http\Controllers\Offers\CouponController::class, 'couponType'])->name('coupon.coupon-apply'); 
+    });
+    Route::prefix('email-template')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Master\EmailTemplateController::class, 'modalAddEdit'])->name('email-template.add.edit');
+        Route::post('/status', [App\Http\Controllers\Master\EmailTemplateController::class, 'changeStatus'])->name('email-template.status');
+        Route::post('/delete', [App\Http\Controllers\Master\EmailTemplateController::class, 'delete'])->name('email-template.delete');
+        Route::post('/save', [App\Http\Controllers\Master\EmailTemplateController::class, 'saveForm'])->name('email-template.save');
     });
     
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');

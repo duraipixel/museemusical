@@ -19,6 +19,7 @@ class CreateEmailTemplatesTable extends Migration
             $table->string( 'title' );
             $table->longText('message');
             $table->string( 'params' )->nullable();
+            $table->enum( 'status', ['published', 'unpublished'])->default('published');
             $table->softDeletes();
             $table->timestamps();
         });

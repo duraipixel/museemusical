@@ -158,6 +158,12 @@
                    'pdf': "{{ route('coupon.export.pdf') }}",
                }
           },
+          'email-template': {
+               'delete': "{{ route('email-template.delete') }}",
+               'status': "{{ route('email-template.status') }}",
+               'add': "{{ route('email-template.add.edit') }}",
+               
+          },         
                 
        }
    };

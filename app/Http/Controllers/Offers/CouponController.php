@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Offers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Exports\CouponExport;
+use App\Exports\CouponsExport;
 use App\Models\Offers\Coupons;
 use App\Models\Offers\CouponProduct;
 use App\Models\Offers\CouponCustomer;
@@ -32,15 +32,18 @@ class CouponController extends Controller
             $datatables         =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('coupon.status', 'like', "%{$status}%");
+                        return $query->where('coupons.status', 'like', "%{$status}%");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('coupon.coupon_name', 'like', "%{$keywords}%")->orWhere('coupon.coupon_code', 'like', "%{$keywords}%")->orWhere('coupon.status', 'like', "%{$keywords}%")->orWhereDate("coupon.created_at", $date);
+                        return $query->where('coupons.coupon_name', 'like', "%{$keywords}%")->orWhere('coupons.coupon_code', 'like', "%{$keywords}%")->orWhere('coupons.start_date', 'like', "%{$keywords}%")->orWhere('coupons.end_date', 'like', "%{$keywords}%")->orWhere('coupons.status', 'like', "%{$keywords}%")->orWhereDate("coupons.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
-               
+                ->addColumn('status', function ($row) {
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'coupon\')">'.ucfirst($row->status).'</a>';
+                    return $status;
+                })
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                     return $created_at;
@@ -55,7 +58,7 @@ class CouponController extends Controller
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action']);
+                ->rawColumns(['action','status']);
             return $datatables->make(true);
         }
         return view('platform.offers.coupon.index', compact('breadCrum', 'title'));
@@ -140,6 +143,7 @@ class CouponController extends Controller
             $ins['calculate_value']             = $request->calculate_value;
             $ins['coupon_type']                 = $request->coupon_type;
             $ins['minimum_order_value']         = $request->minimum_order_value;
+            $ins['is_discount_on']              = "No";
             $ins['quantity']                    = $request->quantity;
             $ins['repeated_use_count']          = $request->repeated_coupon;
             $ins['order_by']                    = $request->order_by;
@@ -200,5 +204,26 @@ class CouponController extends Controller
             $message    = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
+    }
+    public function changeStatus(Request $request)
+    {
+        
+        $id             = $request->id;
+        $status         = $request->status;
+        $info           = Coupons::find($id);
+        $info->status   = $status;
+        $info->update();
+        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+
+    }
+    public function export()
+    {
+        return Excel::download(new CouponsExport, 'coupon.xlsx');
+    }
+    public function exportPdf()
+    {
+        $list       = Coupons::select('coupons.*')->get();
+        $pdf        = PDF::loadView('platform.exports.coupon.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
+        return $pdf->download('coupon.pdf');
     }
 }

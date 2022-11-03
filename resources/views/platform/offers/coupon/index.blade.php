@@ -68,8 +68,10 @@
                 <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="coupon-table">
                     <thead>
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                            <th> Title  </th>
-                            <th> Pecentage </th>
+                            <th> Coupon Name  </th>
+                            <th> Coupon Code </th>
+                            <th> Start Date </th>
+                            <th> End Code </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
@@ -110,6 +112,18 @@
             {
                 data: 'coupon_code',
                 name: 'coupon_code'
+            },
+            {
+                data: 'start_date',
+                name: 'start_date'
+            },
+            {
+                data: 'end_date',
+                name: 'end_date'
+            },
+            {
+                data: 'status',
+                name: 'status'
             },
             {
                 data: 'action',

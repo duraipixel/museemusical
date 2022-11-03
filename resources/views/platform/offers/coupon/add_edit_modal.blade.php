@@ -137,7 +137,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Repeated Coupon</label>
                                     <input type="text" name="repeated_coupon" class="form-control form-control-solid mb-3 mb-lg-0 number"
-                                        placeholder="Repeated Coupon" value="{{ $info->repeated_coupon ?? '' }}" />
+                                        placeholder="Repeated Coupon" value="{{ $info->repeated_use_count ?? '' }}" />
                                 </div>
                             </div>
                         </div>

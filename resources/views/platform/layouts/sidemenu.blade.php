@@ -474,6 +474,14 @@
                             <span class="menu-title"> Dynamic SubCategories </span>
                         </a>
                     </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['email-template'])) active @endif" href="{{ route('email-template') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title"> Email Template </span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
