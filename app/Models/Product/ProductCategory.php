@@ -3,6 +3,8 @@
 namespace App\Models\Product;
 
 use App\Models\CategoryMetaTags;
+use App\Models\Settings\Tax;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,7 +29,17 @@ class ProductCategory extends Model
 
     public function meta()
     {
-        return $this->belongsTo(CategoryMetaTags::class, 'category_id', 'id');
+        return $this->hasOne(CategoryMetaTags::class, 'category_id', 'id');
+    }
+
+    public function tax()
+    {
+        return $this->hasOne(Tax::class, 'id', 'tax_id');
+    }
+
+    public function userInfo()
+    {
+        return $this->hasOne(User::class, 'id', 'added_by');
     }
 
     public function parent()

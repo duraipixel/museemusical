@@ -99,7 +99,7 @@
                     name: 'tag_line'
                 },
                 {
-                    data: 'tax_id',
+                    data: 'tax_name',
                     name: 'tax'
                 },
                 {

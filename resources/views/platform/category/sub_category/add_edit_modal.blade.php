@@ -54,9 +54,12 @@
                         @endif
                         
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">{{ $sub_title ?? 'Sub Category Name' }}</label>
+                            @php
+                                $sub_title =  (isset($sub_title) && !empty( $sub_title)) ? $sub_title: 'Sub Category Name';
+                            @endphp
+                            <label class="required fw-bold fs-6 mb-2"> {{ $sub_title }}</label>
                             <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="{{ $sub_title ?? 'Sub Category Name' }}" value="{{ $info->name ?? '' }}" />
+                                placeholder="{{ $sub_title }}" value="{{ $info->name ?? '' }}" />
                         </div>
                         <div class="col-md-4">
 

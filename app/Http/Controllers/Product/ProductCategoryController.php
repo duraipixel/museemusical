@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Exports\ProductCategoryExport;
 use App\Http\Controllers\Controller;
 use App\Models\CategoryMetaTags;
 use Illuminate\Http\Request;
 use App\Models\Product\ProductCategory;
+use App\Models\Settings\Tax;
 use DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -15,6 +17,7 @@ use Auth;
 use Excel;
 use Illuminate\Support\Facades\Storage;
 use PDF;
+
 class ProductCategoryController extends Controller
 {
     public function index(Request $request)
@@ -43,6 +46,9 @@ class ProductCategoryController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-category\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
+                ->addColumn('tax_name', function($row){
+                    return $row->tax->title ?? 'No';
+                })
                 
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
@@ -57,7 +63,7 @@ class ProductCategoryController extends Controller
                 <i class="fa fa-trash"></i></a>';
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'image']);
+                ->rawColumns(['action', 'status', 'image', 'tax_name']);
             return $datatables->make(true);
         }
         return view('platform.product_category.index', compact('title','breadCrum'));
@@ -73,13 +79,14 @@ class ProductCategoryController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Product Category';
+        $taxAll             = Tax::where('status', 'published')->get();
         $productCategory    = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
         if (isset($id) && !empty($id)) {
             $info           = ProductCategory::find($id);
             $modal_title    = 'Update Product Category';
         }
-        // dd( $info->meta);
-        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from', 'productCategory'));
+        
+        return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from', 'productCategory', 'taxAll'));
     }
     public function saveForm(Request $request,$id = null)
     {
@@ -88,8 +95,10 @@ class ProductCategoryController extends Controller
         $validator      = Validator::make($request->all(), [
                             'category_name' => 'required|string|unique:product_categories,name,' . $id . ',id,deleted_at,NULL',
                             'avatar' => 'mimes:jpeg,png,jpg',
+                            'tax_id' => 'required_if:is_tax,on'
                         ]);
-        $categoryId = '';
+
+        $categoryId         = '';
         if ($validator->passes()) {
             
             if ($request->image_remove_logo == "yes") {
@@ -177,12 +186,12 @@ class ProductCategoryController extends Controller
     }
     public function export()
     {
-        return Excel::download(new ProductCategoryExport, 'testimonials.xlsx');
+        return Excel::download(new ProductCategoryExport, 'productCategories.xlsx');
     }
     public function exportPdf()
     {
-        $list       = ProductCategory::select('testimonials.*','users.name as users_name',DB::raw(" IF(testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
-        $pdf        = PDF::loadView('platform.exports.testimonials.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
-        return $pdf->download('testimonial.pdf');
+        $list       = ProductCategory::all();
+        $pdf        = PDF::loadView('platform.exports.product.product_category_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
+        return $pdf->download('productCategories.pdf');
     }
 }

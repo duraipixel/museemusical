@@ -72,6 +72,13 @@
     </div> 
 </div>
 <script>
+
+    $('.numberonly').keypress(function (e) {    
+        var charCode = (e.which) ? e.which : event.keyCode    
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+    });  
+
     $('#is_parent').change(function(){
         if($("#is_parent").prop('checked') == true){
             $('#parent-tab').addClass('d-none');
