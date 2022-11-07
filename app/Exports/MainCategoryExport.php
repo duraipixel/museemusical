@@ -4,9 +4,7 @@ namespace App\Exports;
 
 
 use App\Models\Category\MainCategory;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
 
 class MainCategoryExport implements FromView
