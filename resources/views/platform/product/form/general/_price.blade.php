@@ -5,9 +5,9 @@
 </div>
 
 <div class="card-body pt-0">
-    <div class="row">
+    <div class="fv-row mb-10">
         <div class="col-md-4">
-            <div class="mb-10">
+            <div class="">
                 <label class="required form-label">Base Price</label>
                 <input type="text" name="base_price" class="form-control mb-2" placeholder="Product Price" value="" />
                 <div class="text-muted fs-7">Set the product price.</div>
@@ -77,6 +77,7 @@
                 <span class="fw-bolder fs-4 mt-1 ms-2">%</span>
             </div>
             <div id="kt_ecommerce_add_product_discount_slider" class="noUi-sm"></div>
+            <input type="hidden" name="discount_percentage" id="discount_percentage" >
         </div>
         <div class="text-muted fs-7">Set a percentage discount to be applied on this product.</div>
     </div>

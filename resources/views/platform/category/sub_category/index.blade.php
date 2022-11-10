@@ -7,18 +7,6 @@
 </div>
 @endsection
 @section('content')
-    <style>
-        .paginate_button {
-            padding: 5px 14px;
-        }
-
-        a.paginate_button.current {
-            background: #009EF7;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
-
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
@@ -54,6 +42,7 @@
                                             <option value="unpublished">Unpublished</option>
                                         </select>
                                     </div>
+                                    @if( $showFilterCategory )
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Category:</label>
                                         <select name="filter_category" class="form-select form-select-solid fw-bolder"
@@ -65,6 +54,7 @@
                                            @endforeach
                                         </select>
                                     </div>
+                                    @endif
                                     <div class="d-flex justify-content-end">
                                         <button type="reset"
                                             class="btn btn-light btn-active-light-primary fw-bold me-2 px-6"
@@ -76,7 +66,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('sub_category')">
+                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('{{ $routeName }}')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -93,7 +83,7 @@
                             Export
                         </button>
 
-                        <button type="button" class="btn btn-primary" onclick="return openForm('sub_category')">
+                        <button type="button" class="btn btn-primary" onclick="return openForm('{{ $routeName }}')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -103,7 +93,7 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Add Sub Category
+                            Add {{ $title }}
                         </button>
 
                     </div>
@@ -152,6 +142,7 @@
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
                     d.filter_category = $('select[name=filter_category]').val();
+                    d.page_type = '{{ $routeName }}';
                 }
             },
 

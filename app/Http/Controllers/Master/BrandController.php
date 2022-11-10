@@ -87,6 +87,7 @@ class BrandController extends Controller
 
     public function modalAddEdit(Request $request)
     {
+
         $id                 = $request->id;
         $from               = $request->from;
         $info               = '';
@@ -97,7 +98,9 @@ class BrandController extends Controller
         }
         
         return view('platform.master.brand.add_edit_modal', compact('info', 'modal_title', 'from'));
+        
     }
+
     public function saveForm(Request $request,$id = null)
     {
         

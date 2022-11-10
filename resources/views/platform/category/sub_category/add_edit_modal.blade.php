@@ -61,61 +61,63 @@
                             <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="{{ $sub_title }}" value="{{ $info->name ?? '' }}" />
                         </div>
-                        <div class="col-md-4">
-
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Image</label>
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="fv-row mb-7">
+                                    <label class="fw-bold fs-6 mb-2">Short Discription</label>
+                                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                                </div>
+                                <div class="fv-row mb-7">
+                                    <label class="fw-bold fs-6 mb-2">Tagline</label>
+                                    <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
+                                        placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
+                                </div>
                             </div>
-                            <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
-                            <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->image ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('/') . $info->image }});">
-                                    </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar" id="readUrl"
-                                        accept=".png, .jpg, .jpeg" />
-                                </label>
-
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
-                                </span>
+                            <div class="col-md-6">
+                                <div class="fv-row mb-7 text-center">
+                                    <label class="d-block fw-bold fs-6 mb-5 ">Image</label>
+                                    <div class="form-text">Allowed file types: png, jpg,
+                                        jpeg.</div>
+                                </div>
+                                <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
+                                <div class="image-input image-input-outline manual-image float-end" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                    @if ($info->image ?? '')
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
+                                            style="background-image: url({{ asset('/') . $info->image }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                        </div>
+                                    @endif
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="avatar" id="readUrl"
+                                            accept=".png, .jpg, .jpeg" />
+                                    </label>
+    
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        title="Remove avatar1">
+                                        <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <br>
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
-                        </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Tagline</label>
-                            <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
-                        </div>
+                        </div>             
+                        
                      
                         <div class="row mb-7">
                             <div class="col-md-6">
@@ -126,7 +128,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                                <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 numberonly"
                                     placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                             </div>
                         </div>
@@ -156,6 +158,11 @@
     }
 </style>
 <script>
+    $('.numberonly').keypress(function (e) {    
+        var charCode = (e.which) ? e.which : event.keyCode    
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+    }); 
     //image image script
      document.getElementById('readUrl').addEventListener('change', function() {
         // console.log("111");
@@ -345,42 +352,19 @@
                 }
             });
 
-
-        }
-
-        // Select all handler
-        const handleSelectAll = () => {
-            // Define variables
-            const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-            const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-            // Handle check state
-            selectAll.addEventListener('change', e => {
-                // Apply check state to all checkboxes
-                allCheckboxes.forEach(c => {
-                    c.checked = e.target.checked;
-                });
-            });
-
-        }
-
+        }      
 
         return {
             // Public functions
             init: function() {
                 initAddRole();
-                handleSelectAll();
+              
             }
         };
     }();
 
     // On document ready
-
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
-    });
-
-    $('.common-checkbox').click(function() {
-        $("#kt_order_stauts_select_all").prop("checked", false);
-    });
+    });    
 </script>

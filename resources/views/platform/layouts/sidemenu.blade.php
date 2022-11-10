@@ -1,6 +1,4 @@
 @php
-    // $routeName = \Route::currentRouteName();
-    // dd(  );
 @endphp
 <div class="aside-menu flex-column-fluid">
     <div class="hover-scroll-overlay-y my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
@@ -21,7 +19,7 @@
                 </a>
             </div>
            
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels', 'products.*'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -38,7 +36,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('product-category') }}">
+                        <a class="menu-link @if(  request()->routeIs(['product-category'])) active @endif" href="{{ route('product-category') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -46,7 +44,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if(  request()->routeIs(['product-tags'])) active @endif" href="{{ route('product-tags') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -54,7 +52,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['product-labels'])) active @endif" href="{{ route('product-labels') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -62,7 +60,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('products') }}">
+                        <a class="menu-link @if( request()->routeIs(['products'])) active @endif" href="{{ route('products') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -273,7 +271,6 @@
                             <span class="menu-title">Tax</span>
                         </a>
                     </div>
-                  
                 </div>
             </div>
             <div class="menu-item">

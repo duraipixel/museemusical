@@ -92,6 +92,7 @@
                    'pdf': "{{ route('main_category.export.pdf') }}",
                }
           },
+          
           'sub_category': {
                
                'delete': "{{ route('sub_category.delete') }}",
@@ -102,6 +103,26 @@
                    'pdf': "{{ route('sub_category.export.pdf') }}",
                }
           },
+          'product-tags': {
+               
+               'delete': "{{ route('product-tags.delete') }}",
+               'status': "{{ route('product-tags.status') }}",
+               'add': "{{ route('product-tags.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('product-tags.export.excel') }}",
+                   'pdf': "{{ route('product-tags.export.pdf') }}",
+               }
+          },
+            'product-labels': {
+               
+                'delete': "{{ route('product-labels.delete') }}",
+                'status': "{{ route('product-labels.status') }}",
+                'add': "{{ route('product-labels.add.edit') }}",
+                'export': {
+                   'excel': "{{ route('product-labels.export.excel') }}",
+                   'pdf': "{{ route('product-labels.export.pdf') }}",
+                }
+            },
           'testimonials': {
                
                'delete': "{{ route('testimonials.delete') }}",

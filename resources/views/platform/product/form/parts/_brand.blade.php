@@ -10,8 +10,7 @@
     </select>
 </div>
 <script>
-    setTimeout(() => {
-        $('#brand_id').select2();
-    }, 100);
-    
+    // setTimeout(() => {
+    //     $('#brand_id').select2();
+    // }, 200);    
 </script>

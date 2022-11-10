@@ -182,7 +182,7 @@
 <script>
     
      document.getElementById('readUrllogo').addEventListener('change', function() {
-        console.log("111");
+        
         if (this.files[0]) {
             var picture = new FileReader();
             picture.readAsDataURL(this.files[0]);
@@ -203,7 +203,7 @@
     });
     //banner image script
     document.getElementById('readUrlbanner').addEventListener('change', function() {
-        console.log("111");
+        
         if (this.files[0]) {
             var picture = new FileReader();
             picture.readAsDataURL(this.files[0]);
@@ -226,7 +226,7 @@
 
 <script>
     $('#country').select2();
- $('.mobile_num').keypress(
+    $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
                 //do nothing
@@ -248,7 +248,6 @@
 
         const drawerEl = document.querySelector("#kt_common_add_form");
         const commonDrawer = KTDrawer.getInstance(drawerEl);
-
 
         // Init add schedule modal
         var initAddRole = () => {
@@ -323,9 +322,10 @@
                                 data: formData,
                                 processData: false,
                                 contentType: false,
-                                beforeSend: function() {},
+                                beforeSend: function() {
+                                    
+                                },
                                 success: function(res) {
-
 
                                     if (res.error == 1) {
                                         // Remove loading indication
@@ -344,6 +344,7 @@
                                             }
                                         });
                                     } else { 
+                                        
                                         if( from != '' ) {
                                             getProductBrandDropdown(res.brand_id);
                                             return false;
@@ -384,38 +385,17 @@
                     });
                 }
             });
-
-
         }
-
-        // Select all handler
-        const handleSelectAll = () => {
-            // Define variables
-            const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-            const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-            // Handle check state
-            selectAll.addEventListener('change', e => {
-                // Apply check state to all checkboxes
-                allCheckboxes.forEach(c => {
-                    c.checked = e.target.checked;
-                });
-            });
-
-        }
-
 
         return {
             // Public functions
             init: function() {
                 initAddRole();
-                handleSelectAll();
             }
         };
     }();
 
     // On document ready
-
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
     });

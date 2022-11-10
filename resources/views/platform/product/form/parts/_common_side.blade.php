@@ -40,7 +40,10 @@
             </h2>
         </div>
     </div>
-    <div id="product-band">
+    {{-- <div id="product-dj-band">
+        @include('platform.product.form.parts._brand')
+    </div> --}}
+    <div id="product-category-brand">
         @include('platform.product.form.parts._brand')
     </div>
 </div>

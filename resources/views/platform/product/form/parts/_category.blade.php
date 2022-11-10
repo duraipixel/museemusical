@@ -13,5 +13,5 @@
 <script>
     setTimeout(() => {
         $('#category_id').select2();
-    }, 100);
+    }, 200);
 </script>

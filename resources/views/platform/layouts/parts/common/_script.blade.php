@@ -5,9 +5,9 @@
     const exportModal = new bootstrap.Modal(element);
 
     function openExportForm(export_type) {
-        console.log( export_type );
+        
         $('#export_type').val( export_type );
-        $('#export_modal_title').html( 'EXPORT '+ export_type.toUpperCase() );
+        $('#export_modal_title').html( 'EXPORT '+ (export_type.replace("_", " ")).toUpperCase() );
         exportModal.show();
     }
 
@@ -16,7 +16,7 @@
     })
 
     function openForm(module_type, id = '', from = '', dynamicModel = '') {
-        
+               
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -168,10 +168,12 @@
             type: 'POST',
             data: {id:id},
             success: function(res) {
-                $( '#product-brand' ).html(res);
                 const drawerEl = document.querySelector("#kt_common_add_form");
                 const commonDrawer = KTDrawer.getInstance(drawerEl);
                 commonDrawer.hide();
+                console.log( res );
+                $( '#product-category-brand' ).html(res);
+            
                 return false;
             }
             

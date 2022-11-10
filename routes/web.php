@@ -113,13 +113,19 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/main_category/save', [App\Http\Controllers\Category\MainCategoryController::class, 'saveForm'])->name('main_category.save');
     Route::get('/main_category/export/excel', [App\Http\Controllers\Category\MainCategoryController::class, 'export'])->name('main_category.export.excel');
     Route::get('/main_category/export/pdf', [App\Http\Controllers\Category\MainCategoryController::class, 'exportPdf'])->name('main_category.export.pdf');
-
-    Route::post('/sub_category/addOrEdit', [App\Http\Controllers\Category\SubCategoryController::class, 'modalAddEdit'])->name('sub_category.add.edit');
-    Route::post('/sub_category/status', [App\Http\Controllers\Category\SubCategoryController::class, 'changeStatus'])->name('sub_category.status');
-    Route::post('/sub_category/delete', [App\Http\Controllers\Category\SubCategoryController::class, 'delete'])->name('sub_category.delete');
-    Route::post('/sub_category/save', [App\Http\Controllers\Category\SubCategoryController::class, 'saveForm'])->name('sub_category.save');
-    Route::get('/sub_category/export/excel', [App\Http\Controllers\Category\SubCategoryController::class, 'export'])->name('sub_category.export.excel');
-    Route::get('/sub_category/export/pdf', [App\Http\Controllers\Category\SubCategoryController::class, 'exportPdf'])->name('sub_category.export.pdf');
+    
+    $categoriesArray = array('sub_category', 'product-tags', 'product-labels');
+    foreach ($categoriesArray as $catUrl ) {
+        Route::prefix($catUrl)->group(function() use($catUrl) {
+            Route::get('/', [App\Http\Controllers\Category\SubCategoryController::class, 'index'])->name($catUrl);
+            Route::post('/addOrEdit', [App\Http\Controllers\Category\SubCategoryController::class, 'modalAddEdit'])->name($catUrl.'.add.edit');
+            Route::post('/status', [App\Http\Controllers\Category\SubCategoryController::class, 'changeStatus'])->name($catUrl.'.status');
+            Route::post('/delete', [App\Http\Controllers\Category\SubCategoryController::class, 'delete'])->name($catUrl.'.delete');
+            Route::post('/save', [App\Http\Controllers\Category\SubCategoryController::class, 'saveForm'])->name($catUrl.'.save');
+            Route::get('/export/excel', [App\Http\Controllers\Category\SubCategoryController::class, 'export'])->name($catUrl.'.export.excel');
+            Route::get('/export/pdf', [App\Http\Controllers\Category\SubCategoryController::class, 'exportPdf'])->name($catUrl.'.export.pdf');
+        });
+    }
 
     Route::post('/testimonials/addOrEdit', [App\Http\Controllers\TestimonialsController::class, 'modalAddEdit'])->name('testimonials.add.edit');
     Route::post('/testimonials/status', [App\Http\Controllers\TestimonialsController::class, 'changeStatus'])->name('testimonials.status');
@@ -135,6 +141,7 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('products.delete');
         Route::post('/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('products.save');
         Route::post('/upload/brochure', [App\Http\Controllers\Product\ProductController::class, 'uploadBrochure'])->name('products.upload.brochure');
+        Route::post('/upload/gallery', [App\Http\Controllers\Product\ProductController::class, 'uploadGallery'])->name('products.upload.gallery');
         Route::get('/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('products.export.excel');
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('products.export.pdf');
     });

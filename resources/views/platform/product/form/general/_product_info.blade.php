@@ -4,6 +4,7 @@
         <input type="text" name="product_name" class="form-control mb-2" placeholder="Product name" value="" />
         <div class="text-muted fs-7">A product name is required and recommended to be unique.</div>
     </div>
+    
     <div class="row">
         <div class="col-md-4">
             <div class="mb-10 fv-row">

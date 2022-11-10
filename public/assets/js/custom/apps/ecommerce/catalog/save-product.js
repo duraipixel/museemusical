@@ -133,6 +133,8 @@ var KTAppEcommerceSaveProduct = function () {
 
         slider.noUiSlider.on("update", function (values, handle) {
             value.innerHTML = Math.round(values[handle]);
+            var discount = document.getElementById('discount_percentage');
+            discount.value = Math.round(values[handle])
             if (handle) {
                 value.innerHTML = Math.round(values[handle]);
             }
@@ -147,7 +149,10 @@ var KTAppEcommerceSaveProduct = function () {
             maxFiles: 10,
             maxFilesize: 10, // MB
             addRemoveLinks: true,
+            acceptedFiles: ".jpeg,.jpg,.png,.gif", 
             accept: function (file, done) {
+                console.log( file );
+                return false;
                 if (file.name == "wow.jpg") {
                     done("Naha, you don't.");
                 } else {
@@ -395,6 +400,13 @@ var KTAppEcommerceSaveProduct = function () {
                         validators: {
                             notEmpty: {
                                 message: 'Product Tag is required'
+                            }
+                        }
+                    },
+                    'base_price': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Base Price is required'
                             }
                         }
                     },

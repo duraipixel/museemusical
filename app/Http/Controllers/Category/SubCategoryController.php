@@ -9,6 +9,7 @@ use App\Models\Category\MainCategory;
 use App\Models\Category\SubCategory;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
@@ -21,16 +22,27 @@ class SubCategoryController extends Controller
 {
     public function index(Request $request)
     { 
-        $title = "Sub Category";
-        $category    = MainCategory::where('status','!=',0)->get();
+        $routeName = Route::currentRouteName();
+        
+        $title = ucwords( str_replace(["-","_"]," ", $routeName));
+        $category    = MainCategory::where('status','published')->get();
         if ($request->ajax()) {
-            $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by');
+            $page_type   = $request->get('page_type') ?? '';
+            $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')
+                                ->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')
+                                ->join('users', 'users.id', '=', 'sub_categories.added_by')
+                                ->when($page_type != 'sub_category', function ($q) use ($page_type) {
+                                    return $q->where('main_categories.slug', $page_type);
+                                });
+            
             $filter_category  ='';
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
             $filter_category   = $request->get('filter_category');
+            
             $datatables =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords, $status,$filter_category) {
+                ->filter(function ($query) use ($keywords, $status, $filter_category, $page_type) {
+                   
                     if ($status) {
                         return $query->where('sub_categories.status', 'like', "%{$status}%");
                     }
@@ -79,19 +91,31 @@ class SubCategoryController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        $breadCrum  = array('Masters', 'Dynamic Sub Category');
-        $title      = 'Sub Category';
-        return view('platform.category.sub_category.index',compact('category', 'breadCrum', 'title'));
+        $breadCrum  = array('Masters', $title);
+        $showFilterCategory         = false;
+        if( $routeName == 'sub_category' ) {
+            $showFilterCategory     = true;
+        }
+        
+        return view('platform.category.sub_category.index',compact('category', 'breadCrum', 'title', 'routeName', 'showFilterCategory'));
 
     }
     public function modalAddEdit(Request $request)
     {
+        $routeName          = Route::currentRouteName();
+        $routeSegment       = explode('.', $routeName);
+        $pageName           = current($routeSegment);
+        
+        $title              = ucwords( str_replace(["-","_"]," ", $pageName));
+        
         $id                 = $request->id;
         $from               = $request->from;
         $dynamicModel       = $request->dynamicModel;
         $info               = '';
         $sub_title          = '';
-        $modal_title        = 'Add Sub Category';
+        $modal_title        = 'Add '.$title;
+       
+
         if( isset( $dynamicModel )&& !empty( $dynamicModel )) {
             $sub_title      = ucwords( str_replace('-', ' ', $dynamicModel));
             $category       = MainCategory::where('status', 'published')->where('slug', $dynamicModel)->first();
@@ -109,7 +133,28 @@ class SubCategoryController extends Controller
             $modal_title        = 'Add '.$sub_title;
             
         } else {
-            $category       = MainCategory::where('status', 'published')->get();
+            if( $pageName != 'sub_category' ) {
+
+                $sub_title      = $title;
+                $category       = MainCategory::where('status', 'published')->where('slug', $pageName)->first();
+                if( isset( $category ) && !empty( $category)) {
+
+                } else {
+                    //insert new entry in maincategory
+                    $ins['category_name']   = $title;
+                    $ins['slug']            = $pageName;
+                    $ins['order_by']        = 0;
+                    $ins['added_by']        = Auth::id();
+                    $ins['status']          = 'published';
+                    $category               = MainCategory::create($ins);
+                }
+
+            } else {
+
+                $category       = MainCategory::where('status', 'published')->get();
+
+            }
+            
         }
         if (isset($id) && !empty($id)) {
             $info           = SubCategory::find($id);
@@ -126,8 +171,10 @@ class SubCategoryController extends Controller
         
         return view('platform.category.sub_category.add_edit_modal', $params);
     }
+
     public function saveForm(Request $request,$id = null)
     {
+
         $id                     = $request->id;
         $validator              = Validator::make($request->all(), [
                                         'name' => 'required|string|unique:sub_categories,name,' . $id . ',id,deleted_at,NULL',
@@ -184,6 +231,7 @@ class SubCategoryController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message, 'id' => $sub_id]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -191,6 +239,7 @@ class SubCategoryController extends Controller
         $info->delete();
         return response()->json(['message'=>"Successfully deleted Sub Category!",'status'=>1]);
     }
+
     public function changeStatus(Request $request)
     {
         $id             = $request->id;
@@ -198,19 +247,39 @@ class SubCategoryController extends Controller
         $info           = SubCategory::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
+        
         return response()->json(['message'=>"You changed the Sub Category status!",'status'=>1]);
 
     }
-    public function export()
+
+    public function export(Request $request)
     {
-        return Excel::download(new SubCategoryExport, 'subCategory.xlsx');
+
+        $routeName          = Route::currentRouteName();
+        $routeSegment       = explode('.', $routeName);
+        $pageName           = current($routeSegment);
+        
+        return Excel::download(new SubCategoryExport($pageName), $pageName.'.xlsx');
+
     }
 
     public function exportPdf()
     {
-        $list       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')->join('users', 'users.id', '=', 'sub_categories.added_by')->get();
-        $pdf        = PDF::loadView('platform.exports.sub_category.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
-        return $pdf->download('subCategory.pdf');
+        
+        $routeName          = Route::currentRouteName();
+        $routeSegment       = explode('.', $routeName);
+        $page_type           = current($routeSegment);
+
+        $list               = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')
+                                ->join('main_categories', 'sub_categories.parent_id', '=', 'main_categories.id')
+                                ->join('users', 'users.id', '=', 'sub_categories.added_by')
+                                ->when( $page_type != 'sub_category',  function($q) use($page_type) {
+                                    return $q->where('main_categories.slug', $page_type);
+                                })
+                                ->get();
+
+        $pdf                = PDF::loadView('platform.exports.sub_category.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
+        return $pdf->download($page_type.'.pdf');
+
     }
 }
