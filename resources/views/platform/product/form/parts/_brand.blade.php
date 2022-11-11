@@ -4,7 +4,10 @@
         <option value=""></option>
         @isset($brands)
             @foreach ($brands as $item)
-                <option value="{{ $item->id }}" @if( isset( $brand_id ) && $brand_id == $item->id ) selected @endif>{{ $item->brand_name }} </option>
+                <option value="{{ $item->id }}"
+                    @if( (isset( $brand_id ) && $brand_id == $item->id ) || ( isset($info->brand_id) && $info->brand_id == $item->id ) )  selected="selected" @endif>
+                    {{ $item->brand_name }} 
+                </option>
             @endforeach
         @endisset
     </select>

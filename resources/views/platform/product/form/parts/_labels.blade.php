@@ -2,7 +2,8 @@
     <option value=""></option>
     @isset($productLabels->subCategory)
         @foreach ($productLabels->subCategory as $item)
-            <option value="{{ $item->id }}" @if( isset( $label_id ) && $label_id == $item->id ) selected @endif>
+            <option value="{{ $item->id }}" 
+                @if( (isset( $label_id ) && $label_id == $item->id ) || ( isset($info->label_id) && $info->label_id == $item->id ) ) selected="selected" @endif>
                 {{ $item->name }} 
             </option>
         @endforeach

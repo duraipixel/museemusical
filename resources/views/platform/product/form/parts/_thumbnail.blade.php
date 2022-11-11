@@ -6,8 +6,12 @@
 
 <div class="card-body text-center pt-0">
     <!--begin::Image input-->
+    @php
+        $url = Storage::url($info->base_image);
+        // print_r( $url );
+    @endphp
     <div class="image-input image-input-empty image-input-outline mb-3" data-kt-image-input="true"
-        style="background-image: url(../../../assets/media/svg/files/blank-image.svg)">
+        @if( isset($info->base_image) && !empty( $info->base_image ) )  style="background-image: url({{ asset($url) }})"  @else style="background-image: url(../../../assets/media/svg/files/blank-image.svg)" @endif >
         <!--begin::Preview existing avatar-->
         <div class="image-input-wrapper w-150px h-150px"></div>
         <!--end::Preview existing avatar-->

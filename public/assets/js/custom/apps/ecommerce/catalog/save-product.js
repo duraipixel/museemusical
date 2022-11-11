@@ -141,72 +141,6 @@ var KTAppEcommerceSaveProduct = function () {
         });
     }
 
-    // Init DropzoneJS --- more info:
-    const initDropzone = () => {
-        var myDropzone = new Dropzone("#kt_ecommerce_add_product_media", {
-            url: gallery_upload_url, // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
-            maxFiles: 10,
-            maxFilesize: 10, // MB
-            addRemoveLinks: true,
-            acceptedFiles: ".jpeg,.jpg,.png,.gif", 
-            accept: function (file, done) {
-                console.log( file );
-                return false;
-                if (file.name == "wow.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
-            }
-           
-        });
-    }
-   
-    const initBrochureDropzone = () => {
-        var myDropzone = new Dropzone("#kt_ecommerce_add_product_brochure", {
-            url: brochure_upload_url, // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
-            maxFiles: 1,
-            maxFilesize: 10, // MB
-            addRemoveLinks: true,
-            accept: function (file, done) {
-                if (file.name == "wow.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
-            },
-            sending: function(file, xhr, formData) {
-                formData.append("_token", $("meta[name='csrf-token']").attr("content"));
-            },
-            success: function(file, serverFileName) {
-                // let fileList[file.name] = {"fid" : serverFileName };
-                console.log( serverFileName );
-                console.log( file );
-               
-            },
-            removedfile: function(file) {
-                Swal.fire({
-                    text: "Are you sure you would like to remove?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    buttonsStyling: false,
-                    confirmButtonText: "Yes, remove it!",
-                    cancelButtonText: "No, return",
-                    customClass: {
-                        confirmButton: "btn btn-primary",
-                        cancelButton: "btn btn-active-light"
-                    }
-                }).then(function(result) {
-                    if (result.value) {
-                        file.previewElement.remove();
-                    }
-                });
-                
-            }
-        });
-    }
     // Handle discount options
     const handleDiscount = () => {
         const discountOptions = document.querySelectorAll('input[name="discount_option"]');
@@ -436,31 +370,78 @@ var KTAppEcommerceSaveProduct = function () {
                 validator.validate().then(function (status) {
                     console.log('validated!');
                     if (status == 'Valid') {
-                        submitButton.setAttribute('data-kt-indicator', 'on');
-
-                        // Disable submit button whilst loading
-                        submitButton.disabled = true;
-
-                        setTimeout(function () {
-                            submitButton.removeAttribute('data-kt-indicator');
-
-                            Swal.fire({
-                                text: "Form has been successfully submitted!",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary"
-                                }
-                            }).then(function (result) {
-                                if (result.isConfirmed) {
-                                    // Enable submit button after loading
+                        //session set for productid to store iamges
+                        var form = $('#kt_ecommerce_add_product_form')[0]; 
+                        var formData = new FormData(form);                                       
+                        
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });  
+                        $.ajax({
+                            url: add_url,
+                            type:"POST",
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData:false,
+                            beforeSend: function() {
+                                submitButton.setAttribute('data-kt-indicator', 'on');
+                                submitButton.disabled = true;
+                            },
+                            success: function(res) {
+                                if( res.error == 1 ) {
+                                    // Remove loading indication
+                                    submitButton.removeAttribute('data-kt-indicator');
+                                     // Enable button
                                     submitButton.disabled = false;
-                                    // Redirect to customers list page
-                                    window.location = form.getAttribute("data-kt-redirect");
+                                    let error_msg = res.message
+                                    Swal.fire({
+                                        text: res.message,
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                     });
+                                } else {
+                                    
+                                    if( res.product_id ) {
+                                               
+                                        myDropzone.processQueue();
+                                        myDropzone.on("addedfiles", (file) => {
+                                           console.log( myDropzone.hiddenFileInput );
+                                       });
+
+                                       myBrocheureDropzone.processQueue();
+
+                                    }
+
+                                    submitButton.removeAttribute('data-kt-indicator');
+                                     // Enable button
+                                    submitButton.disabled = false;
+
+                                    Swal.fire({
+                                        // text: "Form has been successfully submitted!",
+                                        text: "Thank you! You've updated Products",
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    }).then(function (result) {
+                                        if (result.isConfirmed) {
+                                           
+                                            
+                                        }
+                                    });
                                 }
-                            });
-                        }, 2000);
+                            }
+                        });
+                       
                     } else {
                         Swal.fire({
                             html: "Sorry, looks like there are some errors detected, please try again. <br/><br/>Please note that there may be errors in the <strong>General</strong> or <strong>Advanced</strong> tabs",
@@ -485,10 +466,7 @@ var KTAppEcommerceSaveProduct = function () {
             initTagify();
             initSlider();
             initFormRepeater();
-            initDropzone();
-            initBrochureDropzone();
             initConditionsSelect2();
-
             // Handle forms
             handleStatus();
             handleConditions();

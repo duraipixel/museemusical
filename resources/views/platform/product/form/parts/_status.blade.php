@@ -35,3 +35,16 @@
         </div>
     </div>
 </div>
+
+<div class="w-100 border-top">
+    <div class="row px-10 mt-5 mb-5">
+        <div class="col-sm-8">
+            <h2>Is Booking Video? </h2>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                <input class="form-check-input" type="checkbox"  name="has_video_shopping" value="yes"  @if(isset( $info->has_video_shopping) && $info->has_video_shopping == 'yes') checked @endif />
+            </div>
+        </div>
+    </div>
+</div>

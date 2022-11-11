@@ -162,6 +162,7 @@ class ProductCategoryController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message, 'categoryId' => $categoryId]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -172,6 +173,7 @@ class ProductCategoryController extends Controller
         // echo 1;
         return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
     }
+
     public function changeStatus(Request $request)
     {
         
@@ -184,10 +186,12 @@ class ProductCategoryController extends Controller
         return response()->json(['message'=>"You changed the state status!",'status'=>1]);
 
     }
+
     public function export()
     {
         return Excel::download(new ProductCategoryExport, 'productCategories.xlsx');
     }
+    
     public function exportPdf()
     {
         $list       = ProductCategory::all();

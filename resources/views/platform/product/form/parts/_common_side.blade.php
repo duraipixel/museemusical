@@ -1,3 +1,6 @@
+<div class="card card-flush" id="product-thumbnail">
+    @include('platform.product.form.parts._thumbnail')
+</div>
 <div class="card card-flush" >
     <div class="card-header">
         <div class="card-title w-100">
@@ -94,9 +97,7 @@
 <div class="card card-flush" id="product-status">
     @include('platform.product.form.parts._status')
 </div>
-{{-- <div class="card card-flush" id="product-thumbnail">
-    @include('platform.product.form.parts._thumbnail')
-</div> --}}
+
 <div class="card card-flush" id="product-brochure">
     @include('platform.product.form.parts._brochure')
 </div>

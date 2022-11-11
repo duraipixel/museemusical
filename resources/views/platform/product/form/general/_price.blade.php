@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <div class="">
                 <label class="required form-label">Base Price</label>
-                <input type="text" name="base_price" class="form-control mb-2" placeholder="Product Price" value="" />
+                <input type="text" name="base_price" class="form-control mb-2" placeholder="Product Price" value="{{ $info->price ?? '' }}" />
                 <div class="text-muted fs-7">Set the product price.</div>
             </div>
         </div>

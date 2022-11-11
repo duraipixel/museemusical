@@ -86,12 +86,9 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                                <th> Image </th>
-                                <th> Title  </th>
-                                <th> Short Discription </th>
-                                <th> Long Discription </th>
-                                <th> Created By </th>
-                                <th> Created Date </th>
+                                <th> Product </th>
+                                <th> Sku  </th>
+                                <th> Price </th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -121,33 +118,19 @@
                     d.status = $('select[name=filter_status]').val();
                 }
             },
-
             columns: [
                 {
-                    data: 'image',
-                    name: 'image',
+                    data: 'product_name',
+                    name: 'product_name',
                   
                 },
                 {
-                    data: 'title',
-                    name: 'title'
-                },
-              
-                {
-                    data: 'short_description',
-                    name: 'short_description'
+                    data: 'sku',
+                    name: 'sku'
                 },
                 {
-                    data: 'long_description',
-                    name: 'long_description'
-                },
-                {
-                    data: 'users_name',
-                    name: 'users_name'
-                },
-                {
-                    data: 'created_at',
-                    name: 'created_at'
+                    data: 'price',
+                    name: 'price'
                 },
                 {
                     data: 'status',

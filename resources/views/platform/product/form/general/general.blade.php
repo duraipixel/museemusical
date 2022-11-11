@@ -1,5 +1,6 @@
 <div class="d-flex flex-column gap-7 gap-lg-10">
     <!--begin::General options-->
+    <input type="hidden" name="product_page_type" id="product_page_type" value="general">
     <div class="card card-flush py-4" id="product-info">
         @include('platform.product.form.general._product_info')
     </div>

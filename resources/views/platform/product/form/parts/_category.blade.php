@@ -5,7 +5,8 @@
         <option value=""></option>
         @isset($productCategory)
             @foreach ($productCategory as $item)
-                <option value="{{ $item->id }}" @if( isset( $category_id ) && $category_id == $item->id ) selected @endif>{{ $item->name }} - {{ $item->parent->name ?? 'Parent' }} </option>
+                <option value="{{ $item->id }}" 
+                @if( (isset( $category_id ) && $category_id == $item->id ) || ( isset($info->category_id) && $info->category_id == $item->id ) ) selected @endif>{{ $item->name }} - {{ $item->parent->name ?? 'Parent' }} </option>
             @endforeach
         @endisset
     </select>
