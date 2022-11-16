@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/tax', [App\Http\Controllers\Settings\TaxController::class, 'index'])->name('tax');
     Route::get('/coupon', [App\Http\Controllers\Offers\CouponController::class, 'index'])->name('coupon');
     Route::get('/email-template', [App\Http\Controllers\Master\EmailTemplateController::class, 'index'])->name('email-template');
+    Route::get('/customer', [App\Http\Controllers\Master\CustomerController::class, 'index'])->name('customer');
     
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
@@ -194,6 +195,24 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');
     Route::post('/getProduct/brand/list', [App\Http\Controllers\CommonController::class, 'getProductBrandList'])->name('common.brand.dropdown');
     Route::post('/getProduct/dynamic/list', [App\Http\Controllers\CommonController::class, 'getProductDynamicList'])->name('common.dynamic.dropdown');
+
+    Route::prefix('customer')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\Master\CustomerController::class, 'modalAddEdit'])->name('customer.add.edit');
+        Route::post('/status', [App\Http\Controllers\Master\CustomerController::class, 'changeStatus'])->name('customer.status');
+        Route::post('/delete', [App\Http\Controllers\Master\CustomerController::class, 'delete'])->name('customer.delete');
+        Route::post('/save', [App\Http\Controllers\Master\CustomerController::class, 'saveForm'])->name('customer.save');
+        Route::get('/export/excel', [App\Http\Controllers\Master\CustomerController::class, 'export'])->name('customer.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\Master\CustomerController::class, 'exportPdf'])->name('customer.export.pdf');
+        Route::get('/coupon-gendrate', [App\Http\Controllers\Master\CustomerController::class, 'couponGendrate'])->name('customer.coupon-gendrate');
+        Route::post('/coupon-apply', [App\Http\Controllers\Master\CustomerController::class, 'couponType'])->name('customer.coupon-apply');
+        Route::get('/customer/view/{id}', [App\Http\Controllers\Master\CustomerController::class, 'view'])->name('customer.view');
+        Route::get('/add-address', [App\Http\Controllers\Master\CustomerController::class, 'addAddress'])->name('customer.add-address');
+        Route::post('/address', [App\Http\Controllers\Master\CustomerController::class, 'customerAddress'])->name('customer.address');
+        Route::post('/address/list', [App\Http\Controllers\Master\CustomerController::class, 'addressList'])->name('customer.address.list');
+        Route::post('/address/delete', [App\Http\Controllers\Master\CustomerController::class, 'addressDelete'])->name('customer.delete');
+        
+        
+    });
 
 });
 

@@ -24,10 +24,11 @@ class CreateCustomerAddressesTable extends Migration
             $table->string( 'address_line1' )->nullable();
             $table->string( 'address_line2' )->nullable();
             $table->string( 'landmark' )->nullable();
-            $table->string( 'city' )->nullable();
-            $table->string( 'state' )->nullable();
-            $table->string( 'country' )->nullable();
-            $table->string( 'post_code' )->nullable();
+            $table->string( 'city_id' )->nullable();
+            $table->string( 'state_id' )->nullable();
+            $table->string( 'country_id' )->nullable();
+            $table->string( 'post_code_id' )->nullable();
+            $table->integer('is_default')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

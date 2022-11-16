@@ -184,7 +184,17 @@
                'status': "{{ route('email-template.status') }}",
                'add': "{{ route('email-template.add.edit') }}",
                
-          },         
+          },   
+          'customer': {
+               'delete': "{{ route('customer.delete') }}",
+               'status': "{{ route('customer.status') }}",
+               'add': "{{ route('customer.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('customer.export.excel') }}",
+                   'pdf': "{{ route('customer.export.pdf') }}",
+               }
+               
+          },          
                 
        }
    };
