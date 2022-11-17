@@ -72,8 +72,8 @@
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-order_stauts-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
-                                            <option value="1">Active</option>
-                                            <option value="2">Inactive</option>
+                                            <option value="published">Active</option>
+                                            <option value="unpublished">Inactive</option>
                                         </select>
                                     </div>
                                     <div class="d-flex justify-content-end">

@@ -25,7 +25,7 @@
                 <td>{{ $item->status_name }}</td>
                 <td>{{ $item->description }}</td>
                 <td>{{ $item->order }}</td>
-                <td>{{  $item->user_status }}</td>
+                <td>{{  $item->status }}</td>
                 <td>{{ $item->users_name }}</td>
             </tr>
             @endforeach

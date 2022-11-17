@@ -18,15 +18,18 @@ use PDF;
 class OrderStatusController extends Controller
 {
     public function index(Request $request)
-    { $title = "Order Status";
+    { 
+        $title = "Order Status";
         if ($request->ajax()) {
-            $data = OrderStatus::select('order_statuses.*','users.name as users_name', DB::raw(" IF(order_statuses.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'order_statuses.added_by');
+            $data = OrderStatus::select('order_statuses.*','users.name as users_name')->join('users', 'users.id', '=', 'order_statuses.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
+            
                 ->filter(function ($query) use ($keywords, $status) {
+                    // dd($status);
                     if ($status) {
-                        return $query->where('order_statuses.status', 'like', "%{$status}%");
+                        return $query->where('order_statuses.status', $status);
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
@@ -35,15 +38,11 @@ class OrderStatusController extends Controller
                 })
                 ->addIndexColumn()
                
+              
                 ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'order-status\')">Active</a>';
-                    } else {
-                        $status = '<a href="javascript:void(0);" class="badge badge-light-danger" tooltip="Click to Active" onclick="return commonChangeStatus(' . $row->id . ', 1, \'order-status\')">Inactive</a>';
-                    }
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'order-status\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                     return $created_at;
@@ -90,7 +89,13 @@ class OrderStatusController extends Controller
             $ins['description']                 = $request->description;
             $ins['order']                       = $request->order;
             $ins['added_by']        = Auth::id();
-            $ins['status']          = 1;
+           
+            if($request->status == "1")
+            {
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
+            }
             $error                  = 0;
 
             $info                   = OrderStatus::updateOrCreate(['id' => $id], $ins);
@@ -129,7 +134,7 @@ class OrderStatusController extends Controller
     public function exportPdf()
     {
         // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
-        $list       = OrderStatus::select('order_statuses.status_name','order_statuses.description','order_statuses.created_at','order_statuses.order','users.name as users_name', DB::raw(" IF(order_statuses.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'order_statuses.added_by')->get();
+        $list       = OrderStatus::select('order_statuses.*','users.name as users_name')->join('users', 'users.id', '=', 'order_statuses.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.order_status.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('order_status.pdf');
     }
