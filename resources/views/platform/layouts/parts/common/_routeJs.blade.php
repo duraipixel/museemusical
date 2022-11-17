@@ -194,7 +194,16 @@
                    'pdf': "{{ route('customer.export.pdf') }}",
                }
                
-          },          
+          },   
+          'video-booking': {
+               'delete': "{{ route('video-booking.delete') }}",
+               'status': "{{ route('video-booking.status') }}",
+               'add': "{{ route('video-booking.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('video-booking.export.excel') }}",
+                   'pdf': "{{ route('video-booking.export.pdf') }}",
+               }
+          },       
                 
        }
    };

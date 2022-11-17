@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/coupon', [App\Http\Controllers\Offers\CouponController::class, 'index'])->name('coupon');
     Route::get('/email-template', [App\Http\Controllers\Master\EmailTemplateController::class, 'index'])->name('email-template');
     Route::get('/customer', [App\Http\Controllers\Master\CustomerController::class, 'index'])->name('customer');
-    
+    Route::get('/video-booking', [App\Http\Controllers\VideoBookingController::class, 'index'])->name('video-booking');
     Route::prefix('roles')->group(function(){
         Route::post('/addOrEdit', [App\Http\Controllers\Settings\RoleController::class, 'modalAddEdit'])->name('roles.add.edit');
         Route::post('/delete', [App\Http\Controllers\Settings\RoleController::class, 'delete'])->name('roles.delete');
@@ -213,6 +213,15 @@ Route::middleware(['auth'])->group(function(){
         
         
     });
+    Route::prefix('video-booking')->group(function(){
+        Route::post('/addOrEdit', [App\Http\Controllers\VideoBookingController::class, 'modalAddEdit'])->name('video-booking.add.edit');
+        Route::post('/status', [App\Http\Controllers\VideoBookingController::class, 'changeStatus'])->name('video-booking.status');
+        Route::post('/delete', [App\Http\Controllers\VideoBookingController::class, 'delete'])->name('video-booking.delete');
+        Route::post('/save', [App\Http\Controllers\VideoBookingController::class, 'saveForm'])->name('video-booking.save');
+        Route::get('/export/excel', [App\Http\Controllers\VideoBookingController::class, 'export'])->name('video-booking.export.excel');
+        Route::get('/export/pdf', [App\Http\Controllers\VideoBookingController::class, 'exportPdf'])->name('video-booking.export.pdf');
+    });
+    
 
 });
 
