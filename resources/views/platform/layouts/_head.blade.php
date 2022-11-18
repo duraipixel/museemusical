@@ -20,4 +20,5 @@
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
     @yield('add_on_css')
+    @include('platform.layouts.parts.common._routeJs')
 </head>

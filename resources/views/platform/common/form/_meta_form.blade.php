@@ -24,7 +24,7 @@
         </div>
     </div>
 </div>
-<script>
+<script> 
     var eleme = '#kt_ecommerce_add_meta_description';
     var quill_meta = document.querySelector('#kt_ecommerce_add_meta_description');
     quill_meta = new Quill(eleme, {

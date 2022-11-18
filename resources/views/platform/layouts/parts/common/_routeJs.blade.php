@@ -203,6 +203,15 @@
                    'excel': "{{ route('video-booking.export.excel') }}",
                    'pdf': "{{ route('video-booking.export.pdf') }}",
                }
+          },  
+          'product-attribute': {
+               'delete': "{{ route('product-attribute.delete') }}",
+               'status': "{{ route('product-attribute.status') }}",
+               'add': "{{ route('product-attribute.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('product-attribute.export.excel') }}",
+                   'pdf': "{{ route('product-attribute.export.pdf') }}",
+                }
           },       
                 
        }

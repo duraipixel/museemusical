@@ -1,4 +1,4 @@
-<select name="label_id" id="label_id" aria-label="Select a Brand" data-control="select2" data-placeholder="Select a Label..." class="form-select mb-2 required">
+<select name="label_id" id="label_id" aria-label="Select a Brand" data-control="select2" data-placeholder="Select a Label..." class="form-select mb-2">
     <option value=""></option>
     @isset($productLabels->subCategory)
         @foreach ($productLabels->subCategory as $item)

@@ -2,12 +2,127 @@
 
 // Class definition
 var KTAppEcommerceSaveProduct = function () {
-
+    var cancelButton;
     // Private functions
 
     // Init quill editor
-    const initQuill = () => {
+    const initQuillProduct = () => {
+
+        
         // Define all elements for quill editor
+
+        var pro_eleme = '#kt_ecommerce_add_product_short_description';
+        var quill_product_desc = document.querySelector('#kt_ecommerce_add_product_short_description');
+        var feature_eleme = '#kt_ecommerce_add_product_long_description';
+        var quill_feature_desc = document.querySelector('#kt_ecommerce_add_product_long_description');
+        var tech_eleme = '#kt_ecommerce_add_product_technical_specification';
+        var quill_tech_desc = document.querySelector('#kt_ecommerce_add_product_technical_specification');
+        var spec_eleme = '#kt_ecommerce_add_product_specification';
+        var quill_spec_desc = document.querySelector('#kt_ecommerce_add_product_specification');
+        var meta_eleme = '#kt_ecommerce_add_product_meta_description';
+        var quill_meta_desc = document.querySelector('#kt_ecommerce_add_product_meta_description');
+        //meta descripton
+        quill_meta_desc = new Quill(meta_eleme, {
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Type your text here...',
+            theme: 'snow' // or 'bubble'
+        });
+        quill_meta_desc.on('text-change', function(delta, oldDelta, source) {
+            $('#meta_description').val(quill_meta_desc.container.firstChild.innerHTML);
+        });
+
+
+        // prodcut desctionpt 
+        quill_product_desc = new Quill(pro_eleme, {
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Type your text here...',
+            theme: 'snow' // or 'bubble'
+        });
+        quill_product_desc.on('text-change', function(delta, oldDelta, source) {
+            $('#product_description').val(quill_product_desc.container.firstChild.innerHTML);
+        });
+
+        //product Feature descritpion
+        quill_feature_desc = new Quill(feature_eleme, {
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Type your text here...',
+            theme: 'snow' // or 'bubble'
+        });
+        quill_feature_desc.on('text-change', function(delta, oldDelta, source) {
+            $('#product_feature_information').val(quill_feature_desc.container.firstChild.innerHTML);
+        });
+
+        //product Tech description
+        quill_tech_desc = new Quill(tech_eleme, {
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Type your text here...',
+            theme: 'snow' // or 'bubble'
+        });
+        quill_tech_desc.on('text-change', function(delta, oldDelta, source) {
+            $('#product_technical_information').val(quill_tech_desc.container.firstChild.innerHTML);
+        });
+
+        //product spec description
+        quill_spec_desc = new Quill(spec_eleme, {
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Type your text here...',
+            theme: 'snow' // or 'bubble'
+        });
+        quill_spec_desc.on('text-change', function(delta, oldDelta, source) {
+            $('#product_specification').val(quill_spec_desc.container.firstChild.innerHTML);
+        });
+
+
         const elements = [
             '#kt_ecommerce_add_product_meta_description',
             '#kt_ecommerce_add_product_short_description',
@@ -31,35 +146,12 @@ var KTAppEcommerceSaveProduct = function () {
             dateFormat: "Y-m-d",
         });
 
-        // Loop all elements
-        elements.forEach(element => {
-            // Get quill element
-            let quill = document.querySelector(element);
-
-            // Break if element not found
-            if (!quill) {
-                return;
-            }
-
-            // Init quill --- more info: https://quilljs.com/docs/quickstart/
-            quill = new Quill(element, {
-                modules: {
-                    toolbar: [
-                        [{
-                            header: [1, 2, false]
-                        }],
-                        ['bold', 'italic', 'underline'],
-                        ['image', 'code-block']
-                    ]
-                },
-                placeholder: 'Type your text here...',
-                theme: 'snow' // or 'bubble'
-            });
-        });
+        
+        
     }
 
     // Init tagify
-    const initTagify = () => {
+    const initTagifyProduct = () => {
         // Define all elements for tagify
         const elements = [
             '#kt_ecommerce_add_product_category',
@@ -85,97 +177,7 @@ var KTAppEcommerceSaveProduct = function () {
             });
         });
     }
-    // Init form repeater --- more info: https://github.com/DubFriend/jquery.repeater
-    const initFormRepeater = () => {
-        $('#kt_ecommerce_add_product_options').repeater({
-            initEmpty: false,
-            defaultValues: {
-                'text-input': 'foo'
-            },
-            show: function () {
-                $(this).slideDown();
-                // Init select2 on new repeated items
-                initConditionsSelect2();
-            },
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        });
-    }
-
-    // Init condition select2
-    const initConditionsSelect2 = () => {
-        // Tnit new repeating condition types
-        const allConditionTypes = document.querySelectorAll('[data-kt-ecommerce-catalog-add-product="product_option"]');
-        allConditionTypes.forEach(type => {
-            if ($(type).hasClass("select2-hidden-accessible")) {
-                return;
-            } else {
-                $(type).select2({
-                    minimumResultsForSearch: -1
-                });
-            }
-        });
-    }
     // Init noUIslider
-    const initSlider = () => {
-        var slider = document.querySelector("#kt_ecommerce_add_product_discount_slider");
-        var value = document.querySelector("#kt_ecommerce_add_product_discount_label");
-
-        noUiSlider.create(slider, {
-            start: [10],
-            connect: true,
-            range: {
-                "min": 1,
-                "max": 100
-            }
-        });
-
-        slider.noUiSlider.on("update", function (values, handle) {
-            value.innerHTML = Math.round(values[handle]);
-            var discount = document.getElementById('discount_percentage');
-            discount.value = Math.round(values[handle])
-            if (handle) {
-                value.innerHTML = Math.round(values[handle]);
-            }
-        });
-    }
-
-    // Handle discount options
-    const handleDiscount = () => {
-        const discountOptions = document.querySelectorAll('input[name="discount_option"]');
-        const salePriceEL = document.getElementById('kt_ecommerce_add_product_sale_price');
-        const percentageEl = document.getElementById('kt_ecommerce_add_product_discount_percentage');
-        const fixedEl = document.getElementById('kt_ecommerce_add_product_discount_fixed');
-
-        discountOptions.forEach(option => {
-            option.addEventListener('change', e => {
-                const value = e.target.value;
-
-                switch (value) {
-                    case '2': {
-                        percentageEl.classList.remove('d-none');
-                        salePriceEL.classList.remove('d-none');
-                        fixedEl.classList.add('d-none');
-                        break;
-                    }
-                    case '3': {
-                        percentageEl.classList.add('d-none');
-                        salePriceEL.classList.remove('d-none');
-                        fixedEl.classList.remove('d-none');
-                        break;
-                    }
-                    default: {
-                        percentageEl.classList.add('d-none');
-                        fixedEl.classList.add('d-none');
-                        salePriceEL.classList.add('d-none');
-                        break;
-                    }
-                }
-            });
-        });
-    }
-
     const handleTaxDiscount = () => {
         const discountOptions = document.querySelectorAll('input[name="discount_tax_option"]');
         const percentageEl = document.getElementById('kt_ecommerce_add_product_tax_fixed');
@@ -203,18 +205,7 @@ var KTAppEcommerceSaveProduct = function () {
 
     // Shipping option handler
     const handleShipping = () => {
-        const shippingOption = document.getElementById('kt_ecommerce_add_product_shipping_checkbox');
-        const shippingForm = document.getElementById('kt_ecommerce_add_product_shipping');
-
-        shippingOption.addEventListener('change', e => {
-            const value = e.target.checked;
-
-            if (value) {
-                shippingForm.classList.remove('d-none');
-            } else {
-                shippingForm.classList.add('d-none');
-            }
-        });
+        
     }
 
     // Category status handler
@@ -291,189 +282,22 @@ var KTAppEcommerceSaveProduct = function () {
     }
 
     // Submit form handler
-    const handleSubmit = () => {
-        // Define variables
-        let validator;
-        // Get elements
-        const form = document.getElementById('kt_ecommerce_add_product_form');
-        const submitButton = document.getElementById('kt_ecommerce_add_product_submit');
-        // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
-        validator = FormValidation.formValidation(
-            form,
-            {
-                fields: {
-                    'product_name': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Product Name is required'
-                            }
-                        }
-                    },
-                    'category_id': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Category is required'
-                            }
-                        }
-                    },
-                    'brand_id': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Brand is required'
-                            }
-                        }
-                    },
-                    'label_id': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Product Label is required'
-                            }
-                        }
-                    },
-                    'tag_id': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Product Tag is required'
-                            }
-                        }
-                    },
-                    'base_price': {
-                        validators: {
-                            notEmpty: {
-                                message: 'Base Price is required'
-                            }
-                        }
-                    },
-                },
-                plugins: {
-                    trigger: new FormValidation.plugins.Trigger(),
-                    submitButton: new FormValidation.plugins.SubmitButton(),
-                    bootstrap: new FormValidation.plugins.Bootstrap5({
-                        rowSelector: '.fv-row',
-                        eleInvalidClass: '',
-                        eleValidClass: ''
-                    }),
-                    icon: new FormValidation.plugins.Icon({
-                        valid: 'fa fa-check',
-                        invalid: 'fa fa-times',
-                        validating: 'fa fa-refresh',
-                    }),
-                }
-            }
-        );
+    
 
-        // Handle submit button
-        submitButton.addEventListener('click', e => {
-            e.preventDefault();
-            // Validate form before submit
-            if (validator) {
-                validator.validate().then(function (status) {
-                    console.log('validated!');
-                    if (status == 'Valid') {
-                        //session set for productid to store iamges
-                        var form = $('#kt_ecommerce_add_product_form')[0]; 
-                        var formData = new FormData(form);                                       
-                        
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });  
-                        $.ajax({
-                            url: add_url,
-                            type:"POST",
-                            data: formData,
-                            contentType: false,
-                            cache: false,
-                            processData:false,
-                            beforeSend: function() {
-                                submitButton.setAttribute('data-kt-indicator', 'on');
-                                submitButton.disabled = true;
-                            },
-                            success: function(res) {
-                                if( res.error == 1 ) {
-                                    // Remove loading indication
-                                    submitButton.removeAttribute('data-kt-indicator');
-                                     // Enable button
-                                    submitButton.disabled = false;
-                                    let error_msg = res.message
-                                    Swal.fire({
-                                        text: res.message,
-                                        icon: "error",
-                                        buttonsStyling: false,
-                                        confirmButtonText: "Ok, got it!",
-                                        customClass: {
-                                            confirmButton: "btn btn-primary"
-                                        }
-                                     });
-                                } else {
-                                    
-                                    if( res.product_id ) {
-                                               
-                                        myDropzone.processQueue();
-                                        myDropzone.on("addedfiles", (file) => {
-                                           console.log( myDropzone.hiddenFileInput );
-                                       });
-
-                                       myBrocheureDropzone.processQueue();
-
-                                    }
-
-                                    submitButton.removeAttribute('data-kt-indicator');
-                                     // Enable button
-                                    submitButton.disabled = false;
-
-                                    Swal.fire({
-                                        // text: "Form has been successfully submitted!",
-                                        text: "Thank you! You've updated Products",
-                                        icon: "success",
-                                        buttonsStyling: false,
-                                        confirmButtonText: "Ok, got it!",
-                                        customClass: {
-                                            confirmButton: "btn btn-primary"
-                                        }
-                                    }).then(function (result) {
-                                        if (result.isConfirmed) {
-                                           
-                                            
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                       
-                    } else {
-                        Swal.fire({
-                            html: "Sorry, looks like there are some errors detected, please try again. <br/><br/>Please note that there may be errors in the <strong>General</strong> or <strong>Advanced</strong> tabs",
-                            icon: "error",
-                            buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
-                            customClass: {
-                                confirmButton: "btn btn-primary"
-                            }
-                        });
-                    }
-                });
-            }
-        })
-    }
+    
 
     // Public methods
     return {
         init: function () {
             // Init forms
-            initQuill();
-            initTagify();
+            initQuillProduct();
+            initTagifyProduct();
             initSlider();
-            initFormRepeater();
-            initConditionsSelect2();
             // Handle forms
             handleStatus();
             handleConditions();
-            handleDiscount();
             handleTaxDiscount();
             handleShipping();
-            handleSubmit();
         }
     };
 }();

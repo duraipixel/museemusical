@@ -2,7 +2,9 @@
 
 namespace App\Models\Product;
 
+use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -67,4 +69,40 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
+
+    public function productMeasurement()
+    {
+        return $this->hasOne(ProductMeasurement::class, 'product_id', 'id');
+    }
+
+    public function productDiscount()
+    {
+        return $this->hasOne(ProductDiscount::class, 'product_id', 'id');
+    }
+
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id');
+    }
+
+    public function productMeta()
+    {
+        return $this->hasOne(ProductMetaTag::class, 'product_id', 'id');
+    }
+
+    public function userInfo()
+    {
+        return $this->hasOne(User::class, 'id', 'added_by');
+    }
+
+    public function productRelated()
+    {
+        return $this->hasMany(ProductRelatedRelation::class, 'from_product_id', 'id');
+    }
+
+    public function productCrossSale()
+    {
+        return $this->hasMany(ProductCrossSaleRelation::class, 'from_product_id', 'id');
+    }
+
 }

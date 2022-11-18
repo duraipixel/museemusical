@@ -5,6 +5,11 @@
         @include('platform.layouts.parts._breadcrum')
     </div>
 </div>
+<style>
+    label.error {
+        color: red;
+    }
+</style>
 @endsection
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -21,22 +26,25 @@
                     <!--begin:::Tabs-->
                     <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-n2">
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_add_product_general">General</a>
+                            <a class="nav-link text-active-primary product-tab pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_add_product_general">General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_description">Descriptions</a>
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_description">Descriptions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_filter">Filter</a>
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_filter">Filter</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_meta">Meta Tags</a>
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_meta">Meta Tags</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_related">Related Products</a>
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_related">Related Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_linkes">Links</a>
                         </li>
                     </ul>
-                    <!--end:::Tabs-->
+                    
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general" role="tab-panel">
                             @include('platform.product.form.general.general')
@@ -57,35 +65,46 @@
                         <div class="tab-pane fade" id="kt_ecommerce_add_product_related" role="tab-panel">
                             @include('platform.product.form.related.related')
                         </div>
+
+                        <div class="tab-pane fade" id="kt_ecommerce_add_product_linkes" role="tab-panel">
+                            @include('platform.product.form.links.index')
+                        </div>
                     </div>
-                    <!--end::Tab content-->
                     <div class="d-flex justify-content-end">
-                        <!--begin::Button-->
                         <a href="javascript:void(0);" id="kt_ecommerce_add_product_cancel"  class="btn btn-light me-5">Cancel</a>
-                        <!--end::Button-->
-                        <!--begin::Button-->
+                   
                         <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
                             <span class="indicator-label">Save Changes</span>
                             <span class="indicator-progress">Please wait... 
                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                         </button>
-                        <!--end::Button-->
                     </div>
                 </div>
-                <!--end::Main column-->
             </form>
-            <!--end::Form-->
         </div>
-        <!--end::Container-->
     </div>
-    <!--end::Post-->
 </div>
     
 @endsection
 @section('add_on_script')
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script>
+
+    $('.product-tab').click(function() {
+        
+        let types = $(this).attr('href');
+        var checkArray = ['#kt_ecommerce_add_product_meta', '#kt_ecommerce_add_product_filter', '#kt_ecommerce_add_product_related' ];
+        if( checkArray.includes(types) ) {
+            console.log( 'welcome' );
+        } else {
+            return true;
+        }
+
+    });
+
     var isImage = false;
-    var add_url = "{{ route('products.save') }}";
+    var product_url = "{{ route('products') }}";
+    var product_add_url = "{{ route('products.save') }}";
     var remove_image_url = "{{ route('products.remove.image') }}";
     var remove_brochure_url = "{{ route('products.remove.brochure') }}";
     var brochure_upload_url = "{{ route('products.upload.brochure') }}";
@@ -288,6 +307,172 @@
         });
 
     }
+
+    function addVariationRow() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url:"{{ route('products.attribute.row') }}",
+            type: "POST",
+            success: function(res){
+                // console.log(res);
+                $('#formRepeaterId').append( res );
+            }
+
+        });
+    }
+
+    $("body").on("click", ".removeRow", function () {
+        $(this).parents(".childRow").remove();
+    })
+
+    var productCancelButton;
+    productCancelButton = document.querySelector('#kt_ecommerce_add_product_cancel');
+    productCancelButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                text: "Are you sure you would like to cancel?",
+                icon: "warning",
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: "Yes, cancel it!",
+                cancelButtonText: "No, return",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-active-light"
+                }
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.href = product_url		
+                } else if (result.dismiss === 'cancel') {
+                    Swal.fire({
+                        text: "Your form has not been cancelled!.",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                        }
+                    });
+                }
+            });
+        });
+
+
+        
+// Define variables
+
+// Get elements
+$(document).ready(function() {
+       $('#kt_ecommerce_add_product_form').validate({
+           rules: {
+                product_name : "required",
+                sku : "required",
+                category_id : "required",
+                brand_id : "required",
+                base_price : "required",
+           },
+           messages: {
+                product_name: "Product Name is required",
+                sku: "Product Sku is required",
+                category_id: "Category is required",
+                brand_id: "Brand is required",
+                base_price: "Base is required",
+           },
+           submitHandler: function(form) {
+                var action="{{ route('products.save') }}";
+                var forms = $('#kt_ecommerce_add_product_form')[0]; 
+                var formData = new FormData(forms);                                       
+                
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });  
+                $.ajax({
+                    url: "{{ route('products.save') }}",
+                    type:"POST",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    beforeSend: function() {
+                        submitButton.setAttribute('data-kt-indicator', 'on');
+                        submitButton.disabled = true;
+                    },
+                    success: function(res) {
+                        if( res.error == 1 ) {
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+                             // Enable button
+                            submitButton.disabled = false;
+                            let error_msg = res.message
+                            Swal.fire({
+                                html: res.message,
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                             });
+                        } else {
+                            
+                            if( res.product_id ) {
+                                       
+                                myDropzone.processQueue();
+                                myDropzone.on("addedfiles", (file) => {
+                                //    console.log( myDropzone.hiddenFileInput );
+                               });
+
+                               myBrocheureDropzone.processQueue();
+
+                            }
+
+                            submitButton.removeAttribute('data-kt-indicator');
+                             // Enable button
+                            submitButton.disabled = false;
+
+                            Swal.fire({
+                                // text: "Form has been successfully submitted!",
+                                text: "Thank you! You've updated Products",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            }).then(function (result) {
+                                if (result.isConfirmed) {
+                                   
+                                    window.location.href=product_url
+                                }
+                            });
+                        }
+                    }
+                });
+           }
+       });
+   });
+
+   $(document).ready(function() {
+        $('#related_product').select2();
+        $('#cross_selling_product').select2();
+    });
+
+
+    function addLinks() {
+        var addRow = $('#child-url').clone();
+        $('#formRepeaterUrl').append(addRow);
+    }
+
+    $("body").on("click", ".removeUrlRow", function () {
+        $(this).parents(".childUrlRow").remove();
+    })
+
 </script>
 <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/custom/apps/ecommerce/catalog/save-product.js') }}"></script>

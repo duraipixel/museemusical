@@ -115,7 +115,7 @@
 		@include('platform.layouts.parts._drawer')
 		<!--end::Engage drawers-->
 		<!--begin::Engage toolbar-->
-        @include('platform.layouts.parts._engage_toolbar')
+        {{-- @include('platform.layouts.parts._engage_toolbar') --}}
 		<!--end::Engage toolbar-->
 		<!--begin::Scrolltop-->
         @include('platform.layouts.parts._scrollbar')

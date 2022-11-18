@@ -19,7 +19,7 @@
                 </a>
             </div>
            
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels', 'products.*'])) hover show @endif">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels', 'products','products.*', 'product-attribute'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -60,7 +60,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link @if( request()->routeIs(['products'])) active @endif" href="{{ route('products') }}">
+                        <a class="menu-link @if( request()->routeIs(['products', 'products.*'])) active @endif" href="{{ route('products') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -100,7 +100,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['product-attribute'])) active @endif" href="{{ route('product-attribute') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

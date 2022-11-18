@@ -13,7 +13,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-product-table-toolbar="base">
 
-                        <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
+                        {{-- <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -23,7 +23,7 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Filter</button>
+                            Filter</button> --}}
                         <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true">
                             <div class="px-7 py-5">
                                 <div class="fs-5 text-dark fw-bolder">Filter Options</div>
@@ -53,7 +53,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('product')">
+                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('products')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -87,8 +87,11 @@
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Product </th>
-                                <th> Sku  </th>
+                                <th> SKU </th>
+                                <th> Category </th>
+                                <th> Brand  </th>
                                 <th> Price </th>
+                                <th> Video Booking </th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -129,8 +132,20 @@
                     name: 'sku'
                 },
                 {
+                    data: 'category',
+                    name: 'category'
+                },
+                {
+                    data: 'brand',
+                    name: 'brand'
+                },
+                {
                     data: 'price',
                     name: 'price'
+                },
+                {
+                    data: 'has_video_shopping',
+                    name: 'video_shopping'
                 },
                 {
                     data: 'status',

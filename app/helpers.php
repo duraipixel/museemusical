@@ -10,3 +10,11 @@ if( !function_exists('gSetting') ) {
         }
     }
 }
+
+if( !function_exists('errorArrays') ) {
+    function errorArrays($errors) {
+        return array_map( function($err) {
+            return '<div>'.str_replace(',', '', $err).'</div>';
+        }, $errors);
+    }
+}

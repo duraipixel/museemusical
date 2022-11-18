@@ -54,7 +54,7 @@
     
         <div class="card-header w-100">
             <div class="card-title w-100">
-                <h2 class="w-100 required">Tags
+                <h2 class="w-100 ">Tags
                     <span class="float-end">
                         <a href="javascript:void(0)" onclick="return openForm('sub_category', '', 'product', 'product-tags')" class="btn btn-light-primary btn-sm">
                             <span class="svg-icon svg-icon-2">

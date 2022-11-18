@@ -39,7 +39,7 @@
     </div>
 </div>
 <script>
-    
+    // console.log(config.routes);
     const elementExport = document.getElementById('kt_modal_export_form');
     const submitButton = elementExport.querySelector('[data-kt-exports-modal-action="submit"]');
     submitButton.addEventListener('click', function (e) {

@@ -1,4 +1,3 @@
-@include('platform.layouts.parts.common._routeJs')
 <script>
     
     const element = document.getElementById('kt_modal_export');
@@ -129,6 +128,18 @@
         });    
 
     }); 
+
+    $('.mobile_num').keypress(
+        function(event) {
+            if (event.keyCode == 46 || event.keyCode == 8) {
+                //do nothing
+            } else {
+                if (event.keyCode < 48 || event.keyCode > 57) {
+                    event.preventDefault();
+                }
+            }
+        }
+    );
     
 
     function getProductCategoryDropdown(id = '' ) {

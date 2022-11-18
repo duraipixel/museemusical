@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="mb-10 fv-row">
-                <label class="form-label">SKU</label>
+                <label class="form-label required">SKU</label>
                 <input type="text" name="sku" class="form-control mb-2" placeholder="Sku" value="{{ $info->sku ?? '' }}" />
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="col">
             <div class="col-md-3">
                 <label class="fs-6 fw-bold mb-2">Quantity</label>
-                <input type="number" class="form-control form-control-solid" name="qty" value="{{ $info->quantity ?? '' }}" placeholder="Quantity" id="qty" min="1" max="100" />
+                <input type="number" class="form-control form-control-solid numberonly" name="qty" value="{{ $info->quantity ?? '' }}" placeholder="Quantity" id="qty" min="1" max="100" />
             </div>
         </div>
     </div>
