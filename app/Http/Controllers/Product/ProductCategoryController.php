@@ -89,6 +89,7 @@ class ProductCategoryController extends Controller
         
         return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from', 'productCategory', 'taxAll'));
     }
+    
     public function saveForm(Request $request,$id = null)
     {
         

@@ -22,9 +22,27 @@ class Coupons extends Model
         'minimum_order_value',
         'is_discount_on',
         'coupon_type',
+        'is_applied_all',
         'repeated_use_count',
         'is_discount_on',
         'status',
         'order_by',
     ];
+
+    public function couponProducts()
+    {
+        return $this->hasMany(CouponProduct::class, 'coupon_id', 'id');
+    }
+
+    public function couponCustomers()
+    {
+        return $this->hasMany(CouponCustomer::class, 'coupon_id', 'id');
+    }
+
+    public function couponCategory()
+    {
+        return $this->hasMany(CouponCategory::class, 'coupon_id', 'id');
+    }
+
+
 }

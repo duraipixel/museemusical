@@ -69,26 +69,38 @@ class CouponController extends Controller
         $id                 = $request->id;
         $info               = '';
         $modal_title        = 'Add Coupon';
+        $couponTypeAttributes = '';
         if (isset($id) && !empty($id)) {
             $info           = Coupons::find($id);
+            if( $info->coupon_type == 1 ) {
+                $couponTypeAttributes       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
+            } else if( $info->coupon_type == 2 ) {
+                $couponTypeAttributes = DB::table('customers')->select('id','first_name')->where('status', 'published')->get();
+            } else if( $info->coupon_type == 3 ) {
+                $couponTypeAttributes = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
+            }
             $modal_title    = 'Update Coupon';
         }
         
-        return view('platform.offers.coupon.add_edit_modal', compact('info', 'modal_title'));
+        return view('platform.offers.coupon.add_edit_modal', compact('info', 'modal_title', 'couponTypeAttributes'));
     }
+
     public function couponGendrate(Request $request)
     {
         $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $val =  substr(str_shuffle($permitted_chars), 0, 6);
         return $val;
     }
+
     public function couponType(Request $request)
     {
-        $name = $request->name;
+        $name           = $request->name;
+        $value[]        = "<option value='all'>All</option>";
+
         if($name == '1')
         {
-            $data = DB::table('products')->select('id','product_name')->get();
-            $title = "Product"; 
+            $data       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
+            $title      = "Product"; 
             foreach($data as $key=>$val)
             {
                 $value[] = "<option value=".$val->id.">".$val->product_name."</option>";
@@ -97,8 +109,9 @@ class CouponController extends Controller
         }
         if($name == '2')
         {
-            $data = DB::table('customers')->select('id','first_name')->get();
+            $data = DB::table('customers')->select('id','first_name')->where('status', 'published')->get();
             $title = "Customer"; 
+            
             foreach($data as $key=>$val)
             {
                 $value[] = "<option value=".$val->id.">".$val->first_name."</option>";
@@ -107,7 +120,7 @@ class CouponController extends Controller
         }
         if($name == '3')
         {
-            $data = DB::table('product_categories')->select('id','name')->get();
+            $data = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
             $title = "Categories"; 
             foreach($data as $key=>$val)
             {
@@ -117,8 +130,10 @@ class CouponController extends Controller
         }
 
     }
+
     public function saveForm(Request $request,$id = null)
     {
+
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
                                         'calculate_type' => 'required',
@@ -133,9 +148,17 @@ class CouponController extends Controller
                                         'minimum_order_value'=>'numeric|gt:0',
                                     ]);
 
-
         if ($validator->passes()) {
-            
+            $arrlProduct            = $request->product_id;
+            $isAll                  = false;
+            if( isset( $arrlProduct ) && !empty( $arrlProduct ) ) {
+                $allKey = array_search('all', $arrlProduct);
+                if( isset($arrlProduct[$allKey]) && $arrlProduct[$allKey] == 'all' ) {
+                    $isAll          = true;
+                }
+            }
+
+            $ins['is_applied_all']              = $isAll ? 'yes' :'no';
             $ins['coupon_name']                 = $request->coupon_name;
             $ins['coupon_code']                 = $request->coupon_code;
             $ins['coupon_sku']                  = \Str::slug($request->coupon_name);;
@@ -163,38 +186,75 @@ class CouponController extends Controller
             
             if($request->coupon_type == "1" ) {
 
-                CouponProduct::where('coupon_id',$id)->forceDelete();
-                foreach($request->product_id as $key=>$val)
-                {
-                    $data['coupon_id']          = $info->id;
-                    $data['product_id']         = $val;
-                    $data['quantity']           = $request->quantity;
+                CouponProduct::where('coupon_id',$info->id)->forceDelete();
+                if( $isAll ) {
+                    $couponUseable       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
+                    if( isset( $couponUseable ) && !empty( $couponUseable ) ) {
+                        foreach ($couponUseable as $citem) {
+                            $newCdata['coupon_id']          = $info->id;
+                            $newCdata['product_id']        = $citem->id;
+                            $newCdata['quantity']           = 0;
+                            CouponProduct::Create($newCdata);
+                        }
+                    }
+                } else {
 
-                    CouponProduct::Create($data);
+                    foreach($request->product_id as $key=>$val)
+                    {
+                        $data['coupon_id']          = $info->id;
+                        $data['product_id']         = $val;
+                        $data['quantity']           = 0;
+
+                        CouponProduct::Create($data);
+                    }
                 }
 
             } else if($request->coupon_type == "2" ) {
 
-                CouponCustomer::where('coupon_id',$id)->forceDelete();
-
-                foreach($request->product_id as $cusItem)
-                {
-                    $data['coupon_id']          = $info->id;
-                    $data['customer_id']        = $cusItem;
-                    $data['quantity']           = $request->quantity;
-                    CouponCustomer::Create($data);
+                CouponCustomer::where('coupon_id',$info->id)->forceDelete();
+                if( $isAll ) {
+                    $couponUseable = DB::table('customers')->select('id','first_name')->where('status', 'published')->get();
+                    if( isset( $couponUseable ) && !empty( $couponUseable ) ) {
+                        foreach ($couponUseable as $citem) {
+                            $newCdata['coupon_id']          = $info->id;
+                            $newCdata['customer_id']        = $citem->id;
+                            $newCdata['quantity']           = 0;
+                            CouponCustomer::Create($newCdata);
+                        }
+                    }
+                } else {
+                    foreach($request->product_id as $cusItem)
+                    {
+                        $data['coupon_id']          = $info->id;
+                        $data['customer_id']        = $cusItem;
+                        $data['quantity']           = 0;
+                        CouponCustomer::Create($data);
+                    }
                 }
+                
             } else if($request->coupon_type == "3" ) {
 
-                CouponCategory::where('coupon_id',$id)->forceDelete();
-
-                foreach($request->product_id as $catItem)
-                {
-                    $data['coupon_id']          = $info->id;
-                    $data['category_id']        = $catItem;
-                    $data['quantity']           = $request->quantity;
-                    CouponCategory::Create($data);
+                CouponCategory::where('coupon_id',$info->id)->forceDelete();
+                if( $isAll ) {
+                    $couponUseable = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
+                    if( isset( $couponUseable ) && !empty( $couponUseable ) ) {
+                        foreach ($couponUseable as $citem) {
+                            $newCdata['coupon_id']          = $info->id;
+                            $newCdata['category_id']        = $citem->id;
+                            $newCdata['quantity']           = 0;
+                            CouponCategory::Create($newCdata);
+                        }
+                    }
+                } else {
+                    foreach($request->product_id as $catItem)
+                    {
+                        $data['coupon_id']          = $info->id;
+                        $data['category_id']        = $catItem;
+                        $data['quantity']           = 0;
+                        CouponCategory::Create($data);
+                    }
                 }
+               
             }
             
             $message   = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
@@ -205,6 +265,7 @@ class CouponController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+
     public function changeStatus(Request $request)
     {
         
@@ -216,10 +277,24 @@ class CouponController extends Controller
         return response()->json(['message'=>"You changed the state status!",'status'=>1]);
 
     }
+
+    public function delete(Request $request)
+    {
+        $id         = $request->id;
+        $info       = Coupons::find($id);
+        $info->couponProducts()->delete();
+        $info->couponCustomers()->delete();
+        $info->couponCategory()->delete();
+        $info->forceDelete();
+        return response()->json(['message'=>"Successfully deleted Sub Category!",'status'=>1]);
+    }
+
+
     public function export()
     {
         return Excel::download(new CouponsExport, 'coupon.xlsx');
     }
+
     public function exportPdf()
     {
         $list       = Coupons::select('coupons.*')->get();

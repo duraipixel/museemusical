@@ -42,7 +42,7 @@
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Coupon Code</label>
-                                    <a role="button" onclick="couponGendrate()">Gendrate Code</a>
+                                    <a role="button" onclick="couponGendrate()">Generate Code</a>
                                     <input type="text" name="coupon_code" id="coupon_code" class="form-control form-control-solid mb-3 mb-lg-0"
                                         placeholder="Coupon Code" value="{{ $info->coupon_code ?? '' }}" />
                                 </div>
@@ -54,10 +54,10 @@
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Coupon Type</label>
                                     
-                                        <select name="calculate_type" id="calculate_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type ..." class="form-select mb-2">
-                                            <option value="percentage">Percentage</option>
-                                            <option value="fixed_amount">Fixed Amount</option>
-                                        </select>
+                                    <select name="calculate_type" id="calculate_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type ..." class="form-select mb-2">
+                                        <option value="percentage">Percentage</option>
+                                        <option value="fixed_amount">Fixed Amount</option>
+                                    </select>
                                 </div>
                             </div>
                            
@@ -93,22 +93,38 @@
                                     <label class="required fw-bold fs-6 mb-2">Coupon Applied for</label>
                                     <select name="coupon_type" id="coupon_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type..." class="form-select mb-2">
                                         <option value="">Select a Coupon Type</option>
-                                        <option value="1" @if(isset($info->coupon_type) == "1") selected @endif>Product</option>
-                                        <option value="2" @if(isset($info->coupon_type) == "2") selected @endif>Customer</option>
-                                        <option value="3" @if(isset($info->coupon_type) == "3") selected @endif>Category</option>
+                                        <option value="1" @if(isset($info->coupon_type) && $info->coupon_type == "1") selected="selected" @endif>Product</option>
+                                        <option value="2" @if(isset($info->coupon_type) && $info->coupon_type == "2") selected="selected" @endif>Customer</option>
+                                        <option value="3" @if(isset($info->coupon_type) && $info->coupon_type == "3") selected="selected" @endif>Category</option>
                                     </select>
                                 </div>
                             </div>
+                           
                             <div class="col-md-6" id="couponData">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2" id="title">Select Item</label>
                                     <select name="product_id[]" id="product_id" aria-label="Select a item" multiple data-control="select2" data-placeholder="Select Item..." class="form-select mb-2">
+                                        <option value="all" @if(isset($info->is_applied_all) && $info->is_applied_all == 'yes') selected="selected" @endif> All </option>
+                                        @if(isset($couponTypeAttributes) && !empty( $couponTypeAttributes ) )
+                                            @foreach ($couponTypeAttributes as $item)
+                                                <option value="{{ $item->id }}"  
+                                                    @if( isset($info->couponProducts) && in_array( $item->id, array_column( $info->couponProducts->toArray(), 'product_id'))  ) 
+                                                    selected="selected" 
+                                                    @elseif( isset($info->couponCustomers) && in_array( $item->id, array_column( $info->couponCustomers->toArray(), 'customer_id')) ) 
+                                                    selected="selected" 
+                                                    @elseif( isset($info->couponCategory) && in_array( $item->id, array_column( $info->couponCategory->toArray(), 'category_id')) )
+                                                    selected="selected" 
+                                                    @endif
+                                                    >
+                                                    {{ $item->name ?? $item->product_name ?? $item->first_name ?? '' }}
+                                                </option>    
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                           
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Minimum Order Value</label>
@@ -133,7 +149,7 @@
                                         placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
-                            <div class="col-md-6" id="repeated_customer_count" style="display: none;">
+                            <div class="col-md-6" id="repeated_customer_count" @if(isset($info->coupon_type) && $info->coupon_type == 2) @else style="display: none;" @endif>
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Repeated Coupon</label>
                                     <input type="text" name="repeated_coupon" class="form-control form-control-solid mb-3 mb-lg-0 number"
@@ -235,9 +251,12 @@
         
 </script>
 <script>
+    setTimeout(() => {
         $('#calculate_type').select2();
         $('#coupon_type').select2();
         $('#product_id').select2();
+    }, 200);
+        
 
 
     var add_url = "{{ route('coupon.save') }}";
