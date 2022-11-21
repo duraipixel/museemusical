@@ -64,8 +64,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                                    <label class="fw-bold fs-6 mb-2">Short Description</label>
+                                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
                                 </div>
                                 <div class="fv-row mb-7">
                                     <label class="fw-bold fs-6 mb-2">Tagline</label>

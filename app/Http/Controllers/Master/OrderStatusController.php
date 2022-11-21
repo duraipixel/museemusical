@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\OrderStatus;
 use App\Exports\OrderStatusExport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
 use Auth;
 use Excel;
 use PDF;
@@ -27,18 +25,14 @@ class OrderStatusController extends Controller
             $datatables =  Datatables::of($data)
             
                 ->filter(function ($query) use ($keywords, $status) {
-                    // dd($status);
+                    
                     if ($status) {
                         return $query->where('order_statuses.status', $status);
                     }
-                    if ($keywords) {
-                        $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('order_statuses.status_name', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('order_statuses.description', 'like', "%{$keywords}%")->orWhere('order_statuses.order', 'like', "%{$keywords}%")->orWhereDate("order_statuses.created_at", $date);
-                    }
+                    
                 })
                 ->addIndexColumn()
                
-              
                 ->addColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'order-status\')">'.ucfirst($row->status).'</a>';
                     return $status;
@@ -64,6 +58,7 @@ class OrderStatusController extends Controller
         return view('platform.master.order-status.index');
 
     }
+    
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -75,6 +70,7 @@ class OrderStatusController extends Controller
         }
         return view('platform.master.order-status.add_edit_modal', compact('info', 'modal_title'));
     }
+
     public function saveForm(Request $request,$id = null)
     {
         // dd($request->all());
@@ -85,16 +81,16 @@ class OrderStatusController extends Controller
 
         if ($validator->passes()) {
            
-            $ins['status_name']                 = $request->status_name;
-            $ins['description']                 = $request->description;
-            $ins['order']                       = $request->order;
+            $ins['status_name']     = $request->status_name;
+            $ins['description']     = $request->description;
+            $ins['order']           = $request->order;
             $ins['added_by']        = Auth::id();
            
             if($request->status == "1")
             {
-                $ins['status']          = 'published';
+                $ins['status']      = 'published';
             } else {
-                $ins['status']          = 'unpublished';
+                $ins['status']      = 'unpublished';
             }
             $error                  = 0;
 
@@ -102,11 +98,12 @@ class OrderStatusController extends Controller
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
         else {
-            $error      = 1;
-            $message    = $validator->errors()->all();
+            $error                  = 1;
+            $message                = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -115,6 +112,7 @@ class OrderStatusController extends Controller
         // echo 1;
         return response()->json(['message'=>"Successfully deleted order status!",'status'=>1]);
     }
+
     public function changeStatus(Request $request)
     {
         $id             = $request->id;
@@ -126,6 +124,7 @@ class OrderStatusController extends Controller
         return response()->json(['message'=>"You changed the order status!",'status'=>1]);
 
     }
+
     public function export()
     {
         return Excel::download(new OrderStatusExport, 'order_status.xlsx');
@@ -133,7 +132,6 @@ class OrderStatusController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
         $list       = OrderStatus::select('order_statuses.*','users.name as users_name')->join('users', 'users.id', '=', 'order_statuses.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.order_status.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('order_status.pdf');

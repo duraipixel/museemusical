@@ -26,8 +26,8 @@
             <input type="text" name="tag_line" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tag line" value="{{ $info->tag_line ?? '' }}" />
         </div>
         <div class="fv-row mb-7">
-            <label class="fw-bold fs-6 mb-2">Discription</label>
-            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Discription" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+            <label class="fw-bold fs-6 mb-2">Description</label>
+            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
         </div>
         <div class="mb-7 mt-10">
             <label class="fw-bold fs-6 mb-2"> Published </label>

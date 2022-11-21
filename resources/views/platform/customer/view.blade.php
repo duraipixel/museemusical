@@ -41,21 +41,9 @@
                         <div class="tab-pane fade" id="kt_ecommerce_order" role="tab-panel">
                             @include('platform.customer.form.order.order')
                         </div>
-
-                      
                     </div>
                     <!--end::Tab content-->
                     <div class="d-flex justify-content-end">
-                        <!--begin::Button-->
-                        {{-- <a href="javascript:void(0);" id="kt_ecommerce_add_product_cancel"  class="btn btn-light me-5">Cancel</a> --}}
-                        <!--end::Button-->
-                        <!--begin::Button-->
-                        {{-- <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
-                            <span class="indicator-label">Save Changes</span>
-                            <span class="indicator-progress">Please wait... 
-                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                        </button> --}}
-                        <!--end::Button-->
                     </div>
                 </div>
                 <!--end::Main column-->

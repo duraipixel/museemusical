@@ -458,7 +458,7 @@ $(document).ready(function() {
        });
    });
 
-   $(document).ready(function() {
+    $(document).ready(function() {
         $('#related_product').select2();
         $('#cross_selling_product').select2();
     });
@@ -466,7 +466,7 @@ $(document).ready(function() {
 
     function addLinks() {
         var addRow = $('#child-url').clone();
-        $('#formRepeaterUrl').append(addRow);
+        $("#child-url").clone().appendTo("#formRepeaterUrl").find("input[type='text']").val("");                
     }
 
     $("body").on("click", ".removeUrlRow", function () {

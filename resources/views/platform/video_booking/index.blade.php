@@ -54,14 +54,10 @@
                         </span>
                         Add Video Booking
                     </button>
-
                 </div>
-
             </div>
-
         </div>
-        <!--end::Card header-->
-        <!--begin::Card body-->
+     
         <div class="card-body py-4">
             <div class="table-responsive">
                 <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="video_booking-table">
@@ -81,9 +77,9 @@
                 </table>
             </div>
         </div>
-        <!--end::Card body-->
+       
     </div>
-    <!--end::Card-->
+  
 </div>
 
 @endsection
@@ -152,6 +148,7 @@
         "aaSorting": [],
         "pageLength": 25
     });
+    
     $('.dataTables_wrapper').addClass('position-relative');
         $('.dataTables_info').addClass('position-absolute');
         $('.dataTables_filter label input').addClass('form-control form-control-solid w-250px ps-14');

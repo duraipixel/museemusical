@@ -88,7 +88,7 @@
             columns: [
                 {
                     data: 'name',
-                    name: 'category',
+                    name: 'name',
                 },
                 {
                     data: 'parent_name',
@@ -100,7 +100,7 @@
                 },
                 {
                     data: 'tax_name',
-                    name: 'tax'
+                    name: 'tax_name'
                 },
                 {
                     data: 'users_name',

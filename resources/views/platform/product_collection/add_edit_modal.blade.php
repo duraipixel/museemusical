@@ -18,7 +18,7 @@
 </div>
 <!--end::Header-->
 <!--begin::Body-->
-<form id="add_main_category_form" class="form" action="#" enctype="multipart/form-data">
+<form id="add_product_attribute_form" class="form" action="#" enctype="multipart/form-data">
 
     <div class="card-body position-relative" id="kt_activities_body">
         <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
@@ -33,85 +33,61 @@
 
                       
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
+                        <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
 
                       
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Category Name</label>
-                            <input type="text" name="category_name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Category Name" value="{{ $info->category_name ?? '' }}" />
-                        </div>
-                        <div class="col-md-4">
-
-                            <div class="fv-row mb-7">
-                                <label class="d-block fw-bold fs-6 mb-5">Image</label>
-
-                                <div class="form-text">Allowed file types: png, jpg,
-                                    jpeg.</div>
-                            </div>
-                            <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
-                            <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
-                                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                @if ($info->image ?? '')
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('/') . $info->image }});">
-                                    </div>
-                                @else
-                                    <div class="image-input-wrapper w-125px h-125px manual-image"
-                                        id="manual-image"
-                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                    </div>
-                                @endif
-                                <label
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                    title="Change avatar">
-                                    <i class="bi bi-pencil-fill fs-7"></i>
-                                    <input type="file" name="avatar" id="readUrl"
-                                        accept=".png, .jpg, .jpeg" />
-                                    {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
-                                    {{-- <input type="file" name="userImage" id="userImage"> --}}
-                                </label>
-
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                    title="Cancel avatar">
-                                    <i class="bi bi-x fs-2"></i>
-                                </span>
-                                <span
-                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                    title="Remove avatar1">
-                                    <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <br>
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Short Description</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="description" id="short_description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                            <label class="required fw-bold fs-6 mb-2">Collection Name</label>
+                            <input type="text" name="collection_name" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Collection Name" value="{{ $info->collection_name ?? '' }}" />
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Tagline</label>
-                            <input type="text" name="tagline" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
+                            <label class=" fw-bold fs-6 mb-2">Tagline</label>
+                            <input type="text" name="tag_line" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Tag Line" value="{{ $info->tag_line ?? '' }}" />
                         </div>
+
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                            <label class=" fw-bold fs-6 mb-2">Products</label>
+                            <select name="collection_product[]" id="collection_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2" required>
+                                <option value=""></option>
+                                @isset($products)
+                                    @foreach ($products as $item)
+                                    <option value="{{ $item->id }}"  @if( isset($info->collectionProducts) && in_array( $item->id, array_column( $info->collectionProducts->toArray(), 'product_id'))  ) selected="selected" @endif>
+                                        {{-- <option value="{{ $item->id }}" > --}}
+                                            {{ $item->product_name }}
+                                        </option>
+                                    @endforeach
+                                @endisset
+                            </select>
+            
                         </div>
                         
-                     
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
+                        <div class="row mb-7">
+                            <div class="col-md-4">
+                                <div class="mb-7">
+                                    <label class="fw-bold fs-6 mb-2"> Show on Home Page </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"  name="show_home_page" value="yes"  @if(isset( $info->show_home_page) && $info->show_home_page == 'yes') checked @endif />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-7">
+                                    <label class="fw-bold fs-6 mb-2"> Published </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == 'published') checked @endif />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-7">
+                                    <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                    <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                        placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                </div>
                             </div>
                         </div>
-                     
                     </div>
                 </div>
             </div>
@@ -136,33 +112,11 @@
         margin: 0;
     }
 </style>
-<script>
-    //image image script
-     document.getElementById('readUrl').addEventListener('change', function() {
-        // console.log("111");
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#manual-image').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
-        $('#image_remove_image').val("yes");
-        $('#manual-image').css({
-            'background-image': ''
-        });
-    });
-   
-</script>
 
 <script>
-    $('#country').select2();
+    $(document).ready(function() {
+        $('#collection_product').select2();
+    });
  $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
@@ -174,13 +128,13 @@
             }
         }
     );
-    var add_url = "{{ route('main_category.save') }}";
+    var add_url = "{{ route('product-collection.save') }}";
 
     // Class definition
     var KTUsersAddRole = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
-        const form = element.querySelector('#add_main_category_form');
+        const form = element.querySelector('#add_product_attribute_form');
         const modal = new bootstrap.Modal(element);
 
         const drawerEl = document.querySelector("#kt_common_add_form");
@@ -194,10 +148,17 @@
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'category_name': {
+                        'collection_name': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Category name is required'
+                                    message: 'Collection is required'
+                                }
+                            }
+                        },
+                        'collection_product': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Products is required'
                                 }
                             }
                         },
@@ -240,7 +201,7 @@
             // Submit button handler
             const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
-            $('#add_main_category_form').submit(function(e) {
+            $('#add_product_attribute_form').submit(function(e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
@@ -248,12 +209,11 @@
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
 
-                            var formData = new FormData(document.getElementById(
-                                "add_main_category_form"));
+                            var formData = new FormData(document.getElementById("add_product_attribute_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
-
+                            var from = $('#from').val();
                             //call ajax call
                             $.ajax({
                                 url: add_url,
@@ -263,8 +223,7 @@
                                 contentType: false,
                                 beforeSend: function() {},
                                 success: function(res) {
-
-
+                                    console.log( res.views );
                                     if (res.error == 1) {
                                         // Remove loading indication
                                         submitButton.removeAttribute(
@@ -282,7 +241,10 @@
                                             }
                                         });
                                     } else {
-                                        dtTable.ajax.reload();
+                                        if( !from ) {
+                                            dtTable.ajax.reload();
+                                        }
+                                        
                                         Swal.fire({
                                             text: res.message,
                                             icon: "success",
@@ -294,8 +256,9 @@
                                         }).then(function(result) {
                                             if (result
                                                 .isConfirmed) {
-                                                commonDrawer
-                                                    .hide();
+                                                commonDrawer.hide();
+                                                if( res.from ) {
+                                                }
 
                                             }
                                         });
@@ -319,42 +282,19 @@
                 }
             });
 
-
         }
-
-        // Select all handler
-        const handleSelectAll = () => {
-            // Define variables
-            const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-            const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-            // Handle check state
-            selectAll.addEventListener('change', e => {
-                // Apply check state to all checkboxes
-                allCheckboxes.forEach(c => {
-                    c.checked = e.target.checked;
-                });
-            });
-
-        }
-
 
         return {
             // Public functions
             init: function() {
                 initAddRole();
-                handleSelectAll();
             }
         };
     }();
 
     // On document ready
-
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
     });
 
-    $('.common-checkbox').click(function() {
-        $("#kt_order_stauts_select_all").prop("checked", false);
-    });
 </script>

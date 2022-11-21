@@ -128,12 +128,14 @@ class CouponController extends Controller
                                         'coupon_code' => 'required|string|unique:coupons,coupon_code,' . $id . ',id,deleted_at,NULL',
                                         'start_date' => 'required',
                                         'end_date' => 'required',
-                                        'repeated_coupon'=>'numeric|gt:0',
+                                        'repeated_coupon'=> 'required_if:coupon_type,==,2',
                                         'quantity'=>'numeric|gt:0',
                                         'minimum_order_value'=>'numeric|gt:0',
                                     ]);
 
+
         if ($validator->passes()) {
+            
             $ins['coupon_name']                 = $request->coupon_name;
             $ins['coupon_code']                 = $request->coupon_code;
             $ins['coupon_sku']                  = \Str::slug($request->coupon_name);;
@@ -145,8 +147,8 @@ class CouponController extends Controller
             $ins['minimum_order_value']         = $request->minimum_order_value;
             $ins['is_discount_on']              = "No";
             $ins['quantity']                    = $request->quantity;
-            $ins['repeated_use_count']          = $request->repeated_coupon;
-            $ins['order_by']                    = $request->order_by;
+            $ins['repeated_use_count']          = $request->repeated_coupon ?? 0;
+            $ins['order_by']                    = $request->order_by ?? 0;
             $ins['added_by']            = Auth::id();
 
             if($request->status == "1")
@@ -158,42 +160,40 @@ class CouponController extends Controller
             $error                  = 0;
            
             $info                   = Coupons::updateOrCreate(['id' => $id], $ins);
-            $storeId = $info->id;
-            if($request->coupon_type == "1" && !empty($storeId)){
+            
+            if($request->coupon_type == "1" ) {
+
                 CouponProduct::where('coupon_id',$id)->forceDelete();
                 foreach($request->product_id as $key=>$val)
                 {
-                    $data['coupon_id']          = $storeId;
+                    $data['coupon_id']          = $info->id;
                     $data['product_id']         = $val;
                     $data['quantity']           = $request->quantity;
 
-                    $couponProduct = CouponProduct::Create($data);
+                    CouponProduct::Create($data);
                 }
 
+            } else if($request->coupon_type == "2" ) {
 
-            }
-            else if($request->coupon_type == "2" && !empty($storeId)){
                 CouponCustomer::where('coupon_id',$id)->forceDelete();
 
-                foreach($request->product_id as $key=>$val)
+                foreach($request->product_id as $cusItem)
                 {
-                    $data['coupon_id']          = $storeId;
-                    $data['customer_id']         = $val;
+                    $data['coupon_id']          = $info->id;
+                    $data['customer_id']        = $cusItem;
                     $data['quantity']           = $request->quantity;
-
-                    $couponProduct = CouponCustomer::Create($data);
+                    CouponCustomer::Create($data);
                 }
-            }
-            else if($request->coupon_type == "3" && !empty($storeId)){
+            } else if($request->coupon_type == "3" ) {
+
                 CouponCategory::where('coupon_id',$id)->forceDelete();
 
-                foreach($request->product_id as $key=>$val)
+                foreach($request->product_id as $catItem)
                 {
-                    $data['coupon_id']          = $storeId;
-                    $data['category_id']         = $val;
+                    $data['coupon_id']          = $info->id;
+                    $data['category_id']        = $catItem;
                     $data['quantity']           = $request->quantity;
-
-                    $couponProduct = CouponCategory::Create($data);
+                    CouponCategory::Create($data);
                 }
             }
             

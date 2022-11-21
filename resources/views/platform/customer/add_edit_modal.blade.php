@@ -217,6 +217,7 @@
     document.getElementById("dob").flatpickr({
             enableTime: false,
 			dateFormat: "Y-m-d",
+            maxDate: "2008-12-31"
         });
  $('.mobile_num').keypress(
         function(event) {

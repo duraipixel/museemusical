@@ -5,7 +5,7 @@
             <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
                 data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
                 class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Users List</h1>
+                <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Order Status</h1>
                 <span class="h-20px border-gray-300 border-start mx-4"></span>
 
                 <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
@@ -33,7 +33,6 @@
         .paginate_button {
             padding: 5px 14px;
         }
-
         a.paginate_button.current {
             background: #009EF7;
             color: white;
@@ -47,7 +46,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-order_stauts-table-toolbar="base">
 
-                        <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
+                        {{-- <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -57,7 +56,8 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Filter</button>
+                            Filter
+                        </button> --}}
                         <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true">
                             <div class="px-7 py-5">
                                 <div class="fs-5 text-dark fw-bolder">Filter Options</div>

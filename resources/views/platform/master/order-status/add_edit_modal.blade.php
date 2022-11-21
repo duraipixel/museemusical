@@ -40,13 +40,11 @@
 
                         <div class="fv-row mb-7">
                             <label class=" fw-bold fs-6 mb-2">Description</label>
-                            {{-- <input type="email" name="description" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="description" value="{{ $info->description ?? '' }}" /> --}}
-                                <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                            <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
                         </div>
                         <div class="fv-row mb-7">
                             <label class=" fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order" class="form-control form-control-solid mb-3 mb-lg-0"
+                            <input type="number" name="order" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Shorting Order" value="{{ $info->order ?? '' }}" />
                         </div>
                        
@@ -85,9 +83,19 @@
 <script>
 
     var add_url = "{{ route('order-status.save') }}";
-
+    $('.mobile_num').keypress(
+        function(event) {
+            if (event.keyCode == 46 || event.keyCode == 8) {
+                //do nothing
+            } else {
+                if (event.keyCode < 48 || event.keyCode > 57) {
+                    event.preventDefault();
+                }
+            }
+        }
+    );
     // Class definition
-    var KTUsersAddRole = function() {
+    var KTOrderStatus = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
         const form = element.querySelector('#add_order_status_form');
@@ -98,7 +106,7 @@
 
 
         // Init add schedule modal
-        var initAddRole = () => {
+        var initAddOrderStatus = () => {
 
             // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
             var validator = FormValidation.formValidation(
@@ -228,43 +236,19 @@
                     });
                 }
             });
-
-
         }
-
-        // Select all handler
-        const handleSelectAll = () => {
-            // Define variables
-            const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-            const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-            // Handle check state
-            selectAll.addEventListener('change', e => {
-                // Apply check state to all checkboxes
-                allCheckboxes.forEach(c => {
-                    c.checked = e.target.checked;
-                });
-            });
-
-        }
-
 
         return {
             // Public functions
             init: function() {
-                initAddRole();
-                handleSelectAll();
+                initAddOrderStatus();
             }
         };
     }();
 
     // On document ready
-
     KTUtil.onDOMContentLoaded(function() {
-        KTUsersAddRole.init();
+        KTOrderStatus.init();
     });
 
-    $('.common-checkbox').click(function() {
-        $("#kt_order_stauts_select_all").prop("checked", false);
-    });
 </script>

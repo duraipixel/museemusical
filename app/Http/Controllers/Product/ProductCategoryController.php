@@ -17,6 +17,7 @@ use Auth;
 use Excel;
 use Illuminate\Support\Facades\Storage;
 use PDF;
+use Image;
 
 class ProductCategoryController extends Controller
 {
@@ -128,18 +129,34 @@ class ProductCategoryController extends Controller
                 $ins['status']          = 'unpublished';
             }
             $error                      = 0;
-            $categeryInfo = ProductCategory::updateOrCreate(['id' => $id], $ins);
-            $categoryId = $categeryInfo->id;
+            $categeryInfo               = ProductCategory::updateOrCreate(['id' => $id], $ins);
+            $categoryId                 = $categeryInfo->id;
 
             if ($request->hasFile('categoryImage')) {
                
-                $filename       = time() . '_' . $request->categoryImage->getClientOriginalName();
-                $directory      = 'productCategory/'.$categoryId;
-                $filename       = $directory.'/'.$filename.'/';
+                $imagName               = time() . '_' . $request->categoryImage->getClientOriginalName();
+                $directory              = 'productCategory/'.$categoryId;
+                $filename               = $directory.'/'.$imagName.'/';
                 Storage::deleteDirectory('public/'.$directory);
                 Storage::disk('public')->put($filename, File::get($request->categoryImage));
                 
-                $categeryInfo->image = $filename;
+                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/thumbnail"))) {
+                    mkdir(storage_path("app/public/productCategory/".$categoryId."/thumbnail"), 0775, true);
+                }
+                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/carousel"))) {
+                    mkdir(storage_path("app/public/productCategory/".$categoryId."/carousel"), 0775, true);
+                }
+
+                $thumbnailPath          = 'public/productCategory/'.$categoryId.'/thumbnail/' . $imagName;
+                Image::make($request->file('categoryImage'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+
+                $carouselPath          = 'public/productCategory/'.$categoryId.'/carousel/' . $imagName;
+                Image::make($request->file('categoryImage'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
+
+                // $carouselPath          = $directory.'/carousel/'.$imagName;
+                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
+
+                $categeryInfo->image    = $filename;
                 $categeryInfo->save();
             }
 

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers;
 
 use App\Exports\CustomerExport;
-use App\Http\Controllers\Controller;
 use App\Models\Category\MainCategory;
 use App\Models\Master\City;
 use App\Models\Master\Country;
@@ -37,11 +36,16 @@ class CustomerController extends Controller
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('customers.first_name','like',"%{$keywords}%")->orWhere('customers.last_name', 'like', "%{$keywords}%")->orWhere('customers.email', 'like', "%{$keywords}%")->orWhere('customers.mobile_no', 'like', "%{$keywords}%")->orWhere('customers.customer_no', 'like', "%{$keywords}%")->orWhereDate("customers.created_at", $date);
+                        return $query->where('customers.first_name','like',"%{$keywords}%")
+                                ->orWhere('customers.last_name', 'like', "%{$keywords}%")
+                                ->orWhere('customers.email', 'like', "%{$keywords}%")
+                                ->orWhere('customers.mobile_no', 'like', "%{$keywords}%")
+                                ->orWhere('customers.customer_no', 'like', "%{$keywords}%")
+                                ->orWhere('customers.status', 'like', "%{$keywords}%")
+                                ->orWhereDate("customers.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
-               
                 ->addColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'customer\')">'.ucfirst($row->status).'</a>';
                     return $status;
@@ -135,7 +139,7 @@ class CustomerController extends Controller
                 $customerInfo->save();
             }
             
-            $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+            $message    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
 
         } else {
             $error      = 1;
@@ -143,6 +147,7 @@ class CustomerController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -150,6 +155,7 @@ class CustomerController extends Controller
         $info->delete();
         return response()->json(['message'=>"Successfully deleted customer!",'status'=>1]);
     }
+
     public function changeStatus(Request $request)
     {
         
@@ -161,23 +167,25 @@ class CustomerController extends Controller
         return response()->json(['message'=>"You changed the state status!",'status'=>1]);
 
     }
+
     public function export()
     {
         return Excel::download(new CustomerExport, 'customers.xlsx');
     }
+
     public function exportPdf()
     {
         $list       = Customer::select('customers.*')->get();
         $pdf        = PDF::loadView('platform.exports.customer.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('customer.pdf');
     }
+
     public function view($id)
     {
-        $breadCrum = array('Customer','Customer View');
-        $title      = 'Customer View';
-        $info = Customer::where('id',$id)->first();
-    
-        $customerAddress = CustomerAddress::get();
+        $breadCrum          = array('Customer','Customer View');
+        $title              = 'Customer View';
+        $info               = Customer::where('id',$id)->first();
+        $customerAddress    = CustomerAddress::get();
         return view('platform.customer.view', compact('title', 'breadCrum','info','customerAddress'));
 
     }

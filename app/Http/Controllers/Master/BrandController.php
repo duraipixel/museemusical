@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\BrandsExport;
 use App\Models\Master\Brands;
-use App\Models\Master\State;
-use Illuminate\Support\Facades\DB;
 use DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Auth;
 use Excel;
+use Illuminate\Support\Facades\Storage;
 use PDF;
+use Image;
 
 class BrandController extends Controller
 {
@@ -43,8 +43,11 @@ class BrandController extends Controller
                 })
                 ->editColumn('brand_logo', function ($row) {
                     if ($row->brand_logo) {
-
-                        $path = asset($row->brand_logo);
+                        
+                        // print_r( $url );
+                        $brandLogoPath = 'brands/'.$row->id.'/option1/'.$row->brand_logo;
+                        $url = Storage::url($brandLogoPath);
+                        $path = asset($url);
                         $brand_logo = '<div class="symbol symbol-45px me-5"><img src="' . $path . '" alt="" /><div>';
                     } else {
                         $path = asset('userImage/no_Image.jpg');
@@ -52,17 +55,7 @@ class BrandController extends Controller
                     }
                     return $brand_logo;
                 })
-                ->editColumn('brand_banner', function ($row) {
-                    if ($row->brand_banner) {
-
-                        $path = asset($row->brand_banner);
-                        $brand_banner = '<div class="symbol symbol-45px me-5"><img src="' . $path . '" alt="" /><div>';
-                    } else {
-                        $path = asset('userImage/no_Image.jpg');
-                        $brand_banner = '<div class="symbol symbol-45px me-5"><img src="' . $path . '" alt="" /><div>';
-                    }
-                    return $brand_banner;
-                })
+               
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                     return $created_at;
@@ -77,7 +70,7 @@ class BrandController extends Controller
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'brand_logo','brand_banner']);
+                ->rawColumns(['action', 'status', 'brand_logo']);
             return $datatables->make(true);
         }
         $breadCrum  = array('Masters', 'Brands');
@@ -108,55 +101,18 @@ class BrandController extends Controller
         $validator      = Validator::make($request->all(), [
                                 'brand_name' => 'required|string|unique:brands,brand_name,' . $id . ',id,deleted_at,NULL',
                                 'avatar_logo' => 'mimes:jpeg,png,jpg',
-                                'avatar_banner' => 'mimes:jpeg,png,jpg'
+                                'avatar_banner' => 'mimes:jpeg,png,jpg',
+                                'order_by' => 'required|unique:brands,order_by,' . $id . ',id,deleted_at,NULL',
+
                             ]);
-        $brand_id = '';
+        $brand_id       = '';
+
         if ($validator->passes()) {
-            
-            if ($request->hasFile('avatar_logo')) {
-
-                $filename       = time() . '_' . $request->avatar_logo->getClientOriginalName();
-                $folder_name    = 'brand/' . $request->brand_name . '/brand_logo/';
-                
-                $existID        = '';
-                if($id)
-                {
-                    $existID = Brands::find($id);
-                    $deleted_file = $existID->brand_logo;
-                    if(File::exists($deleted_file)) {
-                        File::delete($deleted_file);
-                    }
-                }
-               
-                $path           = $folder_name . $filename;
-                $request->avatar_logo->move(public_path($folder_name), $filename);
-                $ins['brand_logo']   = $path;
-            }
-
-            if ($request->hasFile('avatar_banner')) {
-                $filename       = time() . '_' . $request->avatar_banner->getClientOriginalName();
-                $folder_name    = 'brand/' . $request->brand_name . '/brand_banner/';
-                $existID = '';
-                if($id)
-                {
-                    $existID = Brands::find($id);
-                    $deleted_file = $existID->brand_banner;
-                    if(File::exists($deleted_file)) {
-                        File::delete($deleted_file);
-                    }
-                }
-                
-                $path           = $folder_name . $filename;
-                $request->avatar_banner->move(public_path($folder_name), $filename);
-                $ins['brand_banner']   = $path;
-            }
+                                 
             if ($request->image_remove_logo == "yes") {
                 $ins['brand_logo'] = '';
             }
-            if ($request->image_remove_banner == "yes") {
-                $ins['brand_banner'] = '';
-            }
-
+ 
             $ins['brand_name']          = $request->brand_name;
             $ins['short_description']   = $request->short_description;
             $ins['notes']               = $request->notes;
@@ -171,11 +127,60 @@ class BrandController extends Controller
             $error                  = 0;
             $info                   = Brands::updateOrCreate(['id' => $id], $ins);
             $brand_id               = $info->id;
-            $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
-        } 
-        else {
-            $error      = 1;
-            $message    = $validator->errors()->all();
+
+            /***   upload images for brand in diffrent sizes */
+            /**
+             * 
+             * Image size option-1: 350x690
+             * Image size option-2: 350x336
+             * Image Size option-3: 722x752
+             * Image size option 4: 350x629
+             * 
+             */
+
+            if ($request->hasFile('brand_logo')) {
+                
+                $directory = 'brands/'.$brand_id;
+                Storage::deleteDirectory('public/'.$directory);
+
+                $file                   = $request->file('brand_logo');
+                $imageName              = uniqid().$file->getClientOriginalName();
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/option1"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/option1"), 0775, true);
+                }
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/option2"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/option2"), 0775, true);
+                }
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/option3"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/option3"), 0775, true);
+                }
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/option4"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/option4"), 0775, true);
+                }
+
+                $option1Path            = 'public/brands/'.$brand_id.'/option1/' . $imageName;
+                Image::make($file)->resize(350,690)->save(storage_path('app/' . $option1Path));
+
+                $option2Path            = 'public/brands/'.$brand_id.'/option2/' . $imageName;
+                Image::make($file)->resize(350,336)->save(storage_path('app/' . $option2Path));
+
+                $option3Path            = 'public/brands/'.$brand_id.'/option3/' . $imageName;
+                Image::make($file)->resize(350,336)->save(storage_path('app/' . $option3Path));
+
+                $option4Path            = 'public/brands/'.$brand_id.'/option4/' . $imageName;
+                Image::make($file)->resize(350,336)->save(storage_path('app/' . $option4Path)); 
+                $info->brand_logo       = $imageName;
+                $info->update();
+
+            }
+
+            $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+
+        } else {
+
+            $error                      = 1;
+            $message                    = $validator->errors()->all();
+
         }
         return response()->json(['error' => $error, 'message' => $message, 'brand_id' => $brand_id]);
     }

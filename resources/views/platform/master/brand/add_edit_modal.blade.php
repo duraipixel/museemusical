@@ -44,17 +44,23 @@
 
                                 <div class="mb-7">
                                     <label class="d-block fw-bold fs-6 mb-5">Brand Log</label>
-
-                                    <div class="form-text">Allowed file types: png, jpg,
-                                        jpeg.</div>
+                                    <div class="form-text">
+                                        Allowed file types: png, jpg,
+                                        jpeg.
+                                    </div>
                                 </div>
                                 <input id="image_remove_logo" type="hidden" name="image_remove_logo" value="no">
                                 <div class="image-input image-input-outline manual-image-logo" data-kt-image-input="true"
                                     style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
                                     @if ($info->brand_logo ?? '')
+                                    @php
+                                        $brandLogoPath = 'brands/'.$info->id.'/option1/'.$info->brand_logo;
+                                        $url = Storage::url($brandLogoPath);
+                                        $path = asset($url);
+                                    @endphp     
                                         <div class="image-input-wrapper w-125px h-125px manual-image-logo"
                                             id="manual-image-logo"
-                                            style="background-image: url({{ asset('/') . $info->brand_logo }});">
+                                            style="background-image: url({{ asset($path) }});">
                                         </div>
                                     @else
                                         <div class="image-input-wrapper w-125px h-125px manual-image-logo"
@@ -67,7 +73,7 @@
                                         data-kt-image-input-action="change" data-bs-toggle="tooltip"
                                         title="Change avatar">
                                         <i class="bi bi-pencil-fill fs-7"></i>
-                                        <input type="file" name="avatar_logo" id="readUrllogo"
+                                        <input type="file" name="brand_logo" id="readUrllogo"
                                             accept=".png, .jpg, .jpeg" />
                                         {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
                                         {{-- <input type="file" name="userImage" id="userImage"> --}}
@@ -88,7 +94,7 @@
                                 </div>
                             </div>
                         
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
 
                                 <div class="mb-7">
                                     <label class="d-block fw-bold fs-6 mb-5">Brand Banner</label>
@@ -132,7 +138,7 @@
                                         <i class="bi bi-x fs-2" id="avatar_remove_banner"></i>
                                     </span>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Short Discription</label>
@@ -144,8 +150,8 @@
                                 <input type="text" name="notes" id="notes" class="form-control form-control-solid mb-3 mb-lg-0" value="{{ $info->notes ?? '' }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                                <label class="fw-bold fs-6 mb-2">Shorting Order</label>
+                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                             </div>
                         </div>
@@ -180,7 +186,17 @@
     }
 </style>
 <script>
-    
+     $('.mobile_num').keypress(
+        function(event) {
+            if (event.keyCode == 46 || event.keyCode == 8) {
+                //do nothing
+            } else {
+                if (event.keyCode < 48 || event.keyCode > 57) {
+                    event.preventDefault();
+                }
+            }
+        }
+    );
      document.getElementById('readUrllogo').addEventListener('change', function() {
         
         if (this.files[0]) {

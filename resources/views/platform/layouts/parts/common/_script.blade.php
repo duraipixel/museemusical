@@ -6,7 +6,9 @@
     function openExportForm(export_type) {
         
         $('#export_type').val( export_type );
-        $('#export_modal_title').html( 'EXPORT '+ (export_type.replace("_", " ")).toUpperCase() );
+        var title = (export_type.replace("_", " ")).toUpperCase();
+        title = (export_type.replace("-", " ")).toUpperCase();
+        $('#export_modal_title').html( 'EXPORT '+ title );
         exportModal.show();
     }
 

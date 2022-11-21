@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Controllers\Product;
+
+use App\Exports\ProductCollectionExport;
+use App\Http\Controllers\Controller;
+use App\Models\Product\Product;
+use App\Models\Product\ProductCollection;
+use App\Models\Product\ProductCollectionProduct;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use DataTables;
+use Excel;
+use PDF;
+
+class ProductCollectionController extends Controller
+{
+    public function index(Request $request)
+    {
+        $title                  = "Product Collectons";
+        $breadCrum              = array('Products', 'Product Collections');
+
+        if ($request->ajax()) {
+            $data               = ProductCollection::all();
+            $status             = $request->get('status');
+            $keywords           = $request->get('search')['value'];
+            $datatables         = Datatables::of($data)
+                
+                ->addIndexColumn()
+                ->addColumn('status', function ($row) {
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-collection\')">'.ucfirst($row->status).'</a>';
+                    return $status;
+                })
+                ->addColumn('status', function ($row) {
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-collection\')">'.ucfirst($row->status).'</a>';
+                    return $status;
+                })
+                ->editColumn('no_of_products', function ($row) {
+                    return count($row->collectionProducts);
+                })
+                ->addColumn('action', function ($row) {
+                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'product-collection\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                                    <i class="fa fa-edit"></i>
+                                </a>';
+                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'product-collection\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                                <i class="fa fa-trash"></i></a>';
+                    return $edit_btn . $del_btn;
+                })
+                ->rawColumns(['action', 'status', 'no_of_products']);
+            return $datatables->make(true);
+        }
+        return view('platform.product_collection.index', compact('title','breadCrum'));
+    }
+
+    public function modalAddEdit(Request $request)
+    {
+        
+        $title              = "Add Product Collection";
+        $breadCrum          = array('Products', 'Add Product Collection');
+
+        $id                 = $request->id;
+        $from               = $request->from;
+        $info               = '';
+        $modal_title        = 'Add Product Collection';
+        $products           = Product::where('status', 'published')->get();
+        $productCategory    = ProductCollection::where('status', 'published')->get();
+
+        if (isset($id) && !empty($id)) {
+            $info           = ProductCollection::find($id);
+            $modal_title    = 'Update Product Collection';
+        }
+        
+        return view('platform.product_collection.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'products'));
+    }
+
+    public function saveForm(Request $request,$id = null)
+    {
+        
+        $id             = $request->id;
+        $validator      = Validator::make($request->all(), [
+                            'collection_name' => 'required|string|unique:product_collections,collection_name,' . $id,
+                            'collection_product' => 'required|array',
+                        ]);
+
+        $categoryId         = '';
+        if ($validator->passes()) {
+            
+            $ins['collection_name']     = $request->collection_name;
+            $ins['order_by']            = $request->order_by;
+            $ins['tag_line']            = $request->tag_line;
+            $ins['show_home_page']      = $request->show_home_page ?? 'no';
+
+            if($request->status)
+            {
+                $ins['status']          = 'published';
+            } else {
+                $ins['status']          = 'unpublished';
+            }
+            $error                      = 0;
+            $collectionInfo             = ProductCollection::updateOrCreate(['id' => $id], $ins);
+            $collection_id              = $collectionInfo->id;
+            
+            if( isset($request->collection_product) && !empty($request->collection_product) ) {
+                ProductCollectionProduct::where('product_collection_id', $collection_id)->delete();
+                $iteration = 1;
+                foreach ( $request->collection_product as $proItem ) {
+                    $insRelated['product_collection_id'] = $collection_id;
+                    $insRelated['product_id']   = $proItem;
+                    $insRelated['order_by']     = $iteration;
+                    ProductCollectionProduct::create($insRelated);
+                    $iteration++;
+                }
+            }
+       
+            $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+        } else {
+            $error      = 1;
+            $message    = $validator->errors()->all();
+        }
+        return response()->json(['error' => $error, 'message' => $message, 'categoryId' => $categoryId, 'from' => $request->from ?? '']);
+    }
+
+    public function delete(Request $request)
+    {
+        $id         = $request->id;
+        $info       = ProductCollection::find($id);
+        $info->forceDelete();    
+        return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
+    }
+
+    public function changeStatus(Request $request)
+    {
+        
+        $id             = $request->id;
+        $status         = $request->status;
+        $info           = ProductCollection::find($id);
+        $info->status   = $status;
+        $info->update();
+        
+        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProductCollectionExport, 'prodcutCollections.xlsx');
+    }
+    
+    public function exportPdf()
+    {
+        $list       = ProductCollection::all();
+        $pdf        = PDF::loadView('platform.exports.product.product_collection_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
+        return $pdf->download('productCollections.pdf');
+    }
+
+}

@@ -42,7 +42,7 @@
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Coupon Code</label>
-                                    <a onclick="couponGendrate()">Gendrate Code</a>
+                                    <a role="button" onclick="couponGendrate()">Gendrate Code</a>
                                     <input type="text" name="coupon_code" id="coupon_code" class="form-control form-control-solid mb-3 mb-lg-0"
                                         placeholder="Coupon Code" value="{{ $info->coupon_code ?? '' }}" />
                                 </div>
@@ -55,8 +55,8 @@
                                     <label class="required fw-bold fs-6 mb-2">Coupon Type</label>
                                     
                                         <select name="calculate_type" id="calculate_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type ..." class="form-select mb-2">
-                                            <option value="Percentage">Percentage</option>
-                                            <option value="Fixed Amount">Fixed Amount</option>
+                                            <option value="percentage">Percentage</option>
+                                            <option value="fixed_amount">Fixed Amount</option>
                                         </select>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                         placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="repeated_customer_count" style="display: none;">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Repeated Coupon</label>
                                     <input type="text" name="repeated_coupon" class="form-control form-control-solid mb-3 mb-lg-0 number"
@@ -209,17 +209,22 @@
         }
         
         $('#coupon_type').change(function(){
-            var data = $("#coupon_type").val();
-            // $('couponData').show();
+
+            var coupon_type = $("#coupon_type").val();
 
             $.ajax({
                 type: "POST",
                 url: "{{ route('coupon.coupon-apply' ) }}",
-                data: {name:data},
+                data: {name:coupon_type},
 
                 success: function(res) {
                     $('#title').html(res.title);
                     $('#product_id').html(res.data);
+                    if( coupon_type == 2 ) {
+                        $('#repeated_customer_count').show();
+                    } else {
+                        $('#repeated_customer_count').hide();
+                    }
                 }
             });
             
@@ -317,13 +322,6 @@
                             validators: {
                                 notEmpty: {
                                     message: 'Quantity is required'
-                                }
-                            }
-                        },
-                        'repeated_coupon': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'Repeated Coupon is required'
                                 }
                             }
                         },

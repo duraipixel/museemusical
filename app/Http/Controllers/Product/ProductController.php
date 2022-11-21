@@ -13,6 +13,7 @@ use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductCrossSaleRelation;
 use App\Models\Product\ProductDiscount;
 use App\Models\Product\ProductImage;
+use App\Models\Product\ProductLink;
 use App\Models\Product\ProductMeasurement;
 use App\Models\Product\ProductMetaTag;
 use App\Models\Product\ProductRelatedRelation;
@@ -147,6 +148,10 @@ class ProductController extends Controller
                             'filter_variation.*' => 'nullable|required_with:filter_variation',
                             'filter_variation_value' => 'nullable|required_with:filter_variation|array',
                             'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
+                            'url' => 'nullable|array',
+                            'url.*' => 'nullable|required_with:url',
+                            'url_type' => 'nullable|required_with:url|array',
+                            'url_type.*' => 'nullable|required_with:url.*',
 
                         ]);
 
@@ -263,6 +268,29 @@ class ProductController extends Controller
                     ProductCrossSaleRelation::create($insCrossRelated);
                 }
             }
+
+            if( isset( $request->url ) && !empty( $request->url ) )  {
+
+                $url = $request->url;
+                $url_type = $request->url_type;
+                
+                $linkArr                        = array_combine($url_type, $url);
+                
+                if( isset( $linkArr ) && !empty( $linkArr )) {
+                    
+                    ProductLink::where('product_id', $product_id)->delete();
+                    foreach ( $linkArr as $akey => $avalue ) {
+
+                        $insAttr['url']         = $avalue;
+                        $insAttr['url_type']    = $akey;
+                        $insAttr['product_id']  = $product_id;
+
+                        ProductLink::create($insAttr);
+
+                    }
+                }
+
+            } 
             
             $error                          = 0;
             $message                        = '';
@@ -285,6 +313,7 @@ class ProductController extends Controller
         if( $request->hasFile('file') && isset( $product_id ) ) {
             $files = $request->file('file');
             $imageIns = [];
+            $iteration = 1;
             foreach ($files as $file) {
                 $imageName = uniqid().$file->getClientOriginalName();
                 if (!is_dir(storage_path("app/public/products/".$product_id."/thumbnail"))) {
@@ -316,9 +345,12 @@ class ProductController extends Controller
                     'preview_path'  => $fileNamePreview,
                     'product_id'    => $product_id,
                     'file_size'     => $fileSize,
-                    'is_default'    => "0",
+                    'is_default'    => ($iteration == 1) ? 1: "0",
+                    'order_by'      => $iteration,
                     'status'        => 'published'
                 );
+
+                $iteration++;
 
             }
             if( !empty( $imageIns ) ) {

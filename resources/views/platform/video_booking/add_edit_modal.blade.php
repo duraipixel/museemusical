@@ -27,7 +27,6 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-
                       
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
 
@@ -56,14 +55,14 @@
                         <div class="col-md-6">
                             <div class="fv-row mb-7">
                                 <label class="required fw-bold fs-6 mb-2">Contact Email</label>
-                                <input type="email" name="contact_email" class="form-control form-control-solid mb-3 mb-lg-0 "
+                                <input type="text" name="contact_email" class="form-control form-control-solid mb-3 mb-lg-0 "
                                 placeholder="Contact Email" value="{{ $info->contact_email ?? '' }}" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="fv-row mb-7">
                                 <label class="required fw-bold fs-6 mb-2">Contact Phone</label>
-                                <input type="text" name="contact_phone" maxlength="10" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                <input type="text" name="contact_phone" minlength="10" maxlength="10" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                     placeholder="Contact Phone" value="{{ $info->contact_phone ?? '' }}" />
                             </div>
                         </div>
@@ -75,7 +74,7 @@
                                 <select name="product_id" id="product_id" aria-label="Select a Product" class="form-select form-select-solid fw-bolder">
                                     <option value="">Select a Product...</option>
                                     @foreach($product as $key=>$val)
-                                    <option value="{{ $val->id }}" @if(isset( $info->product_id) && $info->product_id == $val->id) selected @endif >{{ $val->first_name }}</option>
+                                    <option value="{{ $val->id }}" @if(isset( $info->product_id) && $info->product_id == $val->id) selected @endif >{{ $val->product_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -104,8 +103,6 @@
                             </div>
                         </div>
                       </div>
-                     
-                       
                      
                     </div>
                 </div>
@@ -187,6 +184,9 @@
                             validators: {
                                 notEmpty: {
                                     message: 'Email is required'
+                                },
+                                emailAddress: {
+                                    message: 'The value is not a valid email address',
                                 }
                             }
                         },

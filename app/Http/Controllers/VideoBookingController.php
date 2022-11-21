@@ -8,21 +8,19 @@ use App\Models\Product\Product;
 use App\Models\VideoBooking;
 use Illuminate\Http\Request;
 use DataTables;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\File;
 use Excel;
 use PDF;
 class VideoBookingController extends Controller
 {
     public function index(Request $request)
     {
-      
 
         $title                  = "Video Booking";
         $breadCrum              = array('Video Booking');
         if ($request->ajax()) {
+
             $data               = VideoBooking::select('video_bookings.*','customers.first_name as first_name','products.product_name as product_name')
                                     ->join('customers','video_bookings.customer_id','=', 'customers.id')
                                     ->leftjoin( 'products','video_bookings.product_id','=', 'products.id');
@@ -53,8 +51,11 @@ class VideoBookingController extends Controller
                 ->rawColumns(['action', 'product', 'customer']);
             return $datatables->make(true);
         }
+
         return view('platform.video_booking.index',compact('title','breadCrum'));
+
     }
+
     public function modalAddEdit(Request $request)
     {
         $title              = "Add Video Booking";
@@ -65,7 +66,7 @@ class VideoBookingController extends Controller
         $info               = '';
         $modal_title        = 'Add Video Booking';
         $customer           = Customer::get();
-        $product           = Product::get();
+        $product            = Product::get();
         if (isset($id) && !empty($id)) {
             $info           = VideoBooking::find($id);
             $modal_title    = 'Update Video Booking';
@@ -75,14 +76,13 @@ class VideoBookingController extends Controller
      
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
+        
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
                                         'customer_id' => 'required',
                                         'contact_name' => 'required',
                                         'contact_email' => 'required|email',
                                         'contact_phone' => 'required|numeric|digits:10',
-                                        // 'product_id' => 'required',
                                         'reach_type' => 'required',
                                         'preferred_date' => 'required',
                                         'preferred_time' => 'required',
@@ -98,14 +98,14 @@ class VideoBookingController extends Controller
             $ins['reach_type']                  = $request->reach_type;
             $ins['preferred_date']              = $request->preferred_date;
             $ins['preferred_time']              = $request->preferred_time;
-            $error                  = 0;
+            $error                              = 0;
 
-            $info                   = VideoBooking::updateOrCreate(['id' => $id], $ins);
-            $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+            $info                               = VideoBooking::updateOrCreate(['id' => $id], $ins);
+            $message                            = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
         else {
-            $error      = 1;
-            $message    = $validator->errors()->all();
+            $error                              = 1;
+            $message                            = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
@@ -115,7 +115,7 @@ class VideoBookingController extends Controller
         $id         = $request->id;
         $info       = VideoBooking::find($id);
         $info->delete();
-        // echo 1;
+        
         return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
     }
     public function export()
@@ -125,7 +125,6 @@ class VideoBookingController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
         $list       = VideoBooking::select('video_bookings.*',  'customers.first_name as first_name')
         ->join('customers', 'customers.id', '=', 'video_bookings.customer_id')->get();
         $pdf        = PDF::loadView('platform.exports.video_booking.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
