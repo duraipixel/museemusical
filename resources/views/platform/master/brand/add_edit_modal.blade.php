@@ -253,7 +253,7 @@
             }
         }
     );
-    var add_url = "{{ route('brand.save') }}";
+    var add_url = "{{ route('brands.save') }}";
 
     // Class definition
     var KTUsersAddRole = function() {
@@ -416,7 +416,5 @@
         KTUsersAddRole.init();
     });
 
-    $('.common-checkbox').click(function() {
-        $("#kt_order_stauts_select_all").prop("checked", false);
-    });
+   
 </script>

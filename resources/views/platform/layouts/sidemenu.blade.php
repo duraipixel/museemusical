@@ -399,7 +399,7 @@
                   
                 </div>
             </div>
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brand', 'city', 'state', 'pincode', 'main_category', 'sub_category'])) hover show @endif">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -414,7 +414,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
                     <div class="menu-item">
-                        <a class="menu-link @if( request()->routeIs(['brand'])) active @endif" href="{{ route('brand') }}">
+                        <a class="menu-link @if( request()->routeIs(['brands'])) active @endif" href="{{ route('brands') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('brand')">
+                        <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('brands')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -83,7 +83,7 @@
                             Export
                         </button>
 
-                        <button type="button" class="btn btn-primary" onclick="return openForm('brand')">
+                        <button type="button" class="btn btn-primary" onclick="return openForm('brands')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -139,7 +139,7 @@
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('brand') }}",
+                "url": "{{ route('brands') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
                 }

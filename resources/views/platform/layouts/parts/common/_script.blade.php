@@ -100,6 +100,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+               
                 $.ajax({
                     url: config.routes[module_type].status,
                     type: 'POST',

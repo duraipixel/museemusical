@@ -116,7 +116,7 @@
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('product') }}",
+                "url": "{{ route('products') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
                 }

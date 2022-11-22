@@ -1,6 +1,8 @@
 <form id="kt_account_global_form" class="form" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="id" value="1">
+    <input type="hidden" name="type" value="general">
+
     <div class="card-body border-top p-9">
       
         <div class="row mb-6">

@@ -47,7 +47,7 @@
 
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 float-number"
                                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
                         

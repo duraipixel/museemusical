@@ -21,8 +21,8 @@
                    'excel': "{{ route('users.export.excel') }}",
                    'pdf': "{{ route('users.export.pdf') }}",
                }
-          },
-          'order-status': {
+            },
+            'order-status': {
                
                'delete': "{{ route('order-status.delete') }}",
                'status': "{{ route('order-status.status') }}",
@@ -31,8 +31,8 @@
                    'excel': "{{ route('order-status.export.excel') }}",
                    'pdf': "{{ route('order-status.export.pdf') }}",
                }
-          },
-          'country': {
+            },
+            'country': {
                
                'delete': "{{ route('country.delete') }}",
                'status': "{{ route('country.status') }}",
@@ -41,8 +41,8 @@
                    'excel': "{{ route('country.export.excel') }}",
                    'pdf': "{{ route('country.export.pdf') }}",
                }
-          },
-          'state': {
+            },
+            'state': {
                
                'delete': "{{ route('state.delete') }}",
                'status': "{{ route('state.status') }}",
@@ -51,8 +51,8 @@
                    'excel': "{{ route('state.export.excel') }}",
                    'pdf': "{{ route('state.export.pdf') }}",
                }
-          },
-          'pincode': {
+            },
+            'pincode': {
                
                'delete': "{{ route('pincode.delete') }}",
                'status': "{{ route('pincode.status') }}",
@@ -61,8 +61,8 @@
                    'excel': "{{ route('pincode.export.excel') }}",
                    'pdf': "{{ route('pincode.export.pdf') }}",
                }
-          },
-          'city': {
+            },
+            'city': {
                
                'delete': "{{ route('city.delete') }}",
                'status': "{{ route('city.status') }}",
@@ -71,18 +71,18 @@
                    'excel': "{{ route('city.export.excel') }}",
                    'pdf': "{{ route('city.export.pdf') }}",
                }
-          },
-          'brand': {
+            },
+            'brands': {
                
-               'delete': "{{ route('brand.delete') }}",
-               'status': "{{ route('brand.status') }}",
-               'add': "{{ route('brand.add.edit') }}",
+               'delete': "{{ route('brands.delete') }}",
+               'status': "{{ route('brands.status') }}",
+               'add': "{{ route('brands.add.edit') }}",
                'export': {
-                   'excel': "{{ route('brand.export.excel') }}",
-                   'pdf': "{{ route('brand.export.pdf') }}",
+                   'excel': "{{ route('brands.export.excel') }}",
+                   'pdf': "{{ route('brands.export.pdf') }}",
                }
-          },
-          'main_category': {
+            },
+            'main_category': {
                
                'delete': "{{ route('main_category.delete') }}",
                'status': "{{ route('main_category.status') }}",
@@ -91,9 +91,8 @@
                    'excel': "{{ route('main_category.export.excel') }}",
                    'pdf': "{{ route('main_category.export.pdf') }}",
                }
-          },
-          
-          'sub_category': {
+            },          
+            'sub_category': {
                
                'delete': "{{ route('sub_category.delete') }}",
                'status': "{{ route('sub_category.status') }}",
@@ -102,8 +101,8 @@
                    'excel': "{{ route('sub_category.export.excel') }}",
                    'pdf': "{{ route('sub_category.export.pdf') }}",
                }
-          },
-          'product-tags': {
+            },
+            'product-tags': {
                
                'delete': "{{ route('product-tags.delete') }}",
                'status': "{{ route('product-tags.status') }}",
@@ -112,7 +111,7 @@
                    'excel': "{{ route('product-tags.export.excel') }}",
                    'pdf': "{{ route('product-tags.export.pdf') }}",
                }
-          },
+            },
             'product-labels': {
                
                 'delete': "{{ route('product-labels.delete') }}",
@@ -123,7 +122,7 @@
                    'pdf': "{{ route('product-labels.export.pdf') }}",
                 }
             },
-          'testimonials': {
+            'testimonials': {
                
                'delete': "{{ route('testimonials.delete') }}",
                'status': "{{ route('testimonials.status') }}",
@@ -132,8 +131,8 @@
                    'excel': "{{ route('testimonials.export.excel') }}",
                    'pdf': "{{ route('testimonials.export.pdf') }}",
                }
-          },
-          'products': {
+            },
+            'products': {
                'delete': "{{ route('products.delete') }}",
                'status': "{{ route('products.status') }}",
                'add': "{{ route('products.add.edit') }}",
@@ -141,61 +140,60 @@
                    'excel': "{{ route('products.export.excel') }}",
                    'pdf': "{{ route('products.export.pdf') }}",
                }
-          },
-          'walkthroughs': {
-               
+            },
+            'walkthroughs': {               
                'delete': "{{ route('walkthroughs.delete') }}",
                'status': "{{ route('walkthroughs.status') }}",
                'add': "{{ route('walkthroughs.add.edit') }}",
                'export': {
                    'excel': "{{ route('walkthroughs.export.excel') }}",
                    'pdf': "{{ route('walkthroughs.export.pdf') }}",
-               }
-          },
-          'product-category': {
+                }
+            },
+            'product-category': {
                'delete': "{{ route('product-category.delete') }}",
                'status': "{{ route('product-category.status') }}",
                'add': "{{ route('product-category.add.edit') }}",
                'export': {
                    'excel': "{{ route('product-category.export.excel') }}",
                    'pdf': "{{ route('product-category.export.pdf') }}",
-               }
-          },
-          'tax': {
+                }
+            },
+            'tax': {
                'delete': "{{ route('tax.delete') }}",
                'status': "{{ route('tax.status') }}",
                'add': "{{ route('tax.add.edit') }}",
                'export': {
                    'excel': "{{ route('tax.export.excel') }}",
                    'pdf': "{{ route('tax.export.pdf') }}",
-               }
-          },
-          'coupon': {
+                }
+            },
+            'coupon': {
                'delete': "{{ route('coupon.delete') }}",
                'status': "{{ route('coupon.status') }}",
                'add': "{{ route('coupon.add.edit') }}",
                'export': {
                    'excel': "{{ route('coupon.export.excel') }}",
                    'pdf': "{{ route('coupon.export.pdf') }}",
-               }
-          },
-          'email-template': {
+                }
+            },
+            'email-template': {
                'delete': "{{ route('email-template.delete') }}",
                'status': "{{ route('email-template.status') }}",
                'add': "{{ route('email-template.add.edit') }}",
                
-          },   
-          'customer': {
+            },   
+            'customer': {
                'delete': "{{ route('customer.delete') }}",
                'status': "{{ route('customer.status') }}",
                'add': "{{ route('customer.add.edit') }}",
                'export': {
                    'excel': "{{ route('customer.export.excel') }}",
                    'pdf': "{{ route('customer.export.pdf') }}",
-               }
+                }
                
-          },   
-          'video-booking': {
+            },   
+            'video-booking': {
                'delete': "{{ route('video-booking.delete') }}",
                'status': "{{ route('video-booking.status') }}",
                'add': "{{ route('video-booking.add.edit') }}",
@@ -203,8 +201,8 @@
                    'excel': "{{ route('video-booking.export.excel') }}",
                    'pdf': "{{ route('video-booking.export.pdf') }}",
                }
-          },  
-          'product-attribute': {
+            },  
+            'product-attribute': {
                'delete': "{{ route('product-attribute.delete') }}",
                'status': "{{ route('product-attribute.status') }}",
                'add': "{{ route('product-attribute.add.edit') }}",
@@ -212,8 +210,8 @@
                    'excel': "{{ route('product-attribute.export.excel') }}",
                    'pdf': "{{ route('product-attribute.export.pdf') }}",
                 }
-          },    
-          'product-collection': {
+            },    
+            'product-collection': {
                'delete': "{{ route('product-collection.delete') }}",
                'status': "{{ route('product-collection.status') }}",
                'add': "{{ route('product-collection.add.edit') }}",
@@ -221,7 +219,25 @@
                    'excel': "{{ route('product-collection.export.excel') }}",
                    'pdf': "{{ route('product-collection.export.pdf') }}",
                 }
-          },       
+            },    
+            'sms-template': {
+               'delete': "{{ route('sms-template.delete') }}",
+               'status': "{{ route('sms-template.status') }}",
+               'add': "{{ route('sms-template.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('sms-template.export.excel') }}",
+                   'pdf': "{{ route('sms-template.export.pdf') }}",
+                }
+            },  
+            'payment-gateway': {
+               'delete': "{{ route('payment-gateway.delete') }}",
+               'status': "{{ route('payment-gateway.status') }}",
+               'add': "{{ route('payment-gateway.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('payment-gateway.export.excel') }}",
+                   'pdf': "{{ route('payment-gateway.export.pdf') }}",
+                }
+            },      
                 
        }
    };

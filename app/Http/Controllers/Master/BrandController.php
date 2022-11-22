@@ -21,6 +21,7 @@ class BrandController extends Controller
     public function index(Request $request)
     {
         $title = "Brand";
+        
         if ($request->ajax()) {
             $data =Brands::select('brands.*','users.name as users_name')->join('users', 'users.id', '=', 'brands.added_by');
             $status = $request->get('status');
@@ -38,7 +39,7 @@ class BrandController extends Controller
                 ->addIndexColumn()
                
                 ->addColumn('status', function ($row) {
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'brand\')">'.ucfirst($row->status).'</a>';
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'brands\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 ->editColumn('brand_logo', function ($row) {
@@ -62,10 +63,10 @@ class BrandController extends Controller
                 })
 
                 ->addColumn('action', function ($row) {
-                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'brand\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'brands\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
                 </a>';
-                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'brand\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'brands\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
                     return $edit_btn . $del_btn;

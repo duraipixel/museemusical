@@ -49,13 +49,13 @@
                         </div>
                         <br>
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Discription</label>
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Discription" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                            <label class="fw-bold fs-6 mb-2">Description</label>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
                         </div>
                        
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
+                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
                         
@@ -93,7 +93,7 @@
 </style>
 
 <script>
-    $('#country').select2();
+    
  $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
@@ -195,7 +195,6 @@
                                 beforeSend: function() {},
                                 success: function(res) {
 
-
                                     if (res.error == 1) {
                                         // Remove loading indication
                                         submitButton.removeAttribute(
@@ -250,42 +249,18 @@
                 }
             });
 
-
         }
-
-        // Select all handler
-        const handleSelectAll = () => {
-            // Define variables
-            const selectAll = form.querySelector('#kt_order_stautsorder_status_select_all');
-            const allCheckboxes = form.querySelectorAll('[type="checkbox"]');
-
-            // Handle check state
-            selectAll.addEventListener('change', e => {
-                // Apply check state to all checkboxes
-                allCheckboxes.forEach(c => {
-                    c.checked = e.target.checked;
-                });
-            });
-
-        }
-
-
         return {
             // Public functions
             init: function() {
-                initAddRole();
-                handleSelectAll();
+                initAddRole();               
             }
         };
     }();
 
     // On document ready
-
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
     });
-
-    $('.common-checkbox').click(function() {
-        $("#kt_order_stauts_select_all").prop("checked", false);
-    });
+   
 </script>

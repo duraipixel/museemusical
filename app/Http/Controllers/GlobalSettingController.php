@@ -18,6 +18,15 @@ class GlobalSettingController extends Controller
         return view('platform.global.index',compact('data', 'breadCrum', 'title'));
     }
 
+    public function getTab(Request $request)
+    {
+        
+        $type = $request->tabType;
+        $data = GlobalSettings::first();
+        
+        return view('platform.global._'.$type.'_form', compact('data') );
+    }
+
     public function saveForm(Request $request)
     {
         

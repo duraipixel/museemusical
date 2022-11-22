@@ -97,26 +97,26 @@ class TaxController extends Controller
 
         if ($validator->passes()) {
             
-            $ins['title']               = $request->title;
-            $ins['pecentage']   = $request->pecentage;
-            $ins['order_by']            = $request->order_by;
+            $ins['title']           = $request->title;
+            $ins['pecentage']       = $request->pecentage;
+            $ins['order_by']        = $request->order_by ?? 1;
             if($request->status == "1")
             {
-                $ins['status']          = 'published';
+                $ins['status']      = 'published';
             } else {
-                $ins['status']          = 'unpublished';
+                $ins['status']      = 'unpublished';
             }
             $error                  = 0;
 
             $info                   = Tax::updateOrCreate(['id' => $id], $ins);
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
-        } 
-        else {
+        } else {
             $error      = 1;
             $message    = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -124,6 +124,7 @@ class TaxController extends Controller
         $info->delete();
         return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
     }
+    
     public function changeStatus(Request $request)
     {
         
