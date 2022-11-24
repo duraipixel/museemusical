@@ -10,11 +10,10 @@
     <thead>
         <tr>
             <th>Added Date</th>
-            <th>Country</th>
-            <th>State</th>
-            <th>Pincode</th>
-            <th>City</th>
+            <th>Banner Title</th>
             <th>Description</th>
+            <th>Tag Line</th>
+            <th>Order By</th>
             <th>Added By</th>
             <th>Status</th>
           
@@ -25,13 +24,12 @@
             @foreach ($list as $item)
             <tr>
                 <td>{{ $item->created_at }}</td>
-                <td>{{ $item->country_name }}</td>
-                <td>{{ $item->state_name }}</td>
-                <td>{{ $item->pincode }}</td>
-                <td>{{ $item->city }}</td>
+                <td>{{ $item->title }}</td>
                 <td>{{ $item->description }}</td>
+                <td>{{ $item->tag_line }}</td>
+                <td>{{ $item->order_by }}</td>
                 <td>{{ $item->users_name }}</td>
-                <td>{{  $item->user_status }}</td>
+                <td>{{  $item->status }}</td>
                 
             </tr>
             @endforeach

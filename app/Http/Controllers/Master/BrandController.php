@@ -129,16 +129,7 @@ class BrandController extends Controller
             $info                   = Brands::updateOrCreate(['id' => $id], $ins);
             $brand_id               = $info->id;
 
-            /***   upload images for brand in diffrent sizes */
-            /**
-             * 
-             * Image size option-1: 350x690
-             * Image size option-2: 350x336
-             * Image Size option-3: 722x752
-             * Image size option 4: 350x629
-             * 
-             */
-
+        
             if ($request->hasFile('brand_logo')) {
                 
                 $directory = 'brands/'.$brand_id;
@@ -190,8 +181,7 @@ class BrandController extends Controller
         $id         = $request->id;
         $info       = Brands::find($id);
         $info->delete();
-        // echo 1;
-        return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
+        return response()->json(['message'=>"Successfully deleted brand!",'status'=>1]);
     }
     public function changeStatus(Request $request)
     {
@@ -200,8 +190,7 @@ class BrandController extends Controller
         $info           = Brands::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the Brand status!",'status'=>1]);
 
     }
     public function export()
@@ -211,7 +200,6 @@ class BrandController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
         $list       = Brands::select('brands.*','users.name as users_name')->join('users', 'users.id', '=', 'brands.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.brand.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('brand.pdf');

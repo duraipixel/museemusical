@@ -71,8 +71,8 @@
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Image </th>
                                 <th> Title  </th>
-                                <th> Short Discription </th>
-                                <th> Long Discription </th>
+                                <th> Short Description </th>
+                                <th> Long Description </th>
                                 <th> Created By </th>
                                 <th> Created Date </th>
                                 <th> Status </th>

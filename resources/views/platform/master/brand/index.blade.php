@@ -110,8 +110,7 @@
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Brand  </th>
                                 <th> Brand Log </th>
-                                {{-- <th> Brand Banner </th> --}}
-                                <th> Short Discription </th>
+                                <th> Short Description </th>
                                 <th> Notes </th>
                                 <th> Created By </th>
                                 <th> Created Date </th>

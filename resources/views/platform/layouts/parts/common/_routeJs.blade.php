@@ -238,6 +238,16 @@
                    'pdf': "{{ route('payment-gateway.export.pdf') }}",
                 }
             },      
+         
+          'banner': {
+               'delete': "{{ route('banner.delete') }}",
+               'status': "{{ route('banner.status') }}",
+               'add': "{{ route('banner.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('banner.export.excel') }}",
+                   'pdf': "{{ route('banner.export.pdf') }}",
+                }
+          },       
                 
        }
    };

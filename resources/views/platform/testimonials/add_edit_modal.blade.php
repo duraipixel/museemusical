@@ -91,18 +91,19 @@
                                 <div class="fv-row mt-10 mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Status </label>
                                     <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
+                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                                    
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-8 mb-7">
                                 <div>
-                                    <label class="fw-bold fs-6 mb-2">Short Discription</label>
-                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Discription" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
+                                    <label class="fw-bold fs-6 mb-2">Short Description</label>
+                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
                                 </div>
                                 <div class="mt-2 mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Long Discription</label>
-                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Long Discription" name="long_description" id="long_description" cols="30" rows="4">{{ $info->long_description ?? '' }}</textarea>
+                                    <label class="fw-bold fs-6 mb-2">Long Description</label>
+                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Long Description" name="long_description" id="long_description" cols="30" rows="4">{{ $info->long_description ?? '' }}</textarea>
                                 </div>
                                 <div class="fv-row mb-7">
                                     <label class="fw-bold fs-6 mb-2">Shoring Order</label>

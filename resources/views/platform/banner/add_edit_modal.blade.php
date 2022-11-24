@@ -18,7 +18,7 @@
 </div>
 <!--end::Header-->
 <!--begin::Body-->
-<form id="add_brand_form" class="form" action="#" enctype="multipart/form-data">
+<form id="add_banner_form" class="form" action="#" enctype="multipart/form-data">
 
     <div class="card-body position-relative" id="kt_activities_body">
         <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
@@ -30,41 +30,40 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+
                       
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-                        <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
+
                       
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Brand Name</label>
-                            <input type="text" name="brand_name" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Brand Name" value="{{ $info->brand_name ?? '' }}" />
+                            <label class="required fw-bold fs-6 mb-2">Title</label>
+                            <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Banner Title" value="{{ $info->title ?? '' }}" />
                         </div>
-                        <div class="row mb-7">
-                            <div class="col-md-6">
+                        
+                        <div class="row">
+                            <div class="col-md-4">
 
-                                <div class="mb-7">
-                                    <label class="d-block fw-bold fs-6 mb-5">Brand Log</label>
-                                    <div class="form-text">
-                                        Allowed file types: png, jpg,
-                                        jpeg.
-                                    </div>
+                                <div class="fv-row mb-7">
+                                    <label class="d-block fw-bold fs-6 mb-5">Image</label>
+    
+                                    <div class="form-text">Allowed file types: png, jpg,
+                                        jpeg.</div>
                                 </div>
-                                <input id="image_remove_logo" type="hidden" name="image_remove_logo" value="no">
-                                <div class="image-input image-input-outline manual-image-logo" data-kt-image-input="true"
+                                <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
+                                <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
                                     style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                    @if ($info->brand_logo ?? '')
-                                    @php
-                                        $brandLogoPath = 'brands/'.$info->id.'/option1/'.$info->brand_logo;
-                                        $url = Storage::url($brandLogoPath);
-                                        $path = asset($url);
-                                    @endphp     
-                                        <div class="image-input-wrapper w-125px h-125px manual-image-logo"
-                                            id="manual-image-logo"
+                                    @if ($info->banner_image ?? '')
+                                        @php 
+                                        $path = Storage::url('banner/'.$info->id.'/main_banner/'.$info->banner_image)
+                                        @endphp
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
                                             style="background-image: url({{ asset($path) }});">
                                         </div>
                                     @else
-                                        <div class="image-input-wrapper w-125px h-125px manual-image-logo"
-                                            id="manual-image-logo"
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
                                             style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
                                         </div>
                                     @endif
@@ -73,12 +72,12 @@
                                         data-kt-image-input-action="change" data-bs-toggle="tooltip"
                                         title="Change avatar">
                                         <i class="bi bi-pencil-fill fs-7"></i>
-                                        <input type="file" name="brand_logo" id="readUrllogo"
+                                        <input type="file" name="avatar" id="readUrl"
                                             accept=".png, .jpg, .jpeg" />
                                         {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
                                         {{-- <input type="file" name="userImage" id="userImage"> --}}
                                     </label>
-
+    
                                     <span
                                         class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                         data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
@@ -92,73 +91,31 @@
                                         <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
                                     </span>
                                 </div>
+                                
                             </div>
-                        
-                            {{-- <div class="col-md-6">
-
-                                <div class="mb-7">
-                                    <label class="d-block fw-bold fs-6 mb-5">Brand Banner</label>
-
-                                    <div class="form-text">Allowed file types: png, jpg,
-                                        jpeg.</div>
+                            <div class="col-md-8 mb-7">
+                                <div>
+                                    <label class="fw-bold fs-6 mb-2">Description</label>
+                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="short_description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
                                 </div>
-                                <input id="image_remove_banner" type="hidden" name="image_remove_banner" value="no">
-                                <div class="image-input image-input-outline manual-image-banner" data-kt-image-input="true"
-                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                                    @if ($info->brand_banner ?? '')
-                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
-                                            id="manual-image-banner"
-                                            style="background-image: url({{ asset('/') . $info->brand_banner }});">
-                                        </div>
-                                    @else
-                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
-                                            id="manual-image-banner"
-                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                                        </div>
-                                    @endif
-                                    <label
-                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                                        title="Change avatar">
-                                        <i class="bi bi-pencil-fill fs-7"></i>
-                                        <input type="file" name="avatar_banner" id="readUrlbanner"
-                                            accept=".png, .jpg, .jpeg" />
-                                    </label>
-
-                                    <span
-                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                                        title="Cancel avatar">
-                                        <i class="bi bi-x fs-2"></i>
-                                    </span>
-                                    <span
-                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                                        title="Remove avatar1">
-                                        <i class="bi bi-x fs-2" id="avatar_remove_banner"></i>
-                                    </span>
+                                <div class="mt-2 mb-7">
+                                    <label class="fw-bold fs-6 mb-2">Tag Line</label>
+                                    <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tag Line" name="tag_line" id="tag_line" value="{{ $info->tag_line ?? '' }}" >
                                 </div>
-                            </div> --}}
-                        </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Short Description</label>
-                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
-                        </div>
-                        <div class="row mb-7">
-                            <div class="col-md-6">
-                                <label class="fw-bold fs-6 mb-2">Notes</label>
-                                <input type="text" name="notes" id="notes" class="form-control form-control-solid mb-3 mb-lg-0" value="{{ $info->notes ?? '' }}">
+                                <div class="fv-row mb-7">
+                                    <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                    <input type="number" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
+                                        placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="fw-bold fs-6 mb-2">Shorting Order</label>
-                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
-                            </div>
-                        </div>
-                        <div class="fv-row">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
+                            <div class="row">
+                                <div class="fv-row mt-10 mb-7">
+                                    <label class="fw-bold fs-6 mb-2"> Status </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                                    
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -169,7 +126,7 @@
     <div class="card-footer py-5 text-center" id="kt_activities_footer">
         <div class="text-end px-8">
             <button type="reset" class="btn btn-light me-3" id="discard">Discard</button>
-            <button type="submit" class="btn btn-primary" data-kt-order_status-modal-action="submit">
+            <button type="submit" class="btn btn-primary" data-kt-banner-modal-action="submit">
                 <span class="indicator-label">Submit</span>
                 <span class="indicator-progress">Please wait...
                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
@@ -186,66 +143,24 @@
     }
 </style>
 <script>
-     $('.mobile_num').keypress(
-        function(event) {
-            if (event.keyCode == 46 || event.keyCode == 8) {
-                //do nothing
-            } else {
-                if (event.keyCode < 48 || event.keyCode > 57) {
-                    event.preventDefault();
-                }
-            }
-        }
-    );
-     document.getElementById('readUrllogo').addEventListener('change', function() {
-        
+    //image image script
+     document.getElementById('readUrl').addEventListener('change', function() {
+        console.log("111");
         if (this.files[0]) {
             var picture = new FileReader();
             picture.readAsDataURL(this.files[0]);
             picture.addEventListener('load', function(event) {
                 console.log(event.target);
                 let img_url = event.target.result;
-                $('#manual-image-logo').css({
+                $('#manual-image').css({
                     'background-image': 'url(' + event.target.result + ')'
                 });
             });
         }
     });
-    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
-        $('#image_remove_logo').val("yes");
-        $('#manual-image-logo').css({
-            'background-image': ''
-        });
-    });
-    //banner image script
-    document.getElementById('readUrlbanner').addEventListener('change', function() {
-        
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#manual-image-banner').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('avatar_remove_banner').addEventListener('click', function() {
-        $('#image_remove_banner').val("yes");
-        $('#manual-image-banner').css({
-            'background-image': ''
-        });
-    });
-</script>
-
-<script>
-    $('#country').select2();
     $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
-                //do nothing
             } else {
                 if (event.keyCode < 48 || event.keyCode > 57) {
                     event.preventDefault();
@@ -253,34 +168,52 @@
             }
         }
     );
-    var add_url = "{{ route('brands.save') }}";
+    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
+        $('#image_remove_image').val("yes");
+        $('#manual-image').css({
+            'background-image': ''
+        });
+    });
+   
+</script>
+
+<script>
+ 
+    var add_url = "{{ route('banner.save') }}";
 
     // Class definition
-    var KTUsersAddRole = function() {
+    var KTBanner = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
-        const form = element.querySelector('#add_brand_form');
+        const form = element.querySelector('#add_banner_form');
         const modal = new bootstrap.Modal(element);
 
         const drawerEl = document.querySelector("#kt_common_add_form");
         const commonDrawer = KTDrawer.getInstance(drawerEl);
 
+
         // Init add schedule modal
-        var initAddRole = () => {
+        var initBanner = () => {
 
             // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'brand_name': {
+                        'title': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Brand name is required'
+                                    message: 'Title is required'
                                 }
                             }
                         },
+                        // 'avatar': {
+                        //     validators: {
+                        //         notEmpty: {
+                        //             message: 'Image is required'
+                        //         }
+                        //     }
+                        // },
                     },
-
                     plugins: {
                         trigger: new FormValidation.plugins.Trigger(),
                         bootstrap: new FormValidation.plugins.Bootstrap5({
@@ -316,17 +249,17 @@
             });
 
             // Submit button handler
-            const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
-            // submitButton.addEventListener('click', function(e) {
-            $('#add_brand_form').submit(function(e) {
+            const submitButton = element.querySelector('[data-kt-banner-modal-action="submit"]');
+            $('#add_banner_form').submit(function(e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
                 if (validator) {
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
-                            var from = $('#from').val();
-                            var formData = new FormData(document.getElementById("add_brand_form"));
+
+                            var formData = new FormData(document.getElementById(
+                                "add_banner_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
@@ -338,16 +271,13 @@
                                 data: formData,
                                 processData: false,
                                 contentType: false,
-                                beforeSend: function() {
-                                    
-                                },
+                                beforeSend: function() {},
                                 success: function(res) {
 
+
                                     if (res.error == 1) {
-                                        // Remove loading indication
                                         submitButton.removeAttribute(
                                             'data-kt-indicator');
-                                        // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
                                         Swal.fire({
@@ -359,12 +289,7 @@
                                                 confirmButton: "btn btn-primary"
                                             }
                                         });
-                                    } else { 
-                                        
-                                        if( from != '' ) {
-                                            getProductBrandDropdown(res.brand_id);
-                                            return false;
-                                        }
+                                    } else {
                                         dtTable.ajax.reload();
                                         Swal.fire({
                                             text: res.message,
@@ -387,7 +312,6 @@
                             });
 
                         } else {
-                            // Show popup warning. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
                                 text: "Sorry, looks like there are some errors detected, please try again.",
                                 icon: "error",
@@ -401,20 +325,21 @@
                     });
                 }
             });
+
+
         }
 
+
         return {
-            // Public functions
             init: function() {
-                initAddRole();
+                initBanner();
             }
         };
     }();
 
-    // On document ready
+
     KTUtil.onDOMContentLoaded(function() {
-        KTUsersAddRole.init();
+        KTBanner.init();
     });
 
-   
 </script>
