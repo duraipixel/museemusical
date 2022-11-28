@@ -111,7 +111,16 @@ class ProductCategoryController extends Controller
             }
             if( $request->is_tax ) {
                 $ins['tax_id'] = $request->tax_id;
+            } else {
+                $ins['tax_id'] = null;
             }
+
+            if( $request->is_home_menu ) {
+                $ins['is_home_menu'] = 'yes';
+            } else {
+                $ins['is_home_menu'] = 'no';
+            }
+
             if( !$id ) {
                 $ins['added_by'] = Auth::id();
             } else {

@@ -11,7 +11,7 @@ class CouponsExport implements FromView
 {
     public function view(): View
     {
-        $list = Coupons::select('coupons.*')->get();
+        $list       = Coupons::select('coupons.*')->where('is_discount_on', 'no')->get();
         return view('platform.exports.coupon.excel', compact('list'));
     }
 }

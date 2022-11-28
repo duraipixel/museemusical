@@ -109,7 +109,7 @@
                     <span class="menu-title">Customer</span>
                 </a>
             </div>
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['coupon'])) hover show @endif">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['coupon', 'discount'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -133,7 +133,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['discount'])) active @endif" href="{{ route('discount') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -208,7 +208,7 @@
                 </div>
             </div>
 
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 ">
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['reports.*'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -240,7 +240,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['reports.products.list'])) active @endif" href="{{ route('reports.products.list') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -277,7 +277,7 @@
                 </div>
             </div>
             <div class="menu-item">
-                <a class="menu-link" href="{{ route('banner') }}">
+                <a class="menu-link @if( request()->routeIs(['banner'])) active @endif" href="{{ route('banner') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -290,7 +290,7 @@
                 </a>
             </div>
             <div class="menu-item">
-                <a class="menu-link" href="{{ route('walkthroughs') }}">
+                <a class="menu-link @if( request()->routeIs(['walkthroughs'])) active @endif" href="{{ route('walkthroughs') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -306,7 +306,7 @@
                 </a>
             </div>
             <div class="menu-item">
-                <a class="menu-link" href="#">
+                <a class="menu-link " href="#">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -337,7 +337,7 @@
             </div>
             
             <div class="menu-item">
-                <a class="menu-link " href="{{ route('video-booking') }}">
+                <a class="menu-link @if(  request()->routeIs(['video-booking'])) active @endif" href="{{ route('video-booking') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -372,7 +372,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link @if( request()->routeIs([ 'my-profile.*' ])) active @endif" href="{{ route('my-profile') }}">
+                        <a class="menu-link @if( request()->routeIs([ 'my-profile', 'my-profile.*' ])) active @endif" href="{{ route('my-profile') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

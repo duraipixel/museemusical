@@ -149,4 +149,7 @@ class PaymentGatewayController extends Controller
         $pdf        = PDF::loadView('platform.exports.global.payment_gateway', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('payment_gateways.pdf');
     }
+
+
+    
 }

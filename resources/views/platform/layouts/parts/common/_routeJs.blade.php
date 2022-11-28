@@ -177,6 +177,15 @@
                    'pdf': "{{ route('coupon.export.pdf') }}",
                 }
             },
+            'discount': {
+               'delete': "{{ route('discount.delete') }}",
+               'status': "{{ route('discount.status') }}",
+               'add': "{{ route('discount.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('discount.export.excel') }}",
+                   'pdf': "{{ route('discount.export.pdf') }}",
+                }
+            },
             'email-template': {
                'delete': "{{ route('email-template.delete') }}",
                'status': "{{ route('email-template.status') }}",

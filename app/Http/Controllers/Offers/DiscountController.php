@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers\Offers;
 
+use App\Exports\DiscountExport;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Exports\CouponsExport;
-use App\Models\Offers\Coupons;
-use App\Models\Offers\CouponProduct;
-use App\Models\Offers\CouponCustomer;
 use App\Models\Offers\CouponCategory;
-use Illuminate\Support\Facades\DB;
+use App\Models\Offers\CouponCustomer;
+use App\Models\Offers\CouponProduct;
+use App\Models\Offers\Coupons;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
-use Auth;
 use Excel;
+use Illuminate\Support\Facades\DB;
 use PDF; 
-class CouponController extends Controller
+
+class DiscountController extends Controller
 {
     public function index(Request $request)
     {
-        $title = "Coupons";
-        $breadCrum = array('Coupons');
+        $title = "Discount";
+        $breadCrum = array('Discount');
         if ($request->ajax()) {
-            $data               = Coupons::select('coupons.*')
+            $data               = Coupons::select('coupons.calculate_type', 'coupons.calculate_value', 'coupons.coupon_name as discount_name', 'coupons.status', 'coupons.created_at', 'coupons.id', 'coupons.start_date', 'coupons.end_date')
                                     ->where(function($query){
-                                        $query->where('is_discount_on', 'no');
+                                        $query->where('is_discount_on', 'yes');
                                     });
             $status             = $request->get('status');
             $keywords           = $request->get('search')['value'];
@@ -43,8 +43,16 @@ class CouponController extends Controller
                     }
                 })
                 ->addIndexColumn()
+                ->addColumn('discount_value', function ($row) {
+                    if( $row->calculate_type == 'percentage' ) {
+                        $discount_value = $row->calculate_value.' %';
+                    } else {
+                        $discount_value = 'INR '.$row->calculate_value;
+                    }
+                    return $discount_value;
+                })
                 ->addColumn('status', function ($row) {
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'coupon\')">'.ucfirst($row->status).'</a>';
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'discount\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 ->editColumn('created_at', function ($row) {
@@ -53,18 +61,18 @@ class CouponController extends Controller
                 })
 
                 ->addColumn('action', function ($row) {
-                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'coupon\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                    $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'discount\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
                 </a>';
-                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'coupon\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'discount\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action','status']);
+                ->rawColumns(['action','status', 'discount_value']);
             return $datatables->make(true);
         }
-        return view('platform.offers.coupon.index', compact('breadCrum', 'title'));
+        return view('platform.offers.discount.index', compact('breadCrum', 'title'));
 
     }
 
@@ -72,7 +80,7 @@ class CouponController extends Controller
     {
         $id                 = $request->id;
         $info               = '';
-        $modal_title        = 'Add Coupon';
+        $modal_title        = 'Add Discount';
         $couponTypeAttributes = '';
         if (isset($id) && !empty($id)) {
             $info           = Coupons::find($id);
@@ -83,13 +91,13 @@ class CouponController extends Controller
             } else if( $info->coupon_type == 3 ) {
                 $couponTypeAttributes = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
             }
-            $modal_title    = 'Update Coupon';
+            $modal_title    = 'Update Discount';
         }
         
-        return view('platform.offers.coupon.add_edit_modal', compact('info', 'modal_title', 'couponTypeAttributes'));
+        return view('platform.offers.discount.add_edit_modal', compact('info', 'modal_title', 'couponTypeAttributes'));
     }
 
-    public function couponType(Request $request)
+    public function getDiscountTypeData(Request $request)
     {
         $name           = $request->name;
         $value[]        = "<option value='all'>All</option>";
@@ -135,14 +143,14 @@ class CouponController extends Controller
         $validator                  = Validator::make($request->all(), [
                                         'calculate_type' => 'required',
                                         'calculate_value' => 'required',
-                                        'coupon_type' => 'required',
-                                        'coupon_name' => 'required|string|unique:coupons,coupon_name,' . $id . ',id,deleted_at,NULL',
-                                        'coupon_code' => 'required|string|unique:coupons,coupon_code,' . $id . ',id,deleted_at,NULL',
+                                        'discount_type' => 'required',
+                                        'discount_name' => 'required|string|unique:coupons,coupon_name,' . $id . ',id,deleted_at,NULL',
                                         'start_date' => 'required',
                                         'end_date' => 'required',
                                         'repeated_coupon'=> 'required_if:coupon_type,==,2',
                                         'quantity'=>'numeric|gt:0',
                                         'minimum_order_value'=>'numeric|gt:0',
+                                        
                                     ]);
 
         if ($validator->passes()) {
@@ -156,20 +164,19 @@ class CouponController extends Controller
             }
 
             $ins['is_applied_all']              = $isAll ? 'yes' :'no';
-            $ins['coupon_name']                 = $request->coupon_name;
-            $ins['coupon_code']                 = $request->coupon_code;
-            $ins['coupon_sku']                  = \Str::slug($request->coupon_name);;
+            $ins['coupon_name']                 = $request->discount_name;
+            $ins['coupon_sku']                  = \Str::slug($request->discount_name);;
             $ins['start_date']                  = $request->start_date;
             $ins['end_date']                    = $request->end_date;
             $ins['calculate_type']              = $request->calculate_type;
             $ins['calculate_value']             = $request->calculate_value;
-            $ins['coupon_type']                 = $request->coupon_type;
+            $ins['coupon_type']                 = $request->discount_type;
             $ins['minimum_order_value']         = $request->minimum_order_value;
-            $ins['is_discount_on']              = "no";
+            $ins['is_discount_on']              = "yes";
             $ins['quantity']                    = $request->quantity;
             $ins['repeated_use_count']          = $request->repeated_coupon ?? 0;
             $ins['order_by']                    = $request->order_by ?? 0;
-            $ins['added_by']            = Auth::id();
+            $ins['added_by']                    = auth()->user()->id;
 
             if($request->status == "1")
             {
@@ -181,7 +188,7 @@ class CouponController extends Controller
            
             $info                   = Coupons::updateOrCreate(['id' => $id], $ins);
             
-            if($request->coupon_type == "1" ) {
+            if($request->discount_type == "1" ) {
 
                 CouponProduct::where('coupon_id',$info->id)->forceDelete();
                 if( $isAll ) {
@@ -206,7 +213,7 @@ class CouponController extends Controller
                     }
                 }
 
-            } else if($request->coupon_type == "2" ) {
+            } else if($request->discount_type == "2" ) {
 
                 CouponCustomer::where('coupon_id',$info->id)->forceDelete();
                 if( $isAll ) {
@@ -229,7 +236,7 @@ class CouponController extends Controller
                     }
                 }
                 
-            } else if($request->coupon_type == "3" ) {
+            } else if($request->discount_type == "3" ) {
 
                 CouponCategory::where('coupon_id',$info->id)->forceDelete();
                 if( $isAll ) {
@@ -271,7 +278,7 @@ class CouponController extends Controller
         $info           = Coupons::find($id);
         $info->status   = $status;
         $info->update();
-        return response()->json(['message'=>"You changed the Coupon status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the Discount status!",'status'=>1]);
 
     }
 
@@ -283,19 +290,19 @@ class CouponController extends Controller
         $info->couponCustomers()->delete();
         $info->couponCategory()->delete();
         $info->forceDelete();
-        return response()->json(['message'=>"Successfully deleted Coupon!",'status'=>1]);
+        return response()->json(['message'=>"Successfully deleted Discount!",'status'=>1]);
     }
-
 
     public function export()
     {
-        return Excel::download(new CouponsExport, 'coupon.xlsx');
+        return Excel::download(new DiscountExport, 'discount.xlsx');
     }
 
     public function exportPdf()
     {
-        $list       = Coupons::select('coupons.*')->where('is_discount_on', 'no')->get();
-        $pdf        = PDF::loadView('platform.exports.coupon.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
-        return $pdf->download('coupon.pdf');
+        $list       = Coupons::select('coupons.*')->where('is_discount_on', 'yes')->get();
+        $pdf        = PDF::loadView('platform.exports.coupon.discount_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
+        return $pdf->download('discount.pdf');
     }
+    
 }

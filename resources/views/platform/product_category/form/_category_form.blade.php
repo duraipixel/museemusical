@@ -104,8 +104,15 @@
                 </select>
             </div>
         </div>
+
+        <div class="fv-row mb-5">
+            <label class="fw-bold fs-6 mb-2"> Is Show on Menu </label>
+            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                <input class="form-check-input" type="checkbox"  name="is_home_menu" id="is_home_menu" value="on" @if( isset( $info->is_home_menu ) && $info->is_home_menu == 'yes' ) checked @endif />
+            </div>
+        </div>
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+            <label class="fw-bold fs-6 mb-2">Shorting Order</label>
             <input type="text" name="order_by" class="form-control numberonly form-control-solid mb-3 mb-lg-0"
                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" min="1" />
         </div>

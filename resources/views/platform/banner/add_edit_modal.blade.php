@@ -46,7 +46,7 @@
 
                                 <div class="fv-row mb-7">
                                     <label class="d-block fw-bold fs-6 mb-5">Image</label>
-    
+                                    <div class="form-text">Minimum Image Dimention 1600 x 420 </div>
                                     <div class="form-text">Allowed file types: png, jpg,
                                         jpeg.</div>
                                 </div>
@@ -103,8 +103,8 @@
                                     <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tag Line" name="tag_line" id="tag_line" value="{{ $info->tag_line ?? '' }}" >
                                 </div>
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Shoring Order</label>
-                                    <input type="number" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
+                                    <label class="required fw-bold fs-6 mb-2">Shoring Order</label>
+                                    <input type="text" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
                                         placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
 <script>
     //image image script
      document.getElementById('readUrl').addEventListener('change', function() {
-        console.log("111");
+        
         if (this.files[0]) {
             var picture = new FileReader();
             picture.readAsDataURL(this.files[0]);
@@ -158,6 +158,7 @@
             });
         }
     });
+
     $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
@@ -206,13 +207,13 @@
                                 }
                             }
                         },
-                        // 'avatar': {
-                        //     validators: {
-                        //         notEmpty: {
-                        //             message: 'Image is required'
-                        //         }
-                        //     }
-                        // },
+                        'order_by': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Shorting Order is required'
+                                }
+                            }
+                        },
                     },
                     plugins: {
                         trigger: new FormValidation.plugins.Trigger(),

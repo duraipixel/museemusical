@@ -59,7 +59,7 @@
 
 <div class="card-body pt-0 ">
     @php
-        $stock_status_array = array('in_stock', 'out_of_stock', 'coming_soon');
+        $stock_status_array = array('in_stock', 'out_of_stock', 'coming_soon', 'notify');
     @endphp
     <!--begin::Select2-->
     <select name="stock_status" class="form-select mb-2 required" data-control="select2" data-hide-search="true" data-placeholder="Select an option" id="kt_ecommerce_add_product_status_select">

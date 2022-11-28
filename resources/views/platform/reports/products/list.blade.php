@@ -8,7 +8,7 @@
 <div class="toolbar" id="kt_toolbar">
     <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
         @include('platform.layouts.parts._breadcrum')
-        @include('platform.layouts.parts._menu_add_button')
+        @include('platform.reports.products._export_button')
     </div>
 </div>
 @endsection
@@ -16,7 +16,7 @@
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
-                @include('platform.product._filter_form')
+                @include('platform.reports.products._filter_form')
             </div>
             <hr>
             <!--end::Card header-->
@@ -33,7 +33,6 @@
                                 <th> Price </th>
                                 <th> Video Booking </th>
                                 <th> Status </th>
-                                <th style="width: 75px;">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -79,6 +78,7 @@
                     data: 'brand',
                     name: 'brand'
                 },
+               
                 {
                     data: 'price',
                     name: 'price'
@@ -90,13 +90,8 @@
                 {
                     data: 'status',
                     name: 'status'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
+                }
+               
             ],
             language: {
                 paginate: {
@@ -170,5 +165,30 @@
             });
 
         }
+
+
+        var start = moment().subtract(29, "days");
+        var end = moment();
+        var input = $("#kt_ecommerce_report_views_daterangepicker");
+
+        function cb(start, end) {
+            input.html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+        }
+
+        input.daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                "Today": [moment(), moment()],
+                "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+                "Last 7 Days": [moment().subtract(6, "days"), moment()],
+                "Last 30 Days": [moment().subtract(29, "days"), moment()],
+                "This Month": [moment().startOf("month"), moment().endOf("month")],
+                "Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+            }
+        }, cb);
+
+        cb(start, end);
+        
     </script>
 @endsection

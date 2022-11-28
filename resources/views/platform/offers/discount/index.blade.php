@@ -7,14 +7,26 @@
 </div>
 @endsection
 @section('content')
+    <style>
+        .paginate_button {
+            padding: 5px 14px;
+        }
 
+        a.paginate_button.current {
+            background: #009EF7;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
   <div id="kt_content_container" class="container-xxl">
     <div class="card">
         <div class="card-header border-0 pt-6 w-100">
             <div class="card-toolbar w-100">
-                <div class="d-flex justify-content-end w-100" data-kt-banner-table-toolbar="base">
+                <div class="d-flex justify-content-end w-100" data-kt-coupon-table-toolbar="base">
 
-                    <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('banner')">
+                   {{-- @include('platform.offers.coupon._filter') --}}
+
+                    <button type="button" class="btn btn-light-primary me-3" onclick="return openExportForm('discount')">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none">
@@ -31,7 +43,7 @@
                         Export
                     </button>
 
-                    <button type="button" class="btn btn-primary" onclick="return openForm('banner')">
+                    <button type="button" class="btn btn-primary" onclick="return openForm('discount')">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none">
@@ -41,21 +53,25 @@
                                     fill="currentColor" />
                             </svg>
                         </span>
-                        Add Banner
+                        Add Discount
                     </button>
+
                 </div>
+
             </div>
+
         </div>
-     
+        <!--end::Card header-->
+        <!--begin::Card body-->
         <div class="card-body py-4">
             <div class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="banner-table">
+                <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="discount-table">
                     <thead>
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                            <th> Banner  </th>
-                            <th> Title  </th>
-                            <th> Tag Line  </th>
-                            <th> Order By </th>
+                            <th> Discount Name  </th>
+                            <th> Start Date </th>
+                            <th> End Date </th>
+                            <th> Discount Value </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
@@ -64,9 +80,9 @@
                 </table>
             </div>
         </div>
-       
+        <!--end::Card body-->
     </div>
-  
+    <!--end::Card-->
 </div>
 
 @endsection
@@ -74,34 +90,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
     <script >
-    var dtTable = $('#banner-table').DataTable({
+    var dtTable = $('#discount-table').DataTable({
 
         processing: true,
         serverSide: true,
         type: 'POST',
         ajax: {
-            "url": "{{ route('banner') }}",
+            "url": "{{ route('discount') }}",
             "data": function(d) {
                 d.status = $('select[name=filter_status]').val();
             }
         },
 
         columns: [
+          
             {
-                data: 'image',
-                name: 'image'
+                data: 'discount_name',
+                name: 'discount_name'
+            },
+          
+            {
+                data: 'start_date',
+                name: 'start_date'
             },
             {
-                data: 'title',
-                name: 'title'
+                data: 'end_date',
+                name: 'end_date'
             },
             {
-                data: 'tag_line',
-                name: 'tag_line'
-            },
-            {
-                data: 'order_by',
-                name: 'order_by'
+                data: 'discount_value',
+                name: 'discount_value'
             },
             {
                 data: 'status',
@@ -123,7 +141,6 @@
         "aaSorting": [],
         "pageLength": 25
     });
-    
     $('.dataTables_wrapper').addClass('position-relative');
         $('.dataTables_info').addClass('position-absolute');
         $('.dataTables_filter label input').addClass('form-control form-control-solid w-250px ps-14');

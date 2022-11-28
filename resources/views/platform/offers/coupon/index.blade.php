@@ -71,7 +71,7 @@
                             <th> Coupon Name  </th>
                             <th> Coupon Code </th>
                             <th> Start Date </th>
-                            <th> End Code </th>
+                            <th> End Date </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
