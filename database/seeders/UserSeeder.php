@@ -15,13 +15,14 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $seededAdminEmail = 'durai@yopmail.com';
+        $seededAdminEmail = 'adminmusee@yopmail.com';
         $user = User::where('email', '=', $seededAdminEmail)->first();
         if ($user === null) {
             $user = User::create([
-                'name'                           => 'Admin',
-                'email'                          => $seededAdminEmail,
-                'password'                       => Hash::make('password'),
+                'name'                          => 'Admin',
+                'email'                         => $seededAdminEmail,
+                'password'                      => Hash::make('password'),
+                'is_super_admin'                => 1
             ]);
         }
 

@@ -1,5 +1,6 @@
-
+@if( access()->hasAccess(['products'], 'editable') && access()->hasAccess(['products'], 'export') )
 <div class="d-flex align-items-center gap-2 gap-lg-3">
+    @if( access()->hasAccess(['products'], 'export') && $title != 'Product Bulk Upload' )
     <div class="m-0">
         <a href="#" class="btn btn-sm btn-flex btn-success btn-active-primary fw-bolder" onclick="return exportProductExcel()" >
             <span class="svg-icon svg-icon-2">
@@ -17,5 +18,13 @@
             </span>
             Export Excel </a>
     </div>
+    @endif
+    @if( access()->hasAccess(['products'], 'editable') )
     <a href="{{ $addHref }}" class="btn btn-sm btn-primary" >Add Product</a>
+    @endif
+
+    @if( access()->hasAccess(['products'], 'editable') && $title != 'Product Bulk Upload' )
+    <a href="{{ $uploadHref }}" target="_blank" class="btn btn-sm btn-primary" >Bulk Upload</a>
+    @endif
 </div>
+@endif

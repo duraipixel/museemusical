@@ -248,7 +248,7 @@
                 }
             },      
          
-          'banner': {
+            'banner': {
                'delete': "{{ route('banner.delete') }}",
                'status': "{{ route('banner.status') }}",
                'add': "{{ route('banner.add.edit') }}",
@@ -256,7 +256,17 @@
                    'excel': "{{ route('banner.export.excel') }}",
                    'pdf': "{{ route('banner.export.pdf') }}",
                 }
-          },       
+            },  
+            
+            'newsletter': {
+               'delete': "{{ route('newsletter.delete') }}",
+               'status': "{{ route('newsletter.status') }}",
+               'add': "{{ route('newsletter.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('newsletter.export.excel') }}",
+                   'pdf': "{{ route('newsletter.export.pdf') }}",
+                }
+            },  
                 
        }
    };

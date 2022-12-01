@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Auth;
 use Excel;
+use Illuminate\Support\Facades\Route;
 use PDF;
 
 class RoleController extends Controller
@@ -57,6 +58,7 @@ class RoleController extends Controller
              
                 return $datatables->make(true);
         }
+
         return view('platform.settings.roles.index', compact('title'));
     }
 
@@ -94,6 +96,8 @@ class RoleController extends Controller
                         $item.'_visible' => $_POST[$item.'_visible'] ?? 'off',
                         $item.'_editable' => $_POST[$item.'_editable'] ?? 'off',
                         $item.'_delete' => $_POST[$item.'_delete'] ?? 'off',
+                        $item.'_status' => $_POST[$item.'_status'] ?? 'off',
+                        $item.'_export' => $_POST[$item.'_export'] ?? 'off',
                     );
                 }
             }
@@ -138,7 +142,7 @@ class RoleController extends Controller
     }
 
     public function exportPdf() {
-        $list = Role::select('*', DB::raw(" IF(status = 2, 'Inactive', 'Active') as role_status"))->get();
+        $list = Role::select('*', DB::raw("IF(status = 2, 'Inactive', 'Active') as role_status"))->get();
         
         $pdf = PDF::loadView('platform.exports.roles.excel', array('list' => $list, 'from' => 'pdf') )->setPaper('a4', 'landscape');;
         return $pdf->download('roles.pdf');

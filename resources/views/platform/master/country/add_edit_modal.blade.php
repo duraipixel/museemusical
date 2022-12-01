@@ -59,22 +59,14 @@
                             <input type="number" name="num_code" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Number Code" value="{{ $info->num_code ?? '' }}" />
                         </div>
-                        {{-- <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Status</label>
-									<input class="form-check-input" type="checkbox" value="1" checked="checked"  />
-									<input class="form-check-input" type="checkbox" value="1"   @if(isset( $info->status) && $info->status == '1') checked @endif  />
-                            <input class="form-check-input common-checkbox" type="checkbox" name="status" id="status" @if(isset( $info->status) && $info->status == '1') checked @endif  />
-                        </div> --}}
+                       
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2"> Status </label>
                             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                                 <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == '1') checked @endif />
                             </div>
-                        </div>
-                       
-                       
-                       
-                     
+                        </div>                                          
+                                            
                     </div>
                 </div>
             </div>

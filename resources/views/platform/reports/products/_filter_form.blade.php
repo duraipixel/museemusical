@@ -4,12 +4,12 @@
     </div>
     <form id="search-form">
         <div class="row w-100">
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            {{-- <div class="col-sm-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="text-muted"> Date Added </label>
                     <input class="form-control form-control-solid w-100" name="date_range" placeholder="Pick date range" id="kt_ecommerce_report_views_daterangepicker" />
                 </div>
-            </div>
+            </div> --}}
             <div class="col-sm-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="text-muted">Product Name / Sku / Price </label>

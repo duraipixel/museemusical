@@ -99,9 +99,9 @@
                                 placeholder="Tagline" value="{{ $info->tagline ?? '' }}" />
                         </div>
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
                             <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
                         
                      

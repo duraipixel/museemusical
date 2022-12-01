@@ -129,7 +129,7 @@ class ProductCategoryController extends Controller
 
             $ins['name'] = $request->category_name;
             $ins['description'] = $request->description;
-            $ins['order_by'] = $request->order_by;
+            $ins['order_by'] = $request->order_by ?? 0;
             $ins['tag_line'] = $request->tag_line;
 
             if($request->status)

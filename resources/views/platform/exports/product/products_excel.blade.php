@@ -9,6 +9,7 @@
 <table>
     <thead>
         <tr>
+            <th>Id</th>
             <th>Product Name</th>
             <th>Sku</th>
             <th>Hsn No</th>
@@ -36,8 +37,8 @@
     <tbody>
         @if( isset( $list ) && !empty($list))
             @foreach ($list as $item)
-           
             <tr>
+                <td>{{ $item->id }} </td>
                 <td>{{ $item->product_name }}</td>
                 <td>{{ $item->sku }}</td>
                 <td>{{ $item->hsn_code ?? '' }}</td>

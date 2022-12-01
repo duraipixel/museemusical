@@ -24,8 +24,15 @@ class SubCategoryController extends Controller
     { 
         $routeName = Route::currentRouteName();
         
+        if( $routeName == 'product-tags') {
+
+        } else if( $routeName == 'product-labels') {
+
+        }
+
         $title = ucwords( str_replace(["-","_"]," ", $routeName));
         $category    = MainCategory::where('status','published')->get();
+
         if ($request->ajax()) {
             $page_type   = $request->get('page_type') ?? '';
             $data       = SubCategory::select('sub_categories.*','main_categories.category_name as category_name','users.name as users_name')
@@ -68,8 +75,8 @@ class SubCategoryController extends Controller
                     }
                     return $image;
                 })
-                ->addColumn('status', function ($row) {
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'sub_category\')">'.ucfirst($row->status).'</a>';
+                ->addColumn('status', function ($row) use($page_type) {
+                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \''.$page_type.'\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
                 
@@ -79,11 +86,11 @@ class SubCategoryController extends Controller
                     return $created_at;
                 })
 
-                ->addColumn('action', function ($row) {
-                    $edit_btn   = '<a href="javascript:void(0);" onclick="return  openForm(\'sub_category\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                ->addColumn('action', function ($row) use($page_type) {
+                    $edit_btn   = '<a href="javascript:void(0);" onclick="return  openForm(\''.$page_type.'\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
                 </a>';
-                    $del_btn    = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'sub_category\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                    $del_btn    = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \''.$page_type.'\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
                     return $edit_btn . $del_btn;
@@ -158,7 +165,7 @@ class SubCategoryController extends Controller
         }
         if (isset($id) && !empty($id)) {
             $info           = SubCategory::find($id);
-            $modal_title    = 'Update Sub Category';
+            $modal_title    = 'Update '.$info->main->category_name ?? 'Sub Category';
         }
         $params = array(
                     'info' => $info,

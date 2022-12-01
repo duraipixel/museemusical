@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 class RoleExport implements FromView
 {
     public function view(): View {
-        $list = Role::select('*', DB::raw(" IIF(status = 2, 'Inactive', 'Active') as role_status"))->get();
+        $list = Role::select('*', DB::raw("IF(status = 2, 'Inactive', 'Active') as role_status"))->get();
         return view('platform.exports.roles.excel', compact('list'));
     }
 }

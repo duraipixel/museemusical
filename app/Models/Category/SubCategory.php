@@ -20,4 +20,9 @@ class SubCategory extends Model
         'added_by',
         'tagline',
     ];
+
+    public function main()
+    {
+        return $this->belongsTo(MainCategory::class,'parent_id', 'id');
+    }
 }

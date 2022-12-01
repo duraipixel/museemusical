@@ -20,7 +20,7 @@
 					<!--begin::Brand-->
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
-						<a href="javascript:void(0)">
+						<a href="{{ url('/') }}">
 							<img alt="Logo" src="{{ asset(gSetting('logo')) }}" class="w-200px logo" />
 						</a> 
 						<!--end::Logo-->

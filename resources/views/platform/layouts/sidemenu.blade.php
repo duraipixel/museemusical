@@ -18,7 +18,7 @@
                     <span class="menu-title">Dashboard</span>
                 </a>
             </div>
-            
+           @if( access()->hasAccess(['product-category', 'product-tags', 'product-labels', 'products', 'product-attribute', 'product-collection']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels', 'products','products.*', 'product-attribute', 'product-collection'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -35,6 +35,7 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
+                    @if( access()->hasAccess(['product-category']) )
                     <div class="menu-item">
                         <a class="menu-link @if(  request()->routeIs(['product-category'])) active @endif" href="{{ route('product-category') }}">
                             <span class="menu-bullet">
@@ -43,6 +44,8 @@
                             <span class="menu-title">Product Categories</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['product-tags']) )
                     <div class="menu-item">
                         <a class="menu-link @if(  request()->routeIs(['product-tags'])) active @endif" href="{{ route('product-tags') }}">
                             <span class="menu-bullet">
@@ -51,6 +54,8 @@
                             <span class="menu-title">Product Tags</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['product-labels']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['product-labels'])) active @endif" href="{{ route('product-labels') }}">
                             <span class="menu-bullet">
@@ -59,6 +64,8 @@
                             <span class="menu-title">Product Labels</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['products']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['products', 'products.*'])) active @endif" href="{{ route('products') }}">
                             <span class="menu-bullet">
@@ -67,6 +74,7 @@
                             <span class="menu-title">Products</span>
                         </a>
                     </div>
+                    @endif
                     {{-- <div class="menu-item">
                         <a class="menu-link" href="#">
                             <span class="menu-bullet">
@@ -75,7 +83,7 @@
                             <span class="menu-title">Product Groups</span>
                         </a>
                     </div> --}}
-                   
+                    @if( access()->hasAccess(['product-collection']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['product-collection'])) active @endif" href="{{ route('product-collection') }}">
                             <span class="menu-bullet">
@@ -84,7 +92,8 @@
                             <span class="menu-title">Product Collection</span>
                         </a>
                     </div>
-                    
+                    @endif
+                    @if( access()->hasAccess(['product-attribute']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['product-attribute'])) active @endif" href="{{ route('product-attribute') }}">
                             <span class="menu-bullet">
@@ -93,9 +102,11 @@
                             <span class="menu-title">Product Attributes</span>
                         </a>
                     </div>
-                 
+                    @endif                 
                 </div>
             </div>
+            @endif
+            @if( access()->hasAccess('customer') )
             <div class="menu-item">
                 <a class="menu-link @if(  request()->routeIs(['customer'])) active @elseif( request()->routeIs(['customer.view'])) active  @endif" href="{{ route('customer') }}">
                     <span class="menu-icon">
@@ -109,6 +120,8 @@
                     <span class="menu-title">Customer</span>
                 </a>
             </div>
+            @endif
+            @if( access()->hasAccess(['coupon', 'discount']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['coupon', 'discount'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -123,7 +136,7 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
-                   
+                    @if( access()->hasAccess(['coupon']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['coupon'])) active @endif" href="{{ route('coupon') }}">
                             <span class="menu-bullet">
@@ -132,6 +145,8 @@
                             <span class="menu-title"> Coupons </span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['discount']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['discount'])) active @endif" href="{{ route('discount') }}">
                             <span class="menu-bullet">
@@ -140,10 +155,11 @@
                             <span class="menu-title"> Discount </span>
                         </a>
                     </div>
-                  
+                    @endif
                 </div>
             </div>
-           
+            @endif
+            @if( access()->hasAccess(['order-status']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -163,6 +179,7 @@
                             <span class="menu-title">Order List</span>
                         </a>
                     </div>
+                    @if( access()->hasAccess(['order-status']) )
                     <div class="menu-item">
                         <a class="menu-link" href="{{ route('order-status') }}">
                             <span class="menu-bullet">
@@ -171,6 +188,7 @@
                             <span class="menu-title"> Order Status </span>
                         </a>
                     </div>
+                    @endif
                     <div class="menu-item">
                         <a class="menu-link" href="#">
                             <span class="menu-bullet">
@@ -183,6 +201,7 @@
                   
                 </div>
             </div>
+            @endif
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -207,7 +226,7 @@
                     </div>
                 </div>
             </div>
-
+            @if( access()->hasAccess(['reports.products']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['reports.*'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -250,6 +269,8 @@
                   
                 </div>
             </div>
+            @endif
+            @if( access()->hasAccess(['tax']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['tax'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -271,11 +292,15 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @if( access()->hasAccess(['banner', 'walkthroughs', 'testimonials', 'video-booking']) )
             <div class="menu-item">
                 <div class="menu-content pt-8 pb-0">
                     <span class="menu-section text-muted text-uppercase fs-8 ls-1">Website</span>
                 </div>
             </div>
+            @endif
+            @if( access()->hasAccess(['banner']) )
             <div class="menu-item">
                 <a class="menu-link @if( request()->routeIs(['banner'])) active @endif" href="{{ route('banner') }}">
                     <span class="menu-icon">
@@ -289,6 +314,8 @@
                     <span class="menu-title">Banners</span>
                 </a>
             </div>
+            @endif
+            @if( access()->hasAccess(['walkthroughs']) )
             <div class="menu-item">
                 <a class="menu-link @if( request()->routeIs(['walkthroughs'])) active @endif" href="{{ route('walkthroughs') }}">
                     <span class="menu-icon">
@@ -305,8 +332,10 @@
                     <span class="menu-title">History Video</span>
                 </a>
             </div>
+            @endif
+            @if( access()->hasAccess(['newsletter']) )
             <div class="menu-item">
-                <a class="menu-link " href="#">
+                <a class="menu-link @if( request()->routeIs(['newsletter'])) active @endif" href="{{ route('newsletter') }}">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -319,7 +348,8 @@
                     <span class="menu-title">NewsLetter</span>
                 </a>
             </div>
-            
+            @endif
+            @if( access()->hasAccess(['testimonials']) )
             <div class="menu-item">
                 <a class="menu-link @if(  request()->routeIs(['testimonials'])) active @endif" href="{{ route('testimonials') }}">
                     <span class="menu-icon">
@@ -335,7 +365,8 @@
                     <span class="menu-title">Testimonial</span>
                 </a>
             </div>
-            
+            @endif
+            @if( access()->hasAccess(['video-booking']) )
             <div class="menu-item">
                 <a class="menu-link @if(  request()->routeIs(['video-booking'])) active @endif" href="{{ route('video-booking') }}">
                     <span class="menu-icon">
@@ -349,6 +380,8 @@
                     <span class="menu-title">Video Booking</span>
                 </a>
             </div>
+            @endif
+            @if( access()->hasAccess(['global', 'my-profile', 'users', 'roles']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['global', 'my-profile', 'my-profile.*', 'users', 'roles'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -363,6 +396,7 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
+                    @if( access()->hasAccess(['global']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['global'])) active @endif" href="{{ route('global') }}">
                             <span class="menu-bullet">
@@ -371,6 +405,8 @@
                             <span class="menu-title"> Global Settings </span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['my-profile']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs([ 'my-profile', 'my-profile.*' ])) active @endif" href="{{ route('my-profile') }}">
                             <span class="menu-bullet">
@@ -379,6 +415,8 @@
                             <span class="menu-title"> My Account </span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['users']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['users'])) active @endif" href="{{ route('users') }}">
                             <span class="menu-bullet">
@@ -387,18 +425,21 @@
                             <span class="menu-title">Users</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['roles']) )
                     <div class="menu-item">
-                        <a class="menu-link @if(  request()->routeIs(['roles'])) active @endif" href="{{ route('roles') }}">
+                        <a class="menu-link @if( request()->routeIs(['roles'])) active @endif" href="{{ route('roles') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title"> Roles </span>
                         </a>
                     </div>
-                   
-                  
+                    @endif
                 </div>
             </div>
+            @endif
+            @if( access()->hasAccess(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
@@ -413,6 +454,7 @@
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion menu-active-bg">
+                    @if( access()->hasAccess(['brands']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['brands'])) active @endif" href="{{ route('brands') }}">
                             <span class="menu-bullet">
@@ -421,6 +463,8 @@
                             <span class="menu-title">Brand</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['city']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['city'])) active @endif" href="{{ route('city') }}">
                             <span class="menu-bullet">
@@ -429,6 +473,8 @@
                             <span class="menu-title">Cities</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['country']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['country'])) active @endif" href="{{ route('country') }}">
                             <span class="menu-bullet">
@@ -437,6 +483,8 @@
                             <span class="menu-title">Country</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['state']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['state'])) active @endif" href="{{ route('state') }}">
                             <span class="menu-bullet">
@@ -445,6 +493,8 @@
                             <span class="menu-title">States</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['pincode']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['pincode'])) active @endif" href="{{ route('pincode') }}">
                             <span class="menu-bullet">
@@ -453,6 +503,8 @@
                             <span class="menu-title">Postcodes</span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['main_category']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['main_category'])) active @endif" href="{{ route('main_category') }}">
                             <span class="menu-bullet">
@@ -461,6 +513,8 @@
                             <span class="menu-title"> Dynamic Categories </span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['sub_category']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['sub_category'])) active @endif" href="{{ route('sub_category') }}">
                             <span class="menu-bullet">
@@ -469,6 +523,8 @@
                             <span class="menu-title"> Dynamic SubCategories </span>
                         </a>
                     </div>
+                    @endif
+                    @if( access()->hasAccess(['email-template']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['email-template'])) active @endif" href="{{ route('email-template') }}">
                             <span class="menu-bullet">
@@ -477,8 +533,10 @@
                             <span class="menu-title"> Email Template </span>
                         </a>
                     </div>
+                    @endif
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>

@@ -145,7 +145,7 @@ class TestimonialsController extends Controller
         $id         = $request->id;
         $info       = Testimonials::find($id);
         $info->delete();
-        return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
+        return response()->json(['message'=>"Successfully deleted testimonials!",'status'=>1]);
     }
     public function changeStatus(Request $request)
     {
@@ -155,7 +155,7 @@ class TestimonialsController extends Controller
         $info           = Testimonials::find($id);
         $info->status   = $status;
         $info->update();
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the testimonials status!",'status'=>1]);
 
     }
     public function export()

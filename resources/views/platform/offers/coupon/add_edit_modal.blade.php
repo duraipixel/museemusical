@@ -144,9 +144,9 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                    <label class="fw-bold fs-6 mb-2">Sorting Order</label>
                                     <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 number"
-                                        placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                        placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
                             <div class="col-md-6" id="repeated_customer_count" @if(isset($info->coupon_type) && $info->coupon_type == 2) @else style="display: none;" @endif>

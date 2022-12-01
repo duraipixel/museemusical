@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Product;
 
 use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
+use App\Imports\MultiSheetProductImport;
+use App\Imports\TestImport;
 use Illuminate\Http\Request;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
@@ -25,7 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Image;
-use Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class ProductController extends Controller
@@ -130,6 +132,7 @@ class ProductController extends Controller
         }
 
         $addHref = route('products.add.edit');
+        $uploadHref = route('products.upload');
         $routeValue = 'products';
         $productCategory        = ProductCategory::where('status', 'published')->get();
         $brands                 = Brands::where('status', 'published')->get();
@@ -140,6 +143,7 @@ class ProductController extends Controller
                                     'title' => $title,
                                     'breadCrum' => $breadCrum,
                                     'addHref' => $addHref,
+                                    'uploadHref' => $uploadHref,
                                     'routeValue' => $routeValue,
                                     'productCategory' => $productCategory,
                                     'brands' => $brands,
@@ -226,7 +230,6 @@ class ProductController extends Controller
                         ]);
 
         if ($validator->passes()) {
-            
            
             if( isset( $request->avatar_remove ) && !empty($request->avatar_remove) ) {
                 $ins['base_image']          = null;
@@ -528,6 +531,30 @@ class ProductController extends Controller
         $list       = Product::all();
         $pdf        = PDF::loadView('platform.exports.product.products_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a2', 'landscape');;
         return $pdf->download('products.pdf');
+    }
+
+    public function bulkUpload(Request $request)
+    {
+
+        $addHref        = route('products.add.edit');
+        $uploadHref     = route('products.upload');
+        $title          = "Product Bulk Upload";
+        $breadCrum      = array('Products', 'Product Bulk Upload');
+
+        $params         = array(
+            'addHref' => $addHref,
+            'uploadHref' => $uploadHref,
+            'title' => $title,
+            'breadCrum' => $breadCrum,
+        );    
+
+        return view('platform.product.bulk_upload', $params);
+    }
+
+    public function doBulkUpload(Request $request)
+    {
+        Excel::import( new TestImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 
 }

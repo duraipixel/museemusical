@@ -34,6 +34,53 @@
                 const commonDrawer = KTDrawer.getInstance(drawerEl);
                 commonDrawer.show();
                 return false;
+            }, error: function(xhr,err){
+                if( xhr.status == 403 ) {
+                    toastr.error(xhr.statusText, 'UnAuthorized Access');
+                }
+            }
+        });
+
+    }
+
+    function exportExcel(module_type) {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            xhrFields: {
+                responseType: 'blob',
+            },
+            url: config.routes[module_type].export.excel,
+            type: 'POST',
+            success: function(result, status, xhr) {
+
+                var disposition = xhr.getResponseHeader('content-disposition');
+                var matches = /"([^"]*)"/.exec(disposition);
+                var filename = (matches != null && matches[1] ? matches[1] : module_type+'.xlsx');
+
+                // The actual download
+                var blob = new Blob([result], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+
+                document.body.appendChild(link);
+
+                link.click();
+                document.body.removeChild(link);
+                
+            },
+            error: function(xhr,err){
+                if( xhr.status == 403 ) {
+                    toastr.error(xhr.statusText, 'UnAuthorized Access');
+                }
             }
         });
 
@@ -75,6 +122,11 @@
                             timer: 3000
                         });
                         
+                    },
+                    error: function(xhr,err){
+                        if( xhr.status == 403 ) {
+                            toastr.error(xhr.statusText, 'UnAuthorized Access');
+                        }
                     }
                 });		
             }
@@ -118,6 +170,11 @@
                             timer: 3000
                         });
                         
+                    },
+                    error: function(xhr,err){
+                        if( xhr.status == 403 ) {
+                            toastr.error(xhr.statusText, 'UnAuthorized Access');
+                        }
                     }
                 });		
             }

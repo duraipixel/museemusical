@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class TestController extends Controller
 {
@@ -54,5 +55,12 @@ class TestController extends Controller
 
             sendSMS($number, $message, $params);
         }
+    }
+
+    public function invoiceSample(Request $request)
+    {
+        
+        $pdf = PDF::loadView('platform.invoice.index')->setPaper('a4', 'portrait');;
+        return $pdf->stream('test.pdf');
     }
 }

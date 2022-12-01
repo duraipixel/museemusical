@@ -84,7 +84,7 @@
                                     <label class="required fw-bold fs-6 mb-5">Role</label>
                                     @foreach ($role as $item)
                                         <div class="d-flex fv-row">
-                                            <div class="form-check form-check-custom form-check-solid">
+                                            <div class="form-check form-check-custom form-check-solid w-100">
 
                                                 <input class="form-check-input me-3" value="{{ $item->id }}"
                                                     name="user_role" type="radio"

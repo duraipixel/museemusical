@@ -16,7 +16,9 @@
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
-                @include('platform.product._filter_form')
+                @if( access()->hasAccess('products', 'filter') )
+                    @include('platform.product._filter_form')
+                @endif
             </div>
             <hr>
             <!--end::Card header-->

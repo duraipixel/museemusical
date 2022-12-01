@@ -72,7 +72,7 @@
                                         @foreach (config('constant.permission') as $item)
                                         <tr>
                                             <td class="text-gray-800"> 
-                                                {{ $item }} 
+                                                {{ ucwords( str_replace(['-', '_','.'], " ", $item ) ) }} 
                                                 <input type="hidden" name="item" value="{{$item??''}}">
                                             </td>
                                             <td>
@@ -88,10 +88,21 @@
                                                         <span class="form-check-label">Write</span>
                                                     </label>
         
-                                                    <label class="form-check form-check-custom form-check-solid">
+                                                    <label class="form-check form-check-custom form-check-solid me-5 me-lg-20">
                                                         <input class="form-check-input common-checkbox" type="checkbox" @if(isset( $perms[$item][$item.'_delete']) && $perms[$item][$item.'_delete'] == 'on') checked @endif name="{{$item}}_delete" id="{{$item}}_delete" />
                                                         <span class="form-check-label">Delete</span>
                                                     </label>
+
+                                                    <label class="form-check form-check-custom form-check-solid me-5 me-lg-20">
+                                                        <input class="form-check-input common-checkbox" type="checkbox" @if(isset( $perms[$item][$item.'_export']) && $perms[$item][$item.'_export'] == 'on') checked @endif name="{{$item}}_export" id="{{$item}}_export" />
+                                                        <span class="form-check-label">Export</span>
+                                                    </label>
+
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input common-checkbox" type="checkbox" @if(isset( $perms[$item][$item.'_status']) && $perms[$item][$item.'_status'] == 'on') checked @endif name="{{$item}}_status" id="{{$item}}_status" />
+                                                        <span class="form-check-label">Status Change</span>
+                                                    </label>
+
                                                 </div>
                                             </td>
                                         </tr>

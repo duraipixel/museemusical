@@ -106,9 +106,9 @@
                                     <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Long Description" name="long_description" id="long_description" cols="30" rows="4">{{ $info->long_description ?? '' }}</textarea>
                                 </div>
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                                    <label class="fw-bold fs-6 mb-2">Sorting Order</label>
                                     <input type="text" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
-                                        placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                        placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
                         </div>

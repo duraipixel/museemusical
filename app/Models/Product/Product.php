@@ -18,6 +18,7 @@ class Product extends Model
         'product_url',
         'sku',
         'price',
+        'mrp',
         'sale_price',
         'sale_start_date',
         'sale_end_date',

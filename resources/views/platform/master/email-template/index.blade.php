@@ -25,9 +25,9 @@
             <div class="card-header border-0 pt-6 w-100">
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-country-table-toolbar="base">
-
-                   @include('platform.master.email-template._filter')
-                    
+                    @if( access()->hasAccess('email-template', 'filter') )    
+                        @include('platform.master.email-template._filter')
+                    @endif
 
                         <button type="button" class="btn btn-primary" onclick="return openForm('email-template')">
                             <span class="svg-icon svg-icon-2">

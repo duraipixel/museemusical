@@ -112,9 +112,9 @@
             </div>
         </div>
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2">Shorting Order</label>
+            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
             <input type="text" name="order_by" class="form-control numberonly form-control-solid mb-3 mb-lg-0"
-                placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" min="1" />
+                placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" min="1" />
         </div>
         
     </div>

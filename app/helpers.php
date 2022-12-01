@@ -1,5 +1,9 @@
 <?php
 
+use App\Helpers\AccessGuard;
+use App\Models\Product\Product;
+use App\Models\User;
+
 if( !function_exists('gSetting') ) {
     function gSetting($column) {
         $info = \DB::table('global_settings')->first();
@@ -40,4 +44,45 @@ function sendSMS($numbers, $msg, $params) {
     curl_close($ch);
     return $response;
 
+}
+
+if (! function_exists('access')) {
+    function access() {
+        return new AccessGuard();
+    }
+}
+
+if (! function_exists('getAmountExclusiveTax')) {
+    function getAmountExclusiveTax($productAmount, $gstPercentage) {
+        $gstAmount = $productAmount - ( $productAmount * (100/(100 + $gstPercentage) ) );
+        $basePrice = $productAmount - $gstAmount;
+        return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount );
+    }
+}
+
+if (! function_exists('generateProductSku')) {
+    function generateProductSku($brand) {
+        $countNumber    = '0000';
+        $sku = 'MM-'.date('m').'-'.strtoupper($brand).'-'.$countNumber;
+
+        $checkProduct = Product::where('sku', $sku)->first();
+        if( isset( $checkProduct ) && !empty($checkProduct) ) {
+            $old_no = $checkProduct->sku;
+            $old_no = explode("-", $old_no );
+            
+            $end = end($old_no);
+            $old_no = $end + 1;
+            
+            if( ( 4 - strlen($old_no) ) > 0 ){
+                $new_no = '';
+                for ($i=0; $i < (4 - strlen($old_no) ); $i++) { 
+                    $new_no .= '0';
+                }
+                $ord = $new_no.$old_no;
+                
+                $sku =  'MM-'.date('m').'-'.strtoupper($brand).'-'.$ord;
+            }
+        } 
+        return $sku;
+    }
 }
