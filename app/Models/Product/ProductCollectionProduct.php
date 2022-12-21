@@ -14,4 +14,9 @@ class ProductCollectionProduct extends Model
         'product_id',
         'order_by'
     ];
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id', 'product_id' ); 
+    }
 }

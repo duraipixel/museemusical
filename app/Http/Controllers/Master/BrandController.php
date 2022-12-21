@@ -150,9 +150,13 @@ class BrandController extends Controller
                     mkdir(storage_path("app/public/brands/".$brand_id."/option4"), 0775, true);
                 }
 
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/thumb"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/thumb"), 0775, true);
+                }
+
                 $option1Path            = 'public/brands/'.$brand_id.'/option1/' . $imageName;
                 Image::make($file)->resize(350,690)->save(storage_path('app/' . $option1Path));
-
+                
                 $option2Path            = 'public/brands/'.$brand_id.'/option2/' . $imageName;
                 Image::make($file)->resize(350,336)->save(storage_path('app/' . $option2Path));
 
@@ -161,6 +165,10 @@ class BrandController extends Controller
 
                 $option4Path            = 'public/brands/'.$brand_id.'/option4/' . $imageName;
                 Image::make($file)->resize(350,336)->save(storage_path('app/' . $option4Path)); 
+
+                $option5Path            = 'public/brands/'.$brand_id.'/thumb/' . $imageName;
+                Image::make($file)->resize(285,30)->save(storage_path('app/' . $option5Path)); 
+
                 $info->brand_logo       = $imageName;
                 $info->update();
 

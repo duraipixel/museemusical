@@ -77,7 +77,7 @@ class WalkThroughController extends Controller
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
                                             'title' => 'required|string|unique:walk_throughs,title,' . $id . ',id,deleted_at,NULL',
-                                            
+                                            'order_by' => 'required|unique:walk_throughs,order_by,' . $id . ',id,deleted_at,NULL'
                                         ]);
 
         if ($validator->passes()) {
@@ -88,12 +88,14 @@ class WalkThroughController extends Controller
             $ins['description']     = $request->description;
             $ins['order_by']        = $request->order_by ?? 1;
             $ins['added_by']        = Auth::id();
+
             if($request->status == "1")
             {
                 $ins['status']      = 'published';
             } else {
                 $ins['status']      = 'unpublished';
             }
+            
             $error                  = 0;
 
             $info                   = WalkThrough::updateOrCreate(['id' => $id], $ins);

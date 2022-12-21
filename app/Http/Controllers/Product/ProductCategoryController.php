@@ -8,6 +8,7 @@ use App\Models\CategoryMetaTags;
 use Illuminate\Http\Request;
 use App\Models\Product\ProductCategory;
 use App\Models\Settings\Tax;
+use Illuminate\Validation\Rule;
 use DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -39,7 +40,10 @@ class ProductCategoryController extends Controller
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('product_categories.name', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('product_categories.description', 'like', "%{$keywords}%")->orWhereDate("product_categories.created_at", $date);
+                        return $query->where('product_categories.name', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")
+                                    ->orWhere('product_categories.description', 'like', "%{$keywords}%")
+                                    ->orWhere('parent_category.name', 'like', "%{$keywords}%")
+                                    ->orWhereDate("product_categories.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
@@ -94,8 +98,16 @@ class ProductCategoryController extends Controller
     {
         
         $id             = $request->id;
+        $parent_id      = $request->parent_category;
         $validator      = Validator::make($request->all(), [
-                            'category_name' => 'required|string|unique:product_categories,name,' . $id . ',id,deleted_at,NULL',
+                            'name' => ['required','string',
+                                                Rule::unique('product_categories')->where(function ($query) use($id, $parent_id) {
+                                                    return $query->where('parent_id', $parent_id)->where('deleted_at', NULL)->when($id != '', function($q) use($id){
+                                                        return $q->where('id', '!=', $id);
+                                                    });
+                                                }),
+                                                ],
+
                             'avatar' => 'mimes:jpeg,png,jpg',
                             'tax_id' => 'required_if:is_tax,on'
                         ]);
@@ -108,6 +120,8 @@ class ProductCategoryController extends Controller
             }
             if( !$request->is_parent ) {
                 $ins['parent_id'] = $request->parent_category;
+            } else {
+                $ins['parent_id'] = 0;
             }
             if( $request->is_tax ) {
                 $ins['tax_id'] = $request->tax_id;
@@ -127,7 +141,7 @@ class ProductCategoryController extends Controller
                 $ins['updated_by'] = Auth::id();
             }
 
-            $ins['name'] = $request->category_name;
+            $ins['name'] = $request->name;
             $ins['description'] = $request->description;
             $ins['order_by'] = $request->order_by ?? 0;
             $ins['tag_line'] = $request->tag_line;
@@ -198,7 +212,7 @@ class ProductCategoryController extends Controller
         $directory      = 'productCategory/'.$id;
         Storage::deleteDirectory($directory);
         // echo 1;
-        return response()->json(['message'=>"Successfully deleted state!",'status'=>1]);
+        return response()->json(['message'=>"Successfully deleted!",'status'=>1]);
     }
 
     public function changeStatus(Request $request)
@@ -210,7 +224,7 @@ class ProductCategoryController extends Controller
         $info->status   = $status;
         $info->update();
         // echo 1;
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
 

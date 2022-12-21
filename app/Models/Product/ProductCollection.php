@@ -13,7 +13,8 @@ class ProductCollection extends Model
         'tag_line',
         'order_by',
         'status',
-        'show_home_page'
+        'show_home_page',
+        'can_map_discount'
     ];
 
     public function collectionProducts()

@@ -90,6 +90,7 @@ class TestimonialsController extends Controller
         $validator                  = Validator::make($request->all(), [
                                         'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
                                         'avatar' => 'mimes:jpeg,png,jpg',
+                                        'order_by' => 'required|unique:testimonials,order_by,' . $id . ',id,deleted_at,NULL'
                                         
                                     ]);
 

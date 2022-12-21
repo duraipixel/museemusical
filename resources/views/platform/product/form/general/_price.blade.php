@@ -11,7 +11,7 @@
         <div class="col-md-4">
             <div class="">
                 <label class="required form-label">Base Price</label>
-                <input type="text" name="base_price" class="form-control mb-2 mobile_num" placeholder="Product Price" value="{{ $info->price ?? '' }}" />
+                <input type="text" name="base_price" id="base_price" class="form-control mb-2 mobile_num" placeholder="Product Price" value="{{ $info->price ?? '' }}" />
                 <div class="text-muted fs-7">Set the product price.</div>
             </div>
         </div>
@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="mb-10">
                 <label class="form-label">Sale Price</label>
-                <input type="text" name="sale_price" class="form-control mb-2 mobile_num" placeholder="Sale Price" value="{{ $info->sale_price ?? '' }}" />
+                <input type="text" name="sale_price" id="sale_price" class="form-control mb-2 mobile_num" placeholder="Sale Price" value="{{ $info->sale_price ?? '' }}" />
             </div>
         </div>
         <div class="col-md-4">
@@ -85,7 +85,7 @@
     </div>
     <div class="@if( isset( $info->productDiscount->discount_type ) && $info->productDiscount->discount_type == 'fixed_amount' ) @else d-none @endif mb-10 fv-row" id="kt_ecommerce_add_product_discount_fixed">
         <label class="form-label">Fixed Discounted Price</label>
-        <input type="text" name="dicsounted_price" class="form-control mb-2 mobile_num" placeholder="Discounted price" value="{{ $info->productDiscount->amount ?? '' }}" />
+        <input type="text" name="dicsounted_price" onkeyup="return getSalePrice(this)" class="form-control mb-2 mobile_num" placeholder="Discounted price" value="{{ $info->productDiscount->amount ?? '' }}" />
         <div class="text-muted fs-7">Set the discounted product price. The product will be reduced at the determined fixed price</div>
     </div>
 </div>
@@ -152,6 +152,14 @@
 
             slider.noUiSlider.on("update", function (values, handle) {
                 value.innerHTML = Math.round(values[handle]);
+                var priceProduct = document.getElementById('base_price').value;
+                var draggedInput        = Math.round(values[handle]);
+                priceProduct            = parseFloat(priceProduct);
+
+                var discount_amount     = (priceProduct * (draggedInput/100) ).toFixed(2);
+                var sale_price          = priceProduct - discount_amount;
+
+                document.getElementById('sale_price').value = sale_price;
                 var discount = document.getElementById('discount_percentage');
                 discount.value = Math.round(values[handle])
                 if (handle) {
@@ -159,5 +167,18 @@
                 }
             });
         }
+
+    function getSalePrice( dPrice ) {
+
+        var priceProduct = document.getElementById('base_price').value;
+        if( dPrice.value == '' ) {
+            document.getElementById('sale_price').value = priceProduct;
+        } else {
+            var fixedAmount = parseFloat(dPrice.value);
+            var sale_price          = priceProduct - fixedAmount;
+            document.getElementById('sale_price').value = sale_price;
+        }
+        
+    }
        
 </script>

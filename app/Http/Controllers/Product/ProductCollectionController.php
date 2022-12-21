@@ -89,6 +89,7 @@ class ProductCollectionController extends Controller
             $ins['order_by']            = $request->order_by;
             $ins['tag_line']            = $request->tag_line;
             $ins['show_home_page']      = $request->show_home_page ?? 'no';
+            $ins['can_map_discount']    = $request->can_map_discount ?? 'no';
 
             if($request->status)
             {
@@ -97,6 +98,7 @@ class ProductCollectionController extends Controller
                 $ins['status']          = 'unpublished';
             }
             $error                      = 0;
+            // dd( $ins );
             $collectionInfo             = ProductCollection::updateOrCreate(['id' => $id], $ins);
             $collection_id              = $collectionInfo->id;
             

@@ -86,3 +86,141 @@ if (! function_exists('generateProductSku')) {
         return $sku;
     }
 }
+
+if( !function_exists('percentage') ) {
+    function percentage($amount, $percent) {
+        return $amount - ( $amount * ( $percent/100) );
+    }
+}
+
+if( !function_exists('percentageAmountOnly') ) {
+    function percentageAmountOnly($amount, $percent) {
+        return ( $amount * ( $percent/100) );
+    }
+}
+
+if( !function_exists('getSaleProductPrices') ) {
+    function getSaleProductPrices($productsObjects, $couponsInfo) {
+        
+        $strike_rate    = 0;
+        $price          = $productsObjects->price;
+        $today          = date('Y-m-d');
+        /****
+         * 1.check product discount is applied via product add/edit
+         * 2.check overall discount is applied for product category
+         */
+        $has_discount       = 'no';
+        #condition 1:
+        if( $today >= $productsObjects->sale_start_date && $today <= $productsObjects->sale_end_date ) {
+            $strike_rate    = $productsObjects->price;
+            $price          = $productsObjects->sale_price;
+            $has_discount       = 'yes';
+        } 
+
+        #condition 2:
+        if( $couponsInfo->quantity > $couponsInfo->used_quantity ) {
+            
+            #check product amount greater than minimum order value
+            if( $couponsInfo->minimum_order_value <= $price ) {
+                #then do percentage or fixed amount discount
+                switch ($couponsInfo->calculate_type) {
+                    case 'percentage':
+                        $strike_rate    = $price;
+                        $price          = percentage( $price, $couponsInfo->calculate_value );
+                        $has_discount   = 'yes';
+                        break;
+                    case 'fixed_amount':
+                        $strike_rate    = $price;
+                        $price          = $price - $couponsInfo->calculate_value;
+                        $has_discount   = 'yes';
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+
+        return array( 'strike_rate' => $strike_rate, 'price' => $price, 'has_discount' => $has_discount );
+
+    }
+}
+
+    if( !function_exists('getProductPrice') ) {
+        function getProductPrice($productsObjects) {
+            
+            $strike_rate            = 0;
+            $price                  = $productsObjects->price;
+            $today                  = date('Y-m-d');
+            /****
+             * 1.check product discount is applied via product add/edit
+             * 2.check overall discount is applied for product category
+             */
+            $has_discount           = 'no';
+            #condition 1:
+            if( $today >= $productsObjects->sale_start_date && $today <= $productsObjects->sale_end_date ) {
+                $strike_rate        = $productsObjects->price;
+                $price              = $productsObjects->sale_price;
+                $has_discount       = 'yes';
+            } 
+            #condition 2:
+            $getDiscountDetails     = \DB::table('coupon_categories')
+                                        ->select('product_categories.name','coupons.*')
+                                        ->join('coupons', 'coupons.id', '=', 'coupon_categories.coupon_id')
+                                        ->join('product_categories', 'product_categories.id','=', 'coupon_categories.category_id')
+                                        ->join('products', function($join) {
+                                            $join->on('products.category_id', '=', 'product_categories.id');
+                                            $join->orOn('products.category_id', '=', 'product_categories.parent_id');
+                                        })
+                                        ->where('coupons.status', 'published')
+                                        ->where('is_discount_on', 'yes')
+                                        ->whereDate( 'coupons.start_date', '<=', date('Y-m-d') )
+                                        ->whereDate( 'coupons.end_date', '>=', date('Y-m-d') )
+                                        ->where('products.id', $productsObjects->id)
+                                        ->orderBy( 'coupons.order_by', 'asc' )
+                                        ->get();
+            
+            $coupon_used            = [];
+            if( isset( $getDiscountDetails ) && !empty( $getDiscountDetails ) ) {
+                foreach ($getDiscountDetails as $items ) {
+
+                    if( $items->quantity > $items->used_quantity ) {
+                
+                        #check product amount greater than minimum order value
+                        if( $items->minimum_order_value <= $price ) {
+                            #then do percentage or fixed amount discount
+                            $tmp['coupon_details']  = $items;
+
+                            switch ($items->calculate_type) {
+
+                                case 'percentage':
+                                    $strike_rate    = $price;
+                                    $tmp['discount_amount'] = percentageAmountOnly( $price, $items->calculate_value );
+                                    $price          = percentage( $price, $items->calculate_value );
+                                    $has_discount   = 'yes';
+                                    break;
+                                case 'fixed_amount':
+                                    $strike_rate    = $price;
+                                    $tmp['discount_amount'] = $items->calculate_value;
+                                    $price          = $price - $items->calculate_value;
+                                    $has_discount   = 'yes';
+                                    break;
+                                default:
+                                    
+                                    break;
+                            }
+                            $coupon_used[]          = $tmp;
+                        }
+                    }
+                   
+                    
+
+                }
+            }
+            $coupon_used['strike_rate']     = $strike_rate;
+            $coupon_used['price']           = $price;
+            
+            return $coupon_used;
+    
+        }
+}

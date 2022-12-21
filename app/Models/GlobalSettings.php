@@ -13,10 +13,16 @@ class GlobalSettings extends Model
         'site_email',
         'site_mobile_no',
         'favicon',
+        'address',
         'logo',
         'copyrights',
         'enable_mail',
         'enable_sms',
         'payment_mode'
     ];
+
+    public function links()
+    {
+        return $this->hasMany(GlobalSiteLinks::class, 'site_id', 'id');
+    }
 }

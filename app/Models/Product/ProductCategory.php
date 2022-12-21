@@ -46,4 +46,15 @@ class ProductCategory extends Model
     {
         return $this->belongsTo(ProductCategory::class, 'parent_id', 'id');
     }
+
+    public function childCategory() 
+    {
+        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->where('status', 'published')->orderBy('order_by', 'asc');
+    }
+
+    public function childTopMenuCategory() 
+    {
+        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->select('id','name','is_featured')->where(['status' => 'published', 'is_home_menu' => 'yes'])->orderBy('order_by', 'asc');
+    }
+
 }

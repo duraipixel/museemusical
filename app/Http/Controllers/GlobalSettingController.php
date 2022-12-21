@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GlobalSettings;
+use App\Models\GlobalSiteLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
@@ -44,6 +45,7 @@ class GlobalSettingController extends Controller
             $ins['site_mobile_no'] = $request->site_mobile_number;
             $ins['site_email'] = $request->site_email;
             $ins['copyrights'] = $request->copyrights;
+            $ins['address'] = $request->address;
 
             if ($request->hasFile('favicon')) {
                 $filename       = time() . '_' . $request->favicon->getClientOriginalName();
@@ -117,6 +119,40 @@ class GlobalSettingController extends Controller
             $error = 0;
             $info = GlobalSettings::updateOrCreate(['id' => $id],$ins);
             $message = (isset($id) && !empty($id)) ? 'Updated Successfully' :'Added successfully';
+        } else {
+            $error = 1;
+            $message = $validator->errors()->all();
+        }
+        return response()->json(['error'=> $error, 'message' => $message]);
+    }
+
+    public function saveLinkForm(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'link_name.*' => 'required',
+            'link_url.*' => 'required|url',
+           
+        ]);
+        $id             = 1;
+
+        if ($validator->passes()) {
+            
+            $link_name  = $request->link_name;
+            $link_url   = $request->link_url;
+            $link_icon  = $request->link_icon;
+            GlobalSiteLinks::where('site_id', $id)->delete();
+            for ($i=0; $i < count($link_name); $i++) { 
+                $ins['site_id']     = $id;
+                $ins['link_name']   = $link_name[$i] ?? '' ;
+                $ins['link_icon']   = $link_icon[$i] ?? '' ;
+                $ins['link_url']    = $link_url[$i] ?? '' ;
+                $ins['status']      = 'published';
+
+                $info = GlobalSiteLinks::create($ins);
+            }
+        
+            $error = 0;
+            $message = 'Updated Successfully';
         } else {
             $error = 1;
             $message = $validator->errors()->all();

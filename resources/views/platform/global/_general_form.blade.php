@@ -112,7 +112,12 @@
                 <input type="email" name="site_email" class="form-control form-control-lg form-control-solid" placeholder="Site Email" value="{{ $data->site_email ?? '' }}" />
             </div>
         </div>
-        
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6">Address</label>
+            <div class="col-lg-8 fv-row">
+                <textarea name="address" class="form-control form-control-lg form-control-solid" id="address" cols="30" rows="3">{{ $data->address ?? '' }}</textarea>
+            </div>
+        </div>
         <div class="row mb-6">
             <label class="col-lg-4 col-form-label fw-bold fs-6">Copyrights</label>
             <div class="col-lg-8 fv-row">

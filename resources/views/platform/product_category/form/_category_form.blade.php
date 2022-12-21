@@ -2,14 +2,14 @@
     <div class="col-md-8">
         <div class="fv-row mb-7">
             <label class="required fw-bold fs-6 mb-2">Category Name</label>
-            <input type="text" name="category_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Category Name" value="{{ $info->name ?? '' }}" />
+            <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Category Name" value="{{ $info->name ?? '' }}" />
         </div>
         <div class="fv-row mb-7">
             <label class="fw-bold fs-6 mb-2"> Is Parent </label>
             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                 <input class="form-check-input" type="checkbox"  name="is_parent" id="is_parent" value="1" @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) checked @endif />
             </div>
-            <div class="fv-row d-none" id="parent-tab">
+            <div class="fv-row @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) d-none @endif" id="parent-tab">
                 <label class="required fw-bold fs-6 mb-2">Parent Category</label>
                 <select name="parent_category" id="parent_category" aria-label="Select a Language" data-control="select2" data-placeholder="Select a Language..." class="form-select mb-2">
 
