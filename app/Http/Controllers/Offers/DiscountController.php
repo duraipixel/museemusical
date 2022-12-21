@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Offers;
 
 use App\Exports\DiscountExport;
 use App\Http\Controllers\Controller;
+use App\Models\CouponProductCollection;
 use App\Models\Offers\CouponCategory;
 use App\Models\Offers\CouponCustomer;
 use App\Models\Offers\CouponProduct;
 use App\Models\Offers\Coupons;
+use App\Models\Product\ProductCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DataTables;
@@ -91,6 +93,11 @@ class DiscountController extends Controller
             } else if( $info->coupon_type == 3 ) {
                 $couponTypeAttributes = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
             }
+            else if($info->coupon_type == 4 ){
+                $couponTypeAttributes = ProductCollection::where('status', 'published')->where('can_map_discount', 'yes')->get();
+              
+            }
+           
             $modal_title    = 'Update Discount';
         }
         
@@ -133,11 +140,22 @@ class DiscountController extends Controller
             }
             return response()->json(["data"=>$value,"title"=>$title]);
         }
+        if($name == '4')
+        {
+            $data = DB::table('product_collections')->select('id','collection_name')->where('status', 'published')->where('can_map_discount', 'yes')->get();
+            $title = "Product Collection"; 
+            foreach($data as $key=>$val)
+            {
+                $value[] = "<option value=".$val->id.">".$val->collection_name."</option>";
+            }
+            return response()->json(["data"=>$value,"title"=>$title]);
+        }
 
     }
 
     public function saveForm(Request $request,$id = null)
     {
+        // dd($request->all());
 
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
@@ -260,6 +278,20 @@ class DiscountController extends Controller
                 }
                
             }
+            else if($request->discount_type == "4" )
+            {
+                CouponProductCollection::where('coupon_id',$info->id)->forceDelete();
+                
+                if(isset($request->product_id) && !empty($request->product_id))
+                {
+                    foreach($request->product_id  as $val){
+                        $productCollect['coupon_id']                  = $info->id;
+                        $productCollect['product_collection_id']      = $val;
+                        $productCollect['quantity']                   = $request->quantity;
+                        CouponProductCollection::Create($productCollect);
+                    }
+                }
+            }
             
             $message   = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } 
@@ -289,6 +321,7 @@ class DiscountController extends Controller
         $info->couponProducts()->delete();
         $info->couponCustomers()->delete();
         $info->couponCategory()->delete();
+        $info->couponProductCollection()->delete();
         $info->forceDelete();
         return response()->json(['message'=>"Successfully deleted Discount!",'status'=>1]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Offers;
 
+use App\Models\CouponProductCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,6 +43,11 @@ class Coupons extends Model
     public function couponCategory()
     {
         return $this->hasMany(CouponCategory::class, 'coupon_id', 'id');
+    }
+
+    public function couponProductCollection()
+    {
+        return $this->hasMany(CouponProductCollection::class, 'coupon_id', 'id');
     }
 
 

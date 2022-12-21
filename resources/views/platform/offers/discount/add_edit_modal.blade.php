@@ -88,10 +88,11 @@
                                         {{-- <option value="1" @if(isset($info->coupon_type) && $info->coupon_type == "1") selected="selected" @endif>Product</option> --}}
                                         {{-- <option value="2" @if(isset($info->coupon_type) && $info->coupon_type == "2") selected="selected" @endif>Customer</option> --}}
                                         <option value="3" @if(isset($info->coupon_type) && $info->coupon_type == "3") selected="selected" @endif>Category</option>
+                                        <option value="4" @if(isset($info->coupon_type) && $info->coupon_type == "4") selected="selected"  @endif>Product Collection</option>
                                     </select>
                                 </div>
                             </div>
-                           
+                       
                             <div class="col-md-6" id="couponData">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2" id="title">Select Item</label>
@@ -106,9 +107,11 @@
                                                     selected="selected" 
                                                     @elseif( isset($info->couponCategory) && in_array( $item->id, array_column( $info->couponCategory->toArray(), 'category_id')) )
                                                     selected="selected" 
+                                                    @elseif( isset($info->couponProductCollection) && in_array( $item->id, array_column( $info->couponProductCollection->toArray(), 'product_collection_id')) )
+                                                    selected="selected" 
                                                     @endif
                                                     >
-                                                    {{ $item->name ?? $item->product_name ?? $item->first_name ?? '' }}
+                                                    {{ $item->name ?? $item->product_name ?? $item->first_name ?? $item->collection_name ?? '' }}
                                                 </option>    
                                             @endforeach
                                         @endif
