@@ -31,10 +31,6 @@ class ProductCollectionController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-collection\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                ->addColumn('status', function ($row) {
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-collection\')">'.ucfirst($row->status).'</a>';
-                    return $status;
-                })
                 ->editColumn('no_of_products', function ($row) {
                     return count($row->collectionProducts);
                 })
@@ -139,7 +135,7 @@ class ProductCollectionController extends Controller
         $info->status   = $status;
         $info->update();
         
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
 

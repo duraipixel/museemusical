@@ -133,7 +133,7 @@ class StateController extends Controller
         $info->status   = $status;
         $info->update();
         // echo 1;
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
     public function export()

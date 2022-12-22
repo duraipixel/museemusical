@@ -22,7 +22,7 @@
     <div class="row" >
         <div class="col">
             <div class="col-md-3">
-                <label class="fs-6 fw-bold mb-2">Quantity</label>
+                <label class="required fs-6 fw-bold mb-2">Quantity</label>
                 <input type="number" class="form-control form-control-solid numberonly" name="qty" value="{{ $info->quantity ?? '' }}" placeholder="Quantity" id="qty" min="1" max="100" />
             </div>
         </div>

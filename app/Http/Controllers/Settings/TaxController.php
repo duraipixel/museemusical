@@ -133,7 +133,7 @@ class TaxController extends Controller
         $info           = Tax::find($id);
         $info->status   = $status;
         $info->update();
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
     public function export()

@@ -84,7 +84,7 @@ class ProductController extends Controller
                 return $q->where('label_id', $f_label);
             });
 
-
+            
             $keywords = $request->get('search')['value'];
             
             $datatables =  Datatables::of($data)
@@ -204,30 +204,34 @@ class ProductController extends Controller
         $id                 = $request->id;
         $product_page_type  = $request->product_page_type;
 
-        $validator      = Validator::make($request->all(), [
-                            'product_page_type' => 'required',
-                            'category_id' => 'required',
-                            'brand_id' => 'required',
-                            'status' => 'required',
-                            'stock_status' => 'required',
-                            'product_name' => 'required_if:product_page_type,==,general',
-                            'base_price' => 'required_if:product_page_type,==,general',
-                            'sku' => 'required_if:product_page_type,==,general|unique:products,sku,' . $id . ',id,deleted_at,NULL',
-                            'sale_price' => 'required_if:discount_option,==,percentage',
-                            'sale_price' => 'required_if:discount_option,==,fixed_amount',
-                            'sale_start_date' => 'required_if:sale_price,!=,0',
-                            'sale_end_date' => 'required_if:sale_price,==,0',
-                            'dicsounted_price' => 'required_if:discount_option,==,fixed_amount',
-                            'filter_variation' => 'nullable|array',
-                            'filter_variation.*' => 'nullable|required_with:filter_variation',
-                            'filter_variation_value' => 'nullable|required_with:filter_variation|array',
-                            'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
-                            'url' => 'nullable|array',
-                            'url.*' => 'nullable|required_with:url',
-                            'url_type' => 'nullable|required_with:url|array',
-                            'url_type.*' => 'nullable|required_with:url.*',
-
-                        ]);
+        $validate_array     = [
+                                'product_page_type' => 'required',
+                                'category_id' => 'required',
+                                'brand_id' => 'required',
+                                'status' => 'required',
+                                'stock_status' => 'required',
+                                'product_name' => 'required_if:product_page_type,==,general',
+                                'base_price' => 'required_if:product_page_type,==,general',
+                                'sku' => 'required_if:product_page_type,==,general|unique:products,sku,' . $id . ',id,deleted_at,NULL',
+                                'sale_price' => 'required_if:discount_option,==,percentage',
+                                'sale_price' => 'required_if:discount_option,==,fixed_amount',
+                                'sale_start_date' => 'required_if:sale_price,!=,0',
+                                'sale_end_date' => 'required_if:sale_price,==,0',
+                                'dicsounted_price' => 'required_if:discount_option,==,fixed_amount',
+                                'filter_variation' => 'nullable|array',
+                                'filter_variation.*' => 'nullable|required_with:filter_variation',
+                                'filter_variation_value' => 'nullable|required_with:filter_variation|array',
+                                'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
+                               
+                            ];
+                            
+        if( isset($request->url) && !empty( $request->url) && is_null($request->url) ) {
+            $validate_array['url'] = 'nullable|array';
+            $validate_array['url.*'] = 'nullable|required_with:url';
+            $validate_array['url_type'] = 'nullable|required_with:url|array';
+            $validate_array['url_type.*'] = 'nullable|required_with:url.*';
+        }
+        $validator      = Validator::make( $request->all(), $validate_array );
 
         if ($validator->passes()) {
            
@@ -342,7 +346,7 @@ class ProductController extends Controller
                 }
             }
 
-            if( isset( $request->url ) && !empty( $request->url ) )  {
+            if( isset( $request->url ) && !empty( $request->url ) && is_null( $request->url ) )  {
 
                 $url = $request->url;
                 $url_type = $request->url_type;

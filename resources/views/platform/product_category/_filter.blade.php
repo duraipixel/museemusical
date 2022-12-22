@@ -20,11 +20,24 @@
                 <select name="filter_status" class="form-select form-select-solid fw-bolder" data-kt-select2="true"
                     data-placeholder="Select option" data-allow-clear="true" data-kt-testimonials-table-filter="order"
                     data-hide-search="true">
-                    <option value="0">All</option>
+                    <option value="">All</option>
                     <option value="published">Published</option>
                     <option value="unpublished">UnPublished</option>
                 </select>
             </div>
+            @if(!empty($taxData))
+            <div class="mb-10">
+                <label class="form-label fs-6 fw-bold">Tax:</label>
+                <select name="filter_tax" class="form-select form-select-solid fw-bolder"
+                    data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
+                    data-kt-tax-table-filter="order" data-hide-search="true">
+                    <option value="">All</option>
+                    @foreach($taxData as $key=>$val)
+                    <option value="{{ $val->id }}">{{ $val->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
             <div class="d-flex justify-content-end">
                 <button type="reset" class="btn btn-light btn-active-light-primary fw-bold me-2 px-6"
                     data-kt-menu-dismiss="true" data-kt-testimonials-table-filter="reset">Reset</button>

@@ -46,7 +46,7 @@ class CustomerController extends Controller
                     }
                 })
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'customer\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
@@ -164,7 +164,7 @@ class CustomerController extends Controller
         $info           = Customer::find($id);
         $info->status   = $status;
         $info->update();
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
 

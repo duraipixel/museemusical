@@ -133,7 +133,7 @@ class ProductAttributeSetController extends Controller
         $info->status   = $status;
         $info->update();
         
-        return response()->json(['message'=>"You changed the state status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
 

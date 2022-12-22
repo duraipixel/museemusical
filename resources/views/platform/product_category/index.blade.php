@@ -63,12 +63,14 @@
         var dtTable = $('#product_category-table').DataTable({
 
             processing: true,
+            sort:true,
             serverSide: true,
             type: 'POST',
             ajax: {
                 "url": "{{ route('product-category') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
+                    d.filter_tax = $('select[name=filter_tax]').val();
                 }
             },
             columns: [
@@ -85,8 +87,8 @@
                     name: 'tag_line'
                 },
                 {
-                    data: 'tax_name',
-                    name: 'tax_name'
+                    data: 'tax',
+                    name: 'tax'
                 },
                 {
                     data: 'users_name',
@@ -128,6 +130,7 @@
         });
         $('#search-form').on('reset', function(e) {
             $('select[name=filter_status]').val(0).change();
+            $('select[name=filter_tax]').val(0).change();
 
             dtTable.draw();
             e.preventDefault();

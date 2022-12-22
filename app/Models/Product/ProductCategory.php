@@ -32,10 +32,10 @@ class ProductCategory extends Model
         return $this->hasOne(CategoryMetaTags::class, 'category_id', 'id');
     }
 
-    public function tax()
-    {
-        return $this->hasOne(Tax::class, 'id', 'tax_id');
-    }
+    // public function tax()
+    // {
+    //     return $this->hasOne(Tax::class, 'id', 'tax_id');
+    // }
 
     public function userInfo()
     {
@@ -56,5 +56,5 @@ class ProductCategory extends Model
     {
         return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->select('id','name','is_featured')->where(['status' => 'published', 'is_home_menu' => 'yes'])->orderBy('order_by', 'asc');
     }
-
+    
 }

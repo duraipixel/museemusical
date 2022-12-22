@@ -51,7 +51,7 @@ class SubCategoryController extends Controller
                 ->filter(function ($query) use ($keywords, $status, $filter_category, $page_type) {
                    
                     if ($status) {
-                        return $query->where('sub_categories.status', 'like', "%{$status}%");
+                        return $query->where('sub_categories.status', '=', "$status");
                     }
                     if ($filter_category) {
                         return $query->where('main_categories.category_name', 'like', "%{$filter_category}%")->orWhere('sub_categories.status', 'like', "%{$status}%");
@@ -75,7 +75,7 @@ class SubCategoryController extends Controller
                     }
                     return $image;
                 })
-                ->addColumn('status', function ($row) use($page_type) {
+                ->editColumn('status', function ($row) use($page_type) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \''.$page_type.'\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })

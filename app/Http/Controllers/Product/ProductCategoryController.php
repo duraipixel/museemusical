@@ -26,33 +26,41 @@ class ProductCategoryController extends Controller
     {
         $title                  = "Product Category";
         $breadCrum              = array('Products', 'Product Categories');
-
+        $taxData = Tax::where('status','published')->get();
         if ($request->ajax()) {
-            $data               = ProductCategory::select('product_categories.*','users.name as users_name', DB::raw('IF(mm_product_categories.parent_id = 0, "Parent", mm_parent_category.name ) as parent_name '))
-                                                    ->join('users', 'users.id', '=', 'product_categories.added_by')
-                                                    ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.parent_id');
+            $data               = ProductCategory::select('product_categories.*','users.name as users_name','taxes.title as tax', DB::raw('IF(mm_product_categories.parent_id = 0, "Parent", mm_parent_category.name ) as parent_name '))
+                                    ->join('users', 'users.id', '=', 'product_categories.added_by')
+                                    ->leftJoin('taxes', 'taxes.id', '=', 'product_categories.tax_id')
+                                    ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.parent_id');
+            $taxSearch          = '';
             $status             = $request->get('status');
+            $taxSearch          = $request->get('filter_tax');
             $keywords           = $request->get('search')['value'];
             $datatables         =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords, $status) {
-                    if ($status) {
-                        return $query->where('product_categories.status', 'like', "%{$status}%");
-                    }
-                    if ($keywords) {
+                ->filter(function ($query) use ($keywords, $status,$taxSearch) {
+                    
+                    return $query->when( $status != '', function($q) use($status) {
+                        $q->where('product_categories.status', '=', "$status");
+                    })->when( $taxSearch != '', function( $q ) use($taxSearch) {
+                        $q->where( 'taxes.id', '=', "$taxSearch" );
+                    })->when($keywords != '',function($q) use ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('product_categories.name', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")
+                        $q->where('product_categories.name', 'like', "%{$keywords}%")
+                                    ->orWhere('users.name', 'like', "%{$keywords}%")
+                                    ->orWhere('taxes.title', 'like', "%{$keywords}%")
                                     ->orWhere('product_categories.description', 'like', "%{$keywords}%")
                                     ->orWhere('parent_category.name', 'like', "%{$keywords}%")
                                     ->orWhereDate("product_categories.created_at", $date);
-                    }
+                    });
+                    
                 })
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-category\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                ->addColumn('tax_name', function($row){
-                    return $row->tax->title ?? 'No';
+                ->editColumn('tax', function($row){
+                    return $row->tax ?? 'No';
                 })
                 
                 ->editColumn('created_at', function ($row) {
@@ -68,10 +76,10 @@ class ProductCategoryController extends Controller
                 <i class="fa fa-trash"></i></a>';
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'image', 'tax_name']);
+                ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        return view('platform.product_category.index', compact('title','breadCrum'));
+        return view('platform.product_category.index', compact('title','breadCrum','taxData'));
     }
 
     public function modalAddEdit(Request $request)
