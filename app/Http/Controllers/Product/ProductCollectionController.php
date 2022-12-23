@@ -31,7 +31,7 @@ class ProductCollectionController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-collection\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                ->editColumn('no_of_products', function ($row) {
+                ->addColumn('no_of_products', function ($row) {
                     return count($row->collectionProducts);
                 })
                 ->addColumn('action', function ($row) {

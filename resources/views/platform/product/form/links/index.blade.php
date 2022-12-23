@@ -29,10 +29,10 @@
                         @foreach ($info->productLinks as $item)
                         <div class="form-group d-flex flex-wrap gap-5 childUrlRow" id="child-url" >
                             
-                            <input type="text" name="url[]" placeholder="Url" value="{{ $item->url ?? '' }}" class="form-control mw-100 w-500px required" required>
+                            <input type="text" name="url[]" placeholder="Url" value="{{ $item->url ?? '' }}" class="form-control mw-100 w-500px">
                             <!--end::Select2-->
                             <!--begin::Input-->
-                            <input type="text" class="form-control mw-100 w-250px required" name="url_type[]" value="{{ $item->url_type ?? '' }}" placeholder="url type" required />
+                            <input type="text" class="form-control mw-100 w-250px" name="url_type[]" value="{{ $item->url_type ?? '' }}" placeholder="url type" />
                             <!--end::Input-->
                             <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeUrlRow"  >
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
@@ -49,10 +49,10 @@
                         @else
                         <div class="form-group d-flex flex-wrap gap-5 childUrlRow" id="child-url" >
                             
-                            <input type="text" name="url[]" placeholder="Url" class="form-control mw-100 w-500px required" required>
+                            <input type="text" name="url[]" placeholder="Url" class="form-control mw-100 w-500px">
                             <!--end::Select2-->
                             <!--begin::Input-->
-                            <input type="text" class="form-control mw-100 w-250px required" name="url_type[]" placeholder="url type" required />
+                            <input type="text" class="form-control mw-100 w-250px" name="url_type[]" placeholder="url type" />
                             <!--end::Input-->
                             <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeUrlRow"  >
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->

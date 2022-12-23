@@ -77,7 +77,7 @@
                 },
                 {
                     data: 'show_home_page',
-                    name: 'show_homepage'
+                    name: 'show_home_page'
                 },
                 {
                     data: 'status',

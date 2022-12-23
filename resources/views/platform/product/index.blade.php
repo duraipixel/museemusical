@@ -78,8 +78,8 @@
                     name: 'category'
                 },
                 {
-                    data: 'brand',
-                    name: 'brand'
+                    data: 'brand_name',
+                    name: 'brand_name'
                 },
                 {
                     data: 'price',

@@ -55,11 +55,13 @@ class ProductController extends Controller
             $f_product_status = $request->get('filter_product_status');
             $f_video_booking = $request->get('filter_video_booking');
 
-            $data = Product::when($f_product_category, function($q) use($f_product_category){
+            $data = Product::leftJoin('brands','brands.id','=','products.brand_id')->
+            leftJoin('product_categories','product_categories.id','=','products.category_id')
+            ->select('Products.*','brands.brand_logo','brands.brand_name','product_categories.name as category')->when($f_product_category, function($q) use($f_product_category){
                 return $q->where('category_id', $f_product_category);
             })
             ->when($f_brand, function($q) use($f_brand) {
-                return $q->where('brand_id', $f_brand);
+                return $q->where('brands.id', $f_brand);
             })
             ->when($f_tags, function($q) use($f_tags) {
                 return $q->where('tag_id', $f_tags);
@@ -68,7 +70,7 @@ class ProductController extends Controller
                 return $q->where('stock_status', $f_stock_status);
             })
             ->when($f_product_status, function($q) use($f_product_status) {
-                return $q->where('status', $f_product_status);
+                return $q->where('products.status', $f_product_status);
             })
             ->when($f_video_booking, function($q) use($f_video_booking) {
                 return $q->where('has_video_shopping', $f_video_booking);
@@ -84,7 +86,7 @@ class ProductController extends Controller
                 return $q->where('label_id', $f_label);
             });
 
-            
+
             $keywords = $request->get('search')['value'];
             
             $datatables =  Datatables::of($data)
@@ -94,11 +96,13 @@ class ProductController extends Controller
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where(function($que) use($keywords, $date){
                             $que->where('has_video_shopping', 'like', "%{$keywords}%")
-                                ->orWhere('status', 'like', "%{$keywords}%")
-                                ->orWhere('product_name', 'like', "%{$keywords}%")
-                                ->orWhere('sku', 'like', "%{$keywords}%")
-                                ->orWhere('price', 'like', "%{$keywords}%")
-                                ->orWhereDate("created_at", $date);
+                                ->orWhere('products.status', 'like', "%{$keywords}%")
+                                ->orWhere('brands.brand_name', 'like', "%{$keywords}%")
+                                ->orWhere('product_categories.name', 'like', "%{$keywords}%")
+                                ->orWhere('products.product_name', 'like', "%{$keywords}%")
+                                ->orWhere('products.sku', 'like', "%{$keywords}%")
+                                ->orWhere('products.price', 'like', "%{$keywords}%")
+                                ->orWhereDate("products.created_at", $date);
                         });
                         return $query;
                     }
@@ -108,13 +112,12 @@ class ProductController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'products\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                ->addColumn('category', function($row){
-                    return $row->productCategory->name ?? '';
-                })
-                ->addColumn('brand', function($row){
-                    return $row->productBrand->brand_name ?? '';
-                })
-               
+                // ->addColumn('category', function($row){
+                //     return $row->productCategory->name ?? '';
+                // })
+                // ->editColumn('brand', function($row){
+                //     return $row->productBrand->brand_name ?? '';
+                // })
                 ->addColumn('action', function($row){
                     $edit_btn = '<a href="'.route('products.add.edit', ['id' => $row->id]).'" target="_blank" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                                     <i class="fa fa-edit"></i>
@@ -125,7 +128,7 @@ class ProductController extends Controller
                     return $edit_btn . $del_btn;
                 })
                
-                ->rawColumns(['action', 'status', 'category', 'brand']);
+                ->rawColumns(['action', 'status', 'category']);
                 
              
                 return $datatables->make(true);
@@ -224,13 +227,16 @@ class ProductController extends Controller
                                 'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
                                
                             ];
-                            
-        if( isset($request->url) && !empty( $request->url) && is_null($request->url) ) {
-            $validate_array['url'] = 'nullable|array';
-            $validate_array['url.*'] = 'nullable|required_with:url';
-            $validate_array['url_type'] = 'nullable|required_with:url|array';
-            $validate_array['url_type.*'] = 'nullable|required_with:url.*';
-        }
+                                       
+        if( isset($request->url) && !empty( $request->url) && !is_null($request->url[0]) ) {
+            // $validate_array['url'] = 'nullable|url|array';
+            // $validate_array['url.*'] = 'nullable|url|required_with:url';
+            // $validate_array['url_type'] = 'nullable|required_with:url|array';
+            // $validate_array['url_type.*'] = 'nullable|required_with:url.*';
+              
+            $validate_array['url.*'] = 'required|url';
+            $validate_array['url_type.*'] = 'required';
+        }   
         $validator      = Validator::make( $request->all(), $validate_array );
 
         if ($validator->passes()) {
@@ -346,7 +352,7 @@ class ProductController extends Controller
                 }
             }
 
-            if( isset( $request->url ) && !empty( $request->url ) && is_null( $request->url ) )  {
+            if( isset( $request->url ) && !empty( $request->url ) && !is_null($request->url[0]) )  {
 
                 $url = $request->url;
                 $url_type = $request->url_type;
