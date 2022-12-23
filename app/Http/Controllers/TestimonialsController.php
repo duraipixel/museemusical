@@ -26,7 +26,7 @@ class TestimonialsController extends Controller
             $datatables         =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('testimonials.status', 'like', "%{$status}%");
+                        return $query->where('testimonials.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
@@ -35,7 +35,7 @@ class TestimonialsController extends Controller
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'testimonials\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
@@ -90,8 +90,8 @@ class TestimonialsController extends Controller
         $validator                  = Validator::make($request->all(), [
                                         'title' => 'required|string|unique:testimonials,title,' . $id . ',id,deleted_at,NULL',
                                         'avatar' => 'mimes:jpeg,png,jpg',
+                                        'short_description' => 'max:250',
                                         'order_by' => 'required|unique:testimonials,order_by,' . $id . ',id,deleted_at,NULL'
-                                        
                                     ]);
 
         if ($validator->passes()) {

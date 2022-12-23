@@ -24,6 +24,9 @@ class BannerController extends Controller
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
+                    if ($status) {
+                        return $query->where('banners.status', '=', "$status");
+                    }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         return $query->where('banners.title', 'like', "%{$keywords}%")->orWhere('banners.status', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('banners.description', 'like', "%{$keywords}%")->orWhere('banners.tag_line', 'like', "%{$keywords}%")->orWhereDate("banners.created_at", $date);
@@ -31,7 +34,7 @@ class BannerController extends Controller
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'banner\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })

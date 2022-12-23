@@ -55,7 +55,7 @@
                     <thead>
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                             <th> Title  </th>
-                            <th> Pecentage </th>
+                            <th> Percentage </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>

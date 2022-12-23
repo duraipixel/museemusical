@@ -98,15 +98,16 @@
                             </div>
                             <div class="col-md-8 mb-7">
                                 <div>
-                                    <label class="fw-bold fs-6 mb-2">Short Description</label>
-                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
+                                    <label class="fw-bold fs-6 mb-2">Short Description</label><small>(Maximum Length is 250 characters)</small><br>
+                                    
+                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" maxlength="250" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
                                 </div>
                                 <div class="mt-2 mb-7">
                                     <label class="fw-bold fs-6 mb-2">Long Description</label>
                                     <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Long Description" name="long_description" id="long_description" cols="30" rows="4">{{ $info->long_description ?? '' }}</textarea>
                                 </div>
                                 <div class="fv-row mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Sorting Order</label>
+                                    <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
                                     <input type="text" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
                                         placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>

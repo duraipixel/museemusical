@@ -24,7 +24,7 @@
             <div class="card-toolbar w-100">
                 <div class="d-flex justify-content-end w-100" data-kt-coupon-table-toolbar="base">
 
-                   {{-- @include('platform.offers.coupon._filter') --}}
+                   @include('platform.offers.discount._filter')
 
                    @include('platform.layouts.parts.common._export_button')
 
@@ -103,8 +103,8 @@
                 name: 'end_date'
             },
             {
-                data: 'discount_value',
-                name: 'discount_value'
+                data: 'calculate_type',
+                name: 'calculate_type'
             },
             {
                 data: 'status',

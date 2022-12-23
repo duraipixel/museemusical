@@ -13,6 +13,7 @@
         <div class="card-header border-0 pt-6 w-100">
             <div class="card-toolbar w-100">
                 <div class="d-flex justify-content-end w-100" data-kt-banner-table-toolbar="base">
+                   @include('platform.banner._filter')
                     @include('platform.layouts.parts.common._export_button')
                     <button type="button" class="btn btn-primary" onclick="return openForm('banner')">
                         <span class="svg-icon svg-icon-2">

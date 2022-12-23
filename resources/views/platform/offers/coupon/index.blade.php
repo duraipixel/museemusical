@@ -24,7 +24,7 @@
             <div class="card-toolbar w-100">
                 <div class="d-flex justify-content-end w-100" data-kt-coupon-table-toolbar="base">
 
-                   {{-- @include('platform.offers.coupon._filter') --}}
+                   @include('platform.offers.coupon._filter')
 
                    @include('platform.layouts.parts.common._export_button')
 
@@ -55,6 +55,7 @@
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                             <th> Coupon Name  </th>
                             <th> Coupon Code </th>
+                            <th> Coupon Type </th>
                             <th> Start Date </th>
                             <th> End Date </th>
                             <th> Status </th>
@@ -84,6 +85,7 @@
             "url": "{{ route('coupon') }}",
             "data": function(d) {
                 d.status = $('select[name=filter_status]').val();
+                d.coupon_type = $('select[name=filter_coupon_type]').val();
             }
         },
 
@@ -97,6 +99,10 @@
             {
                 data: 'coupon_code',
                 name: 'coupon_code'
+            },
+            {
+                data: 'coupon_type',
+                name: 'coupon_type'
             },
             {
                 data: 'start_date',
@@ -138,6 +144,7 @@
         });
         $('#search-form').on('reset', function(e) {
             $('select[name=filter_status]').val(0).change();
+            $('select[name=filter_coupon_type]').val(0).change();
 
             dtTable.draw();
             e.preventDefault();

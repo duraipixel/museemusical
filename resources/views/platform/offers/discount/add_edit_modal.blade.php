@@ -47,12 +47,11 @@
                                     <label class="required fw-bold fs-6 mb-2">Discount Type</label>
                                     
                                     <select name="calculate_type" id="calculate_type" aria-label="Select a Discount Type" data-control="select2" data-placeholder="Select Discount Type ..." class="form-select mb-2">
-                                        <option value="percentage">Percentage</option>
-                                        <option value="fixed_amount">Fixed Amount</option>
+                                        <option value="percentage" @if(isset($info->calculate_type) && $info->calculate_type == "percentage") selected="selected" @endif>Percentage</option>
+                                        <option value="fixed_amount" @if(isset($info->calculate_type) && $info->calculate_type == "fixed_amount") selected="selected" @endif>Fixed Amount</option>
                                     </select>
                                 </div>
                             </div>
-                           
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Discount Value</label>
@@ -82,7 +81,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="required fw-bold fs-6 mb-2">Disount Applied for</label>
+                                    <label class="required fw-bold fs-6 mb-2">Discount Applied for</label>
                                     <select name="discount_type" id="discount_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type..." class="form-select mb-2">
                                         <option value="">Select a Coupon Type</option>
                                         {{-- <option value="1" @if(isset($info->coupon_type) && $info->coupon_type == "1") selected="selected" @endif>Product</option> --}}

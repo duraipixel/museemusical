@@ -142,6 +142,9 @@ return [
     */
 
     'custom' => [
+        'order_by' => [
+            'unique' => 'This Sorting order has already been taken.',
+        ],
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],

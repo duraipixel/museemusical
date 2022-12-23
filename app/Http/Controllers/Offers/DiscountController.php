@@ -25,7 +25,9 @@ class DiscountController extends Controller
         $title = "Discount";
         $breadCrum = array('Discount');
         if ($request->ajax()) {
-            $data               = Coupons::select('coupons.calculate_type', 'coupons.calculate_value', 'coupons.coupon_name as discount_name', 'coupons.status', 'coupons.created_at', 'coupons.id', 'coupons.start_date', 'coupons.end_date')
+            $data               = Coupons::select('coupons.calculate_type', 'coupons.calculate_value', 
+            'coupons.coupon_name as discount_name', 'coupons.status', 'coupons.created_at', 'coupons.id', 'coupons.start_date',
+             'coupons.end_date')
                                     ->where(function($query){
                                         $query->where('is_discount_on', 'yes');
                                     });
@@ -34,26 +36,26 @@ class DiscountController extends Controller
             $datatables         =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('coupons.status', 'like', "%{$status}%");
+                        return $query->where('coupons.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where(function($que) use($keywords, $date){
-                            $que->where('coupons.coupon_name', 'like', "%{$keywords}%")->orWhere('coupons.start_date', 'like', "%{$keywords}%")->orWhere('coupons.end_date', 'like', "%{$keywords}%")->orWhere('coupons.status', 'like', "%{$keywords}%")->orWhereDate("coupons.created_at", $date);
+                            $que->where('coupons.coupon_name', 'like', "%{$keywords}%")->orWhere('coupons.calculate_value', 'like', "%{$keywords}%")->orWhere('coupons.start_date', 'like', "%{$keywords}%")->orWhere('coupons.end_date', 'like', "%{$keywords}%")->orWhere('coupons.status', 'like', "%{$keywords}%")->orWhereDate("coupons.created_at", $date);
                         });
                         return $query;
                     }
                 })
                 ->addIndexColumn()
-                ->addColumn('discount_value', function ($row) {
+                ->editColumn('calculate_type', function ($row) {
                     if( $row->calculate_type == 'percentage' ) {
-                        $discount_value = $row->calculate_value.' %';
+                        $calculate_type = $row->calculate_value.' %';
                     } else {
-                        $discount_value = 'INR '.$row->calculate_value;
+                        $calculate_type = 'INR '.$row->calculate_value;
                     }
-                    return $discount_value;
+                    return $calculate_type;
                 })
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'discount\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
@@ -71,7 +73,7 @@ class DiscountController extends Controller
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action','status', 'discount_value']);
+                ->rawColumns(['action','status', 'calculate_type']);
             return $datatables->make(true);
         }
         return view('platform.offers.discount.index', compact('breadCrum', 'title'));
@@ -155,8 +157,6 @@ class DiscountController extends Controller
 
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
-
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
                                         'calculate_type' => 'required',
@@ -195,7 +195,7 @@ class DiscountController extends Controller
             $ins['repeated_use_count']          = $request->repeated_coupon ?? 0;
             $ins['order_by']                    = $request->order_by ?? 0;
             $ins['added_by']                    = auth()->user()->id;
-
+            
             if($request->status == "1")
             {
                 $ins['status']          = 'published';

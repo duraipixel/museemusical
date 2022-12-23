@@ -28,30 +28,49 @@ class CouponController extends Controller
                                         $query->where('is_discount_on', 'no');
                                     });
             $status             = $request->get('status');
+            $coupon_type        = $request->get('coupon_type');
             $keywords           = $request->get('search')['value'];
             $datatables         =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords, $status) {
+                ->filter(function ($query) use ($keywords, $status,$coupon_type) {
                     if ($status) {
-                        return $query->where('coupons.status', 'like', "%{$status}%");
+                        return $query->where('coupons.status', '=', "$status");
+                    }
+                    if ($coupon_type) {
+                        return $query->where('coupons.coupon_type', '=', "$coupon_type");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where(function($que) use($keywords, $date){
-                            $que->where('coupons.coupon_name', 'like', "%{$keywords}%")->orWhere('coupons.start_date', 'like', "%{$keywords}%")->orWhere('coupons.end_date', 'like', "%{$keywords}%")->orWhere('coupons.status', 'like', "%{$keywords}%")->orWhereDate("coupons.created_at", $date);
+                            $que->where('coupons.coupon_name', 'like', "%{$keywords}%")->orWhere('coupons.coupon_code', 'like', "%{$keywords}%")->orWhere('coupons.start_date', 'like', "%{$keywords}%")->orWhere('coupons.end_date', 'like', "%{$keywords}%")->orWhere('coupons.status', 'like', "%{$keywords}%")->orWhereDate("coupons.created_at", $date);
                         });
                         return $query;
                     }
                 })
+                ->editColumn('coupon_type', function ($row) {
+                    if($row->coupon_type == '1')
+                    {
+                        $coupon_type = "Product";
+                    }
+                    if($row->coupon_type == '2')
+                    {
+                        $coupon_type = "Customer";
+                    }
+                    if($row->coupon_type == '3')
+                    {
+                        $coupon_type = "Category";
+                    }
+                    return $coupon_type;
+                })
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'coupon\')">'.ucfirst($row->status).'</a>';
                     return $status;
-                })
+                })    
                 ->editColumn('created_at', function ($row) {
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                     return $created_at;
                 })
-
+                
                 ->addColumn('action', function ($row) {
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'coupon\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
@@ -61,9 +80,9 @@ class CouponController extends Controller
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action','status']);
+                ->rawColumns(['action','status','coupon_type']);
             return $datatables->make(true);
-        }
+        }      
         return view('platform.offers.coupon.index', compact('breadCrum', 'title'));
 
     }
@@ -262,7 +281,12 @@ class CouponController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
-
+    public function couponGendrate(Request $request)
+    {
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $val =  substr(str_shuffle($permitted_chars), 0, 6);
+        return $val;
+    }
     public function changeStatus(Request $request)
     {
         

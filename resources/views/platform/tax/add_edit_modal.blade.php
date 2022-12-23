@@ -40,13 +40,13 @@
 
                         <br>
                         <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Pecentage</label>
+                            <label class="required fw-bold fs-6 mb-2">Percentage</label>
                             <input type="text" name="pecentage" class="form-control form-control-solid mb-3 mb-lg-0 float-number"
                                 placeholder="Pecentage" value="{{ $info->pecentage ?? '' }}" />
                         </div>
 
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Shoring Order</label>
+                            <label class="fw-bold fs-6 mb-2">Soring Order</label>
                             <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 float-number"
                                 placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>

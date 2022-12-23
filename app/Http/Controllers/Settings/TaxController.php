@@ -45,7 +45,7 @@ class TaxController extends Controller
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'tax\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
