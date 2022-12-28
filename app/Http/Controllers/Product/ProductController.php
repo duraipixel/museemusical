@@ -281,7 +281,7 @@ class ProductController extends Controller
                 }
 
                 $fileNameThumb              = 'public/products/'.$product_id.'/default/335_225_px_' . time() . '-' . $imageName;
-                Image::make($request->avatar)->resize(120,120)->save(storage_path('app/' . $fileNameThumb));
+                Image::make($request->avatar)->resize(280,190)->save(storage_path('app/' . $fileNameThumb));
 
                 $productInfo->base_image    = $fileNameThumb;
                 $productInfo->update();

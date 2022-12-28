@@ -3,14 +3,18 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductCollectionResource extends JsonResource
 {
     public function toArray($request)
     {
+        
         $childTmp                   = [];
         $tmp[ 'id' ]                = $this->id;
         $tmp[ 'collection_name' ]   = $this->collection_name;
+        $tmp[ 'collection_slug' ]   = Str::slug($this->collection_name);
         $tmp[ 'tag_line' ]          = $this->tag_line;
         $tmp[ 'order_by' ]          = $this->order_by;
         $tmp[ 'status' ]            = $this->status;
@@ -19,12 +23,14 @@ class ProductCollectionResource extends JsonResource
         $tmp[ 'show_home_page' ]    = $this->show_home_page;
         if( isset($this->collectionProducts) && !empty( $this->collectionProducts )) {
             foreach ($this->collectionProducts as $items ) {
-                // dump( $items->product );
+                $category = $items->product->productCategory;
+                // dd( $category->id );
                 $salePrices             = getProductPrice( $items->product );
 
                 $pro                    = [];
                 $pro['id']              = $items->product->id;
                 $pro['product_name']    = $items->product->product_name;
+                $pro['category_name']   = $category->name ?? '';
                 $pro['hsn_code']        = $items->product->hsn_code;
                 $pro['product_url']     = $items->product->product_url;
                 $pro['sku']             = $items->product->sku;
@@ -35,6 +41,10 @@ class ProductCollectionResource extends JsonResource
                 $pro['is_new']          = $items->product->is_new;
                 $pro['sale_prices']     = $salePrices;
                 $pro['mrp_price']       = $items->product->price;
+                if( isset( $items->product->base_image ) && !empty( $items->product->base_image ) ) {
+                    $url                = Storage::url($items->product->base_image);
+                    $pro['image']       = asset($url);
+                }
 
                 $tmp['products'][]        = $pro;
             }

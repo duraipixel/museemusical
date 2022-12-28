@@ -21,7 +21,8 @@ Route::get('/get/history', [App\Http\Controllers\Api\CommonController::class, 'g
 Route::get('/get/banners', [App\Http\Controllers\Api\CommonController::class, 'getAllBanners']);
 Route::get('/get/brands', [App\Http\Controllers\Api\CommonController::class, 'getAllBrands']);
 Route::get('/get/discount/collections', [App\Http\Controllers\Api\CommonController::class, 'getDiscountCollections']);
-Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CommonController::class, 'getProductCollections']);
+Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
+Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

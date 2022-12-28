@@ -217,8 +217,8 @@ if( !function_exists('getSaleProductPrices') ) {
 
                 }
             }
-            $coupon_used['strike_rate']     = $strike_rate;
-            $coupon_used['price']           = $price;
+            $coupon_used['strike_rate']     = number_format($strike_rate, 2);
+            $coupon_used['price']           = number_format($price,2);
             
             return $coupon_used;
     

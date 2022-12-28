@@ -45,17 +45,6 @@ class CommonController extends Controller
         return DiscountCollectionResource::collection(Coupons::where(['is_discount_on' => 'yes', 'status' => 'published', 'calculate_type' => 'percentage'])->whereDate('start_date', '<=', date('Y-m-d'))->whereDate('end_date', '>=', date('Y-m-d'))->orderBy('order_by', 'asc')->get());        
     }
 
-    public function getProductCollections(Request $request)
-    {
-        $order_by = $request->order_by;
-
-        $details = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'no'])
-                    ->when($order_by != '', function($q) use($order_by) { 
-                        return $q->where('order_by', $order_by);
-                    })
-                    ->orderBy('order_by', 'asc')->get();
-        
-        return ProductCollectionResource::collection($details);        
-    }
+    
 
 }
