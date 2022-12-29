@@ -41,8 +41,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="fv-row mb-7">
-                                    <label class="required fw-bold fs-6 mb-2">Coupon Code</label>
-                                    <a role="button" onclick="couponGendrate()">Generate Code</a>
+                                    
+                                    <label class="required fw-bold fs-6 mb-2">
+                                        Coupon Code</label>
+                                    <a role="button" href="#" class="float-end" onclick="couponGendrate()">Generate Code</a>
                                     <input type="text" name="coupon_code" id="coupon_code" class="form-control form-control-solid mb-3 mb-lg-0"
                                         placeholder="Coupon Code" value="{{ $info->coupon_code ?? '' }}" />
                                 </div>
@@ -166,11 +168,11 @@
                                     </div>
                                 </div>
                             </div>
-                          
+
                         </div>
-                     
-                       
-                     
+
+
+                        
                     </div>
                 </div>
             </div>
@@ -203,7 +205,7 @@
                 evt.preventDefault();
             }
         });
-
+        
         $(".decimal").on("input", function(evt) {
             var self = $(this);
             self.val(self.val().replace(/[^0-9\.]/g,''));
