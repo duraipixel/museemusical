@@ -563,7 +563,7 @@ class ProductController extends Controller
 
     public function doBulkUpload(Request $request)
     {
-        Excel::import( new TestImport, request()->file('file') );
+        Excel::import( new MultiSheetProductImport, request()->file('file') );
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 

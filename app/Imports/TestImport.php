@@ -23,8 +23,6 @@ class TestImport implements ToModel, WithHeadingRow
             "tax_id" => 1,
             "is_home_menu" => "no",
         ];
-        $categoryInfo       = \DB::table('product_categories')->insert($checkins);
-        dump( $checkins );
-        dd( $categoryInfo );
+        $categoryInfo       = \DB::table('product_categories')->insert($checkins);     
     }
 }

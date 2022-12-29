@@ -24,25 +24,23 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
-        $checkins = [
-                    "name" => "Keyboard",
-                    "parent_id" => 0,
-                    "description" => null,
-                    "status" => "published",
-                    "is_featured" => "0",
-                    "added_by" => 1,
-                    "tag_line" => null,
-                    "tax_id" => 1,
-                    "is_home_menu" => "no"
-        ];
-        $categoryInfo       = ProductCategory::create($checkins);
-        dump( $checkins );
-        dd( $categoryInfo );
+        // $checkins = [
+        //             "name" => "Keyboard",
+        //             "parent_id" => 0,
+        //             "description" => null,
+        //             "status" => "published",
+        //             "is_featured" => "0",
+        //             "added_by" => 1,
+        //             "tag_line" => null,
+        //             "tax_id" => 1,
+        //             "is_home_menu" => "no"
+        // ];
+        // $categoryInfo       = ProductCategory::create($checkins);
 
         $ins = $cat_ins = $tax_ins = $subcat_ins = $brand_ins = $link_ins = [];
-        $category           = $row['category'];
-        $sub_category       = $row['sub_category'];
-        $tax                = $row['tax'];
+        $category           = $row['category'] ?? null;
+        $sub_category       = $row['sub_category'] ?? null;
+        $tax                = $row['tax'] ?? null;
         if( isset( $category ) && !empty( $category ) && isset( $tax ) && !empty( $tax ) ) {
             #check taxt exits if not create 
             $taxPercentage  = $tax * 100;
@@ -76,8 +74,6 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $cat_ins['is_home_menu']    = 'no';               
                 
                 $category_id                = ProductCategory::create($cat_ins);
-                dump( $cat_ins );
-                dd( $category_id );
 
             }
             #check subcategory exist or create new one
@@ -127,7 +123,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['sku'] = $sku;
             $ins['price'] = $productPriceDetails['basePrice'];
             $ins['mrp'] = $row['mrp'];
-            $ins['sale_price'] = $row['discounted_price'] ?? null;
+            $ins['sale_price'] = $row['discounted_price'] ?? 0;
             $ins['sale_start_date'] = ( isset($row['start_date']) && !empty( $row['start_date']) ) ? date('Y-m-d', strtotime($row['start_date'])) : null;
             $ins['sale_end_date'] = ( isset($row['end_date']) && !empty( $row['end_date']) ) ? date('Y-m-d', strtotime($row['end_date'])) : null;
             $ins['status'] = 'published';
