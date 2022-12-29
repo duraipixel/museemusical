@@ -91,7 +91,7 @@ class ProductController extends Controller
             
             $datatables =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords) {
-                    
+
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where(function($que) use($keywords, $date){
@@ -119,7 +119,7 @@ class ProductController extends Controller
                 //     return $row->productBrand->brand_name ?? '';
                 // })
                 ->addColumn('action', function($row){
-                    $edit_btn = '<a href="'.route('products.add.edit', ['id' => $row->id]).'" target="_blank" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                    $edit_btn = '<a href="'.route('products.add.edit', ['id' => $row->id]).'" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                                     <i class="fa fa-edit"></i>
                                 </a>';
                     $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'products\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
@@ -203,7 +203,6 @@ class ProductController extends Controller
 
     public function saveForm(Request $request)
     {
-        
         $id                 = $request->id;
         $product_page_type  = $request->product_page_type;
 
@@ -269,6 +268,12 @@ class ProductController extends Controller
             $ins[ 'added_by' ]              = auth()->user()->id;
             
             $productInfo                    = Product::updateOrCreate(['id' => $id], $ins);
+            if(!empty($id))
+            {
+                $message = "Thank you! You've updated Products";
+            }else{
+                $message = "Thank you! You've add Products";
+            }
             $product_id                     = $productInfo->id;
             if( $request->hasFile('avatar') ) {        
               
@@ -376,8 +381,6 @@ class ProductController extends Controller
             } 
             
             $error                          = 0;
-            $message                        = '';
-
         } else {
 
             $error                          = 1;
@@ -385,7 +388,7 @@ class ProductController extends Controller
 
             $product_id                     = '';
 
-        }
+        } 
         return response()->json(['error' => $error, 'message' => $message, 'product_id' => $product_id]);
     }
 

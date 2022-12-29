@@ -437,8 +437,8 @@ $(document).ready(function() {
                             submitButton.disabled = false;
 
                             Swal.fire({
-                                // text: "Form has been successfully submitted!",
-                                text: "Thank you! You've updated Products",
+                                // text: "Thank you! You've updated Products",
+                                text: res.message,
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok, got it!",
