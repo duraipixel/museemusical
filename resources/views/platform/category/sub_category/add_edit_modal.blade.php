@@ -77,7 +77,7 @@
                                 <div class="fv-row mb-7 text-center">
                                     <label class="d-block fw-bold fs-6 mb-5 ">Image</label>
                                     <div class="form-text">Allowed file types: png, jpg,
-                                        jpeg.</div>
+                                        jpeg.</div>                                    
                                 </div>
                                 <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
                                 <div class="image-input image-input-outline manual-image float-end" data-kt-image-input="true"

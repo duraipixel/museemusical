@@ -30,7 +30,8 @@ class VideoBookingController extends Controller
                     if ($keywords) {
                             $date = date('Y-m-d', strtotime($keywords));
                             return $query->where('video_bookings.contact_name','like',"%{$keywords}%")->orWhere('video_bookings.contact_email', 'like', "%{$keywords}%")
-                                    ->orWhere('customers.first_name', 'like', "%{$keywords}%")->orWhere('products.product_name', 'like', "%{$keywords}%")
+                                    ->orWhere('customers.first_name', 'like', "%{$keywords}%")->orWhere('video_bookings.contact_phone', 'like', "%{$keywords}%")
+                                    ->orWhere('products.product_name', 'like', "%{$keywords}%")
                                     ->orWhere('video_bookings.preferred_time', 'like', "%{$keywords}%")->orWhereDate("video_bookings.preferred_date", $date);
                     }
                 })
@@ -94,7 +95,7 @@ class VideoBookingController extends Controller
             $ins['contact_name']                = $request->contact_name;
             $ins['contact_email']               = $request->contact_email;
             $ins['contact_phone']               = $request->contact_phone;
-            $ins['product_id']                  = '1';
+            $ins['product_id']                  = $request->product_id;
             $ins['reach_type']                  = $request->reach_type;
             $ins['preferred_date']              = $request->preferred_date;
             $ins['preferred_time']              = $request->preferred_time;

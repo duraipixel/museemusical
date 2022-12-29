@@ -54,7 +54,7 @@ class SubCategoryController extends Controller
                         return $query->where('sub_categories.status', '=', "$status");
                     }
                     if ($filter_category) {
-                        return $query->where('main_categories.category_name', 'like', "%{$filter_category}%")->orWhere('sub_categories.status', 'like', "%{$status}%");
+                        return $query->where('main_categories.category_name', '=', "$filter_category");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));

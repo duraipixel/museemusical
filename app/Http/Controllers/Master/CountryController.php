@@ -36,7 +36,7 @@ class CountryController extends Controller
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     if ($row->status == 1) {
                         $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'country\')">Active</a>';
                     } else {

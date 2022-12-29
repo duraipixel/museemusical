@@ -35,12 +35,15 @@ class CityController extends Controller
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('countries.name', 'like', "%{$keywords}%")->orWhere('states.state_name', 'like', "%{$keywords}%")->orWhere('cities.description', 'like', "%{$keywords}%")->orWhere('cities.city', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhereDate("cities.created_at", $date);
+                        return $query->where('countries.name', 'like', "%{$keywords}%")->orWhere('states.state_name', 'like', "%{$keywords}%")
+                        ->orWhere('cities.description', 'like', "%{$keywords}%")->orWhere('cities.city', 'like', "%{$keywords}%")
+                        ->orWhere('pincodes.pincode', 'like', "%{$keywords}%")
+                        ->orWhere('users.name', 'like', "%{$keywords}%")->orWhereDate("cities.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     if ($row->status == 1) {
                         $status = '<a href="javascript:void(0);" class="badge badge-light-success" tooltip="Click to Inactive" onclick="return commonChangeStatus(' . $row->id . ', 2, \'city\')">Active</a>';
                     } else {

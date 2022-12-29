@@ -24,7 +24,7 @@ class WalkThroughController extends Controller
             $datatables =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('walk_throughs.status', 'like', "%{$status}%");
+                        return $query->where('walk_throughs.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
@@ -33,7 +33,7 @@ class WalkThroughController extends Controller
                 })
                 ->addIndexColumn()
                
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'walkthroughs\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })

@@ -39,8 +39,8 @@
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-walk_throughs-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
-                                            <option value="1">Active</option>
-                                            <option value="2">Inactive</option>
+                                            <option value="published">Published</option>
+                                            <option value="unpublished">UnPublished</option>
                                         </select>
                                     </div>
                                     <div class="d-flex justify-content-end">
