@@ -17,7 +17,6 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
    
     public function model(array $row)
     {
-
         /***
          * 1.check tax exist
          * 2.check category exist
@@ -44,7 +43,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             }
 
             #do insert or update if data exist or not
-            $checkCategory = ProductCategory::where('name', $category)->first();
+            $checkCategory = ProductCategory::where('name', trim($category) )->first();
             
             if( isset( $checkCategory ) && !empty( $checkCategory ) ) {
                 $category_id                = $checkCategory->id;
@@ -61,15 +60,11 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $cat_ins['is_home_menu']    = 'no'; 
                 $cat_ins['slug']            = Str::slug($category);
                 
-<<<<<<< Updated upstream
-                $category_id                = ProductCategory::create($cat_ins);
-=======
                 $category_id                = ProductCategory::create($cat_ins)->id;
->>>>>>> Stashed changes
 
             }
             #check subcategory exist or create new one
-            $checkSubCategory = ProductCategory::where(['name' => $sub_category, 'parent_id' => $category_id] )->first();
+            $checkSubCategory = ProductCategory::where(['name' => trim($sub_category), 'parent_id' => $category_id] )->first();
             if( isset( $checkSubCategory ) && !empty( $checkSubCategory ) ) {
                 $sub_category_id                = $checkSubCategory->id;
             } else {
@@ -77,7 +72,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $subcat_ins['tax_id']           = $tax_id;
                 $subcat_ins['is_home_menu']     = 'no';
                 $subcat_ins['added_by']         = Auth::id();
-                $subcat_ins['name']             = $sub_category;
+                $subcat_ins['name']             = trim($sub_category);
                 $subcat_ins['description']      = $row['subcategory_description'] ?? null;
                 $subcat_ins['order_by']         = 0;
                 $subcat_ins['tag_line']         = $row['subcategory_tagline'] ?? null;
@@ -96,12 +91,12 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
 
             }
             #check brand exist or create new one
-            $checkBrand                         = Brands::where('brand_name', $row['brand'])->first();
+            $checkBrand                         = Brands::where('brand_name', trim($row['brand']))->first();
             if( isset( $checkBrand ) && !empty( $checkBrand ) ) {
                 $brand_id                       = $checkBrand->id;
             } else {
                 #insert new brand
-                $brand_ins['brand_name']    = $row['brand'];
+                $brand_ins['brand_name']    = trim($row['brand']);
                 $brand_ins['slug']          = Str::slug($row['brand']);
                 $brand_ins['order_by']      = 0;
                 $brand_ins['status']        = 'published';
@@ -114,16 +109,11 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $amount         = $row['base_price'] ?? $row['tax_inclexcl'] ?? 0;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 
-            $ins['product_name'] = $row['product_name'];
+            $ins['product_name'] = trim($row['product_name']);
             $ins['product_url'] = Str::slug($row['product_name']);
             $ins['sku'] = $sku;
-<<<<<<< Updated upstream
-            $ins['price'] = $productPriceDetails['basePrice'];
-            $ins['mrp'] = $row['mrp'];
-=======
             $ins['price'] = $productPriceDetails['basePrice'] ?? 0;
             $ins['mrp'] = $row['mrp'] ?? 0;
->>>>>>> Stashed changes
             $ins['sale_price'] = $row['discounted_price'] ?? 0;
             $ins['sale_start_date'] = ( isset($row['start_date']) && !empty( $row['start_date']) ) ? date('Y-m-d', strtotime($row['start_date'])) : null;
             $ins['sale_end_date'] = ( isset($row['end_date']) && !empty( $row['end_date']) ) ? date('Y-m-d', strtotime($row['end_date'])) : null;

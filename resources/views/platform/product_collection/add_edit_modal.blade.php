@@ -55,7 +55,7 @@
                                     @foreach ($products as $item)
                                     <option value="{{ $item->id }}"  @if( isset($info->collectionProducts) && in_array( $item->id, array_column( $info->collectionProducts->toArray(), 'product_id'))  ) selected="selected" @endif>
                                         {{-- <option value="{{ $item->id }}" > --}}
-                                            {{ $item->product_name }}
+                                            {{ $item->product_name }} {{ $item->sku }}
                                         </option>
                                     @endforeach
                                 @endisset
