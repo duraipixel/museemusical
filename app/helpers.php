@@ -54,16 +54,25 @@ if (! function_exists('access')) {
 
 if (! function_exists('getAmountExclusiveTax')) {
     function getAmountExclusiveTax($productAmount, $gstPercentage) {
-        $gstAmount = $productAmount - ( $productAmount * (100/(100 + $gstPercentage) ) );
-        $basePrice = $productAmount - $gstAmount;
+        
+        $basePrice      = $productAmount;
+        $gstAmount      = 0;
+        if( (int)$gstPercentage > 0 ) {
+            $gstAmount = $productAmount - ( $productAmount * (100/(100 + $gstPercentage) ) );
+            $basePrice = $productAmount - $gstAmount;
+        } 
+       
         return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount );
     }
 }
 
 if (! function_exists('generateProductSku')) {
-    function generateProductSku($brand) {
+    function generateProductSku($brand, $sku = '' ) {
         $countNumber    = '0000';
-        $sku = 'MM-'.date('m').'-'.strtoupper($brand).'-'.$countNumber;
+        if( empty( $sku ) ) {
+            $sku = 'MM-'.date('m').'-'.strtoupper($brand).'-'.$countNumber;
+        }
+        
 
         $checkProduct = Product::where('sku', $sku)->first();
         if( isset( $checkProduct ) && !empty($checkProduct) ) {

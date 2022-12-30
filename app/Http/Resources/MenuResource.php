@@ -14,12 +14,13 @@ class MenuResource extends JsonResource
         $childTmp = [];
         $tmp[ 'id' ]        = $this->id;
         $tmp[ 'name' ]      = $this->name;
+        $tmp[ 'slug' ]      = $this->slug;
 
         if( isset( $this->childTopMenuCategory ) && !empty( $this->childTopMenuCategory ) ) {
             foreach ($this->childTopMenuCategory as $child ) {
                 $innerTmp['id']     = $child->id;
                 $innerTmp['name']   = $child->name;
-
+                $innerTmp['slug']   = $child->slug;
                 $childTmp[]         = $innerTmp;
             }
         }

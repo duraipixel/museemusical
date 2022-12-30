@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Excel;
 use PDF;
+use Illuminate\Support\Str;
 
 class ProductCollectionController extends Controller
 {
@@ -86,6 +87,7 @@ class ProductCollectionController extends Controller
             $ins['tag_line']            = $request->tag_line;
             $ins['show_home_page']      = $request->show_home_page ?? 'no';
             $ins['can_map_discount']    = $request->can_map_discount ?? 'no';
+            $ins['slug']                = Str::slug($request->collection_name);
 
             if($request->status)
             {
@@ -100,7 +102,7 @@ class ProductCollectionController extends Controller
             
             if( isset($request->collection_product) && !empty($request->collection_product) ) {
                 ProductCollectionProduct::where('product_collection_id', $collection_id)->delete();
-                $iteration = 1;
+                $iteration              = 1;
                 foreach ( $request->collection_product as $proItem ) {
                     $insRelated['product_collection_id'] = $collection_id;
                     $insRelated['product_id']   = $proItem;

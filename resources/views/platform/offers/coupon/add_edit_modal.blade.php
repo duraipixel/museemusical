@@ -197,6 +197,29 @@
     }
 </style>
 <script>
+    var CommonProductArr;
+    var alterProductArr;
+    $('#product_id').change(function(e){        
+
+        var productData = $(this).val();
+        if( CommonProductArr == '' || CommonProductArr == null || CommonProductArr == undefined || CommonProductArr == 'undefined' ){
+            CommonProductArr = productData
+        }
+
+        let difference = productData.filter(x => !CommonProductArr.includes(x));
+
+        // console.log( productData );
+        // console.log( productData );
+        // console.log(difference);
+        if( productData.includes('all')){
+            // $('#product_id').select2('destroy').find('option').prop('selected', 'selected').end().select2();
+
+        } else {
+            // $('#product_id').select2('destroy').find('option').prop('selected', false).end().select2();
+
+        }
+    })
+
         $(".number").on("input", function(evt) {
             var self = $(this);
             self.val(self.val().replace(/\D/g, ""));

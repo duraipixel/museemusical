@@ -24,18 +24,6 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
-        // $checkins = [
-        //             "name" => "Keyboard",
-        //             "parent_id" => 0,
-        //             "description" => null,
-        //             "status" => "published",
-        //             "is_featured" => "0",
-        //             "added_by" => 1,
-        //             "tag_line" => null,
-        //             "tax_id" => 1,
-        //             "is_home_menu" => "no"
-        // ];
-        // $categoryInfo       = ProductCategory::create($checkins);
 
         $ins = $cat_ins = $tax_ins = $subcat_ins = $brand_ins = $link_ins = [];
         $category           = $row['category'] ?? null;
@@ -61,8 +49,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             if( isset( $checkCategory ) && !empty( $checkCategory ) ) {
                 $category_id                = $checkCategory->id;
             } else {
-                #insert new category
-                
+                #insert new category                
                 $cat_ins['name']            = $category;
                 $cat_ins['parent_id']       = 0;
                 $cat_ins['description']     = $row['category_description'] ?? null;
@@ -71,9 +58,14 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $cat_ins['added_by']        = Auth::id();                
                 $cat_ins['tag_line']        = $row['category_tagline'] ?? null;                
                 $cat_ins['tax_id']          = $tax_id;
-                $cat_ins['is_home_menu']    = 'no';               
+                $cat_ins['is_home_menu']    = 'no'; 
+                $cat_ins['slug']            = Str::slug($category);
                 
+<<<<<<< Updated upstream
                 $category_id                = ProductCategory::create($cat_ins);
+=======
+                $category_id                = ProductCategory::create($cat_ins)->id;
+>>>>>>> Stashed changes
 
             }
             #check subcategory exist or create new one
@@ -92,7 +84,14 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $subcat_ins['status']           = 'published';
                 $subcat_ins['parent_id']        = $category_id;
                 $subcat_ins['is_featured']      = '0';
-                
+
+                $parent_name = '';
+                if( isset( $category_id ) && !empty( $category_id ) ) {
+                    $parentInfo                 = ProductCategory::find($category_id);
+                    $parent_name                = $parentInfo->name ?? '';
+                }
+    
+                $subcat_ins['slug']             = Str::slug($sub_category.' '.$parent_name);
                 $sub_category_id                = ProductCategory::create($subcat_ins);
 
             }
@@ -103,6 +102,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             } else {
                 #insert new brand
                 $brand_ins['brand_name']    = $row['brand'];
+                $brand_ins['slug']          = Str::slug($row['brand']);
                 $brand_ins['order_by']      = 0;
                 $brand_ins['status']        = 'published';
 
@@ -110,19 +110,20 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             }
 
             #check product exist or create new one
-            if( isset($row['sku']) && !empty( $sku ) ) {
-                $sku = $row['sku'];
-            } else {
-                $sku = generateProductSku($row['brand']);
-            }
-            $amount = $row['base_price'] ?? $row['tax_inclexcl'];
-            $productPriceDetails = getAmountExclusiveTax($amount, $taxPercentage);
+            $sku            = generateProductSku($row['brand'], $row['sku']);
+            $amount         = $row['base_price'] ?? $row['tax_inclexcl'] ?? 0;
+            $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 
             $ins['product_name'] = $row['product_name'];
             $ins['product_url'] = Str::slug($row['product_name']);
             $ins['sku'] = $sku;
+<<<<<<< Updated upstream
             $ins['price'] = $productPriceDetails['basePrice'];
             $ins['mrp'] = $row['mrp'];
+=======
+            $ins['price'] = $productPriceDetails['basePrice'] ?? 0;
+            $ins['mrp'] = $row['mrp'] ?? 0;
+>>>>>>> Stashed changes
             $ins['sale_price'] = $row['discounted_price'] ?? 0;
             $ins['sale_start_date'] = ( isset($row['start_date']) && !empty( $row['start_date']) ) ? date('Y-m-d', strtotime($row['start_date'])) : null;
             $ins['sale_end_date'] = ( isset($row['end_date']) && !empty( $row['end_date']) ) ? date('Y-m-d', strtotime($row['end_date'])) : null;

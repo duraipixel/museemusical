@@ -86,7 +86,6 @@ class ProductController extends Controller
                 return $q->where('label_id', $f_label);
             });
 
-
             $keywords = $request->get('search')['value'];
             
             $datatables =  Datatables::of($data)

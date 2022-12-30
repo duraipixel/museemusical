@@ -15,6 +15,7 @@ use Excel;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use Image;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -119,6 +120,7 @@ class BrandController extends Controller
             $ins['notes']               = $request->notes;
             $ins['order_by']            = $request->order_by ?? 0;
             $ins['added_by']            = Auth::id();
+            $ins['slug']                = Str::slug($request->brand_name);
             if($request->status == "1")
             {
                 $ins['status']          = 'published';

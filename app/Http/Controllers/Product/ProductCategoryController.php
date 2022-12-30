@@ -19,6 +19,7 @@ use Excel;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use Image;
+use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
@@ -160,6 +161,14 @@ class ProductCategoryController extends Controller
             } else {
                 $ins['status']          = 'unpublished';
             }
+            $parent_name = '';
+            if( isset( $parent_id ) && !empty( $parent_id ) ) {
+                $parentInfo             = ProductCategory::find($parent_id);
+                $parent_name            = $parentInfo->name;
+            }
+
+            $ins['slug']                = Str::slug($request->name.' '.$parent_name);
+            
             $error                      = 0;
             $categeryInfo               = ProductCategory::updateOrCreate(['id' => $id], $ins);
             $categoryId                 = $categeryInfo->id;

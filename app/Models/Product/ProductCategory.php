@@ -15,6 +15,7 @@ class ProductCategory extends Model
     protected $fillable = [
         'name',
         'parent_id',
+        'slug',
         'description',
         'image',
         'is_featured',
@@ -54,7 +55,7 @@ class ProductCategory extends Model
 
     public function childTopMenuCategory() 
     {
-        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->select('id','name','is_featured')->where(['status' => 'published', 'is_home_menu' => 'yes'])->orderBy('order_by', 'asc');
+        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->select('id','name','is_featured', 'slug')->where(['status' => 'published', 'is_home_menu' => 'yes'])->orderBy('order_by', 'asc');
     }
     
 }

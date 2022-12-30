@@ -10,6 +10,7 @@ class ProductCollection extends Model
     use HasFactory;
     protected $fillable = [
         'collection_name',
+        'slug',
         'tag_line',
         'order_by',
         'status',
