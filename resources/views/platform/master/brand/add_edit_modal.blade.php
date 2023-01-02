@@ -107,7 +107,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
-                                <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                             </div>
                         </div>

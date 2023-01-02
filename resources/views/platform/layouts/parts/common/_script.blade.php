@@ -292,4 +292,9 @@
             $('#btn-light-primary').addClass('btn-light-primary');
             $('#btn-light-primary').removeClass('btn-light-danger');
         });
+        $('.numberonly').keypress(function (e) {    
+        var charCode = (e.which) ? e.which : event.keyCode    
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+    }); 
 </script>
