@@ -103,9 +103,9 @@
                                     <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tag Line" name="tag_line" id="tag_line" value="{{ $info->tag_line ?? '' }}" >
                                 </div>
                                 <div class="fv-row mb-7">
-                                    <label class="required fw-bold fs-6 mb-2">Soring Order</label>
+                                    <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
                                     <input type="text" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
-                                        placeholder="Shorting Order" value="{{ $info->order_by ?? '' }}" />
+                                        placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
                             <div class="row">
@@ -210,7 +210,7 @@
                         'order_by': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Shorting Order is required'
+                                    message: 'Sorting Order is required'
                                 }
                             }
                         },

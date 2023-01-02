@@ -46,8 +46,8 @@
                         </div>
 
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Soring Order</label>
-                            <input type="number" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 float-number"
+                            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
+                            <input type="number" name="order_by" min="1" class="form-control form-control-solid mb-3 mb-lg-0 float-number"
                                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
                         
@@ -111,7 +111,7 @@
                         'pecentage': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Pecentage is required'
+                                    message: 'Percentage is required'
                                 }
                             }
                         },

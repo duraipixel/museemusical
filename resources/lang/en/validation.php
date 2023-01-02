@@ -144,6 +144,7 @@ return [
     'custom' => [
         'order_by' => [
             'unique' => 'This Sorting order has already been taken.',
+            'required' => 'This Sorting order field is required.',
         ],
         'attribute-name' => [
             'rule-name' => 'custom-message',
