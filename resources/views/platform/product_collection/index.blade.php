@@ -13,7 +13,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-product_attribute-table-toolbar="base">
 
-
+                        @include('platform.product_category._filter')
                         @include('platform.layouts.parts.common._export_button')
 
                         <button type="button" class="btn btn-primary" onclick="return openForm('product-collection')">

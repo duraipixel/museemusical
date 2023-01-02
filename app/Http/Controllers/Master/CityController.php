@@ -31,7 +31,7 @@ class CityController extends Controller
             $datatables =  Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('cities.status', 'like', "%{$status}%");
+                        return $query->where('cities.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));

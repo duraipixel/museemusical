@@ -274,4 +274,22 @@
         });
 
     }
+    $('#search-form').on('submit', function(e) {
+        var filter_val =  $('#filter_status').val();
+            if(filter_val == "published" || "unpublished")
+            {
+                $('#btn-light-primary').removeClass('btn-light-primary');
+                $('#btn-light-primary').addClass('btn-light-danger');
+            }
+            if(filter_val == "0" || null)
+            {
+                $('#btn-light-primary').addClass('btn-light-primary');
+                $('#btn-light-primary').removeClass('btn-light-danger');
+            }
+
+        });
+        $('#search-form').on('reset', function(e) {
+            $('#btn-light-primary').addClass('btn-light-primary');
+            $('#btn-light-primary').removeClass('btn-light-danger');
+        });
 </script>

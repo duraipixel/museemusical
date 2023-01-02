@@ -29,7 +29,12 @@ class OrderStatusController extends Controller
                     if ($status) {
                         return $query->where('order_statuses.status', $status);
                     }
-                    
+                    if ($keywords) {
+                        $date = date('Y-m-d', strtotime($keywords));
+                        return $query->where('order_statuses.status_name', 'like', "%{$keywords}%")
+                        ->orWhere('order_statuses.description', 'like', "%{$keywords}%")
+                        ->orWhereDate("order_statuses.created_at", $date);
+                    }
                 })
                 ->addIndexColumn()
                

@@ -25,7 +25,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-user-table-toolbar="base">
                         @if( access()->hasAccess('roles', 'filter') )
-                        <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
+                        <button type="button" class="btn btn-light-primary me-3" id="btn-light-primary" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -47,7 +47,7 @@
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Status:</label>
-                                        <select name="filter_status" class="form-select form-select-solid fw-bolder"
+                                        <select name="filter_status" id="filter_status"  class="form-select form-select-solid fw-bolder"
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-user-table-filter="role" data-hide-search="true">
                                             <option value="0">All</option>

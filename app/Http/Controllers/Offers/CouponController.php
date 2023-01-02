@@ -31,12 +31,13 @@ class CouponController extends Controller
             $coupon_type        = $request->get('coupon_type');
             $keywords           = $request->get('search')['value'];
             $datatables         =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords, $status,$coupon_type) {
+                ->filter(function ($query) use ($keywords, $status,$coupon_type) {                   
                     if ($status) {
                         return $query->where('coupons.status', '=', "$status");
                     }
                     if ($coupon_type) {
-                        return $query->where('coupons.coupon_type', '=', "$coupon_type");
+                        return $query->where('coupons.coupon_type', '=', "$coupon_type")
+                                    ->orWhere('coupons.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));

@@ -88,7 +88,7 @@
                 d.coupon_type = $('select[name=filter_coupon_type]').val();
             }
         },
-
+        
         columns: [
           
             {

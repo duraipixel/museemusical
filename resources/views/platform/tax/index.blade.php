@@ -130,10 +130,10 @@
         });
         $('#search-form').on('reset', function(e) {
             $('select[name=filter_status]').val(0).change();
-
+            
             dtTable.draw();
             e.preventDefault();
-        });
+        });    
 </script>
 @endsection
 

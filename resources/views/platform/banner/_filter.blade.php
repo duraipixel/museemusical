@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+<button type="button" class="btn btn-light-primary me-3" id="btn-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
     <span class="svg-icon svg-icon-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path
@@ -16,7 +16,7 @@
         <form id="search-form">
             <div class="mb-10">
                 <label class="form-label fs-6 fw-bold">Status:</label>
-                <select name="filter_status" class="form-select form-select-solid fw-bolder" data-kt-select2="true"
+                <select name="filter_status" id="filter_status" class="form-select form-select-solid fw-bolder" data-kt-select2="true"
                     data-placeholder="Select option" data-allow-clear="true" data-kt-testimonials-table-filter="order"
                     data-hide-search="true">
                     <option value="">All</option>

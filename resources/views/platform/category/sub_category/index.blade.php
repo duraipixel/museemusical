@@ -13,7 +13,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-sub_category-table-toolbar="base">
                         @if( access()->hasAccess($routeName, 'filter') )
-                        <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
+                        <button type="button" class="btn btn-light-primary me-3"  id="btn-light-primary" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -35,7 +35,7 @@
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Status:</label>
-                                        <select name="filter_status" class="form-select form-select-solid fw-bolder"
+                                        <select name="filter_status" id="filter_status" class="form-select form-select-solid fw-bolder"
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-sub_category-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
@@ -46,7 +46,7 @@
                                     @if( $showFilterCategory )
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Category:</label>
-                                        <select name="filter_category" class="form-select form-select-solid fw-bolder"
+                                        <select name="filter_category" id="filter_category" class="form-select form-select-solid fw-bolder"
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
                                             data-kt-sub_category-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
@@ -236,6 +236,17 @@
         $('.dataTables_length label select').addClass('form-control form-control-solid');
 
         $('#search-form').on('submit', function(e) {
+            var filter_val =  $('#filter_category').val();
+            if(filter_val == "published" || "unpublished")
+            {
+                $('#btn-light-primary').removeClass('btn-light-primary');
+                $('#btn-light-primary').addClass('btn-light-danger');
+            }
+            if(filter_val == "0" || null)
+            {
+                $('#btn-light-primary').addClass('btn-light-primary');
+                $('#btn-light-primary').removeClass('btn-light-danger');
+            }
             dtTable.draw();
             e.preventDefault();
         });

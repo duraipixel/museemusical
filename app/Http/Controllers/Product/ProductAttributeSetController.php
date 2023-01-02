@@ -22,17 +22,30 @@ class ProductAttributeSetController extends Controller
         $breadCrum              = array('Products', 'Product Attribute Sets');
 
         if ($request->ajax()) {
-            $data               = ProductAttributeSet::all();
+            $data               = ProductAttributeSet::select('product_attribute_sets.*');
             $status             = $request->get('status');
             $keywords           = $request->get('search')['value'];
             $datatables         = Datatables::of($data)
                 ->filter(function ($query) use ($keywords, $status) {
                     if ($status) {
-                        return $query->where('product_with_attribute_sets.status', 'like', "%{$status}%");
+                        return $query->where('product_attribute_sets.status', $status);
+                    }
+                    if ($keywords) {
+                    
+                        if( !strpos($keywords, '.')) {
+                            $date = date('Y-m-d', strtotime($keywords));
+                        } 
+                        $query->where('product_attribute_sets.title', 'like', "%{$keywords}%")
+                        ->orWhere('product_attribute_sets.tag_line', 'like', "%{$keywords}%");
+                        if( isset( $date )) {
+                            $query->orWhereDate("product_attribute_sets.created_at", $date);
+                        }
+                        
+                        return $query;
                     }
                 })
                 ->addIndexColumn()
-                ->addColumn('status', function ($row) {
+                ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-attribute\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
