@@ -46,15 +46,15 @@ class Product extends Model
         'added_by'
     ];
 
-    // public function productCategory()
-    // {
-    //     return $this->hasOne(ProductCategory::class, 'id', 'category_id');
-    // }
+    public function productCategory()
+    {
+        return $this->hasOne(ProductCategory::class, 'id', 'category_id');
+    }
 
-    // public function productBrand()
-    // {
-    //     return $this->hasOne(Brands::class, 'id', 'brand_id');
-    // }
+    public function productBrand()
+    {
+        return $this->hasOne(Brands::class, 'id', 'brand_id');
+    }
 
     public function productTag()
     {
@@ -110,5 +110,6 @@ class Product extends Model
     {
         return $this->hasMany(ProductLink::class, 'product_id', 'id');
     }
+
 
 }

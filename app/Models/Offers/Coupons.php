@@ -23,6 +23,7 @@ class Coupons extends Model
         'minimum_order_value',
         'is_discount_on',
         'coupon_type',
+        'from_coupon',
         'is_applied_all',
         'repeated_use_count',
         'is_discount_on',

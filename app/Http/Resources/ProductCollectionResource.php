@@ -41,12 +41,20 @@ class ProductCollectionResource extends JsonResource
                 $pro['is_new']          = $items->product->is_new;
                 $pro['sale_prices']     = $salePrices;
                 $pro['mrp_price']       = $items->product->price;
-                if( isset( $items->product->base_image ) && !empty( $items->product->base_image ) ) {
-                    $url                = Storage::url($items->product->base_image);
-                    $pro['image']       = asset($url);
+                $pro['image']           = $items->product->base_image;
+
+                $imagePath              = $items->product->base_image;
+
+                if(!Storage::exists( $imagePath)) {
+                    $path               = asset('userImage/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
                 }
 
-                $tmp['products'][]        = $pro;
+                $pro['image']           = $path;
+
+                $tmp['products'][]      = $pro; 
             }
         }
 

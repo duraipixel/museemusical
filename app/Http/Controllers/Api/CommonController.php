@@ -12,6 +12,7 @@ use App\Http\Resources\TestimonialResource;
 use App\Models\Banner;
 use App\Models\Master\Brands;
 use App\Models\Offers\Coupons;
+use App\Models\Product\Product;
 use App\Models\Product\ProductCollection;
 use App\Models\Testimonials;
 use App\Models\WalkThrough;
@@ -82,11 +83,69 @@ class CommonController extends Controller
     public function getDiscountCollections()
     {
 
-        // Coupons::where(['is_discount_on' => 'yes', 'status' => 'published', 'calculate_type' => 'percentage'])->whereDate('start_date', '<=', date('Y-m-d'))->whereDate('end_date', '>=', date('Y-m-d'))->orderBy('order_by', 'asc')->get()
-        
-        return DiscountCollectionResource::collection([]);        
-    }
+        $details        = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'yes'])
+                            ->orderBy('order_by', 'asc')->limit(4)->get();
 
-    
+        $collection     = [];
+
+        if( isset( $details ) && !empty( $details ) ) {
+            foreach ( $details as $item ) {
+                $tmp                    = [];
+                $tmp['id']              = $item->id;
+                $tmp['collection_name'] = $item->collection_name;
+                $tmp['slug']            = $item->slug;
+                $tmp['tag_line']        = $item->tag_line;
+                $tmp['order_by']        = $item->order_by;
+                
+                if( isset( $item->collectionProducts ) && !empty( $item->collectionProducts ) ) {
+                    $i = 0;
+                    foreach ( $item->collectionProducts as $proItem ) {
+                        $pro                    = [];
+                        if( $i == 4 ) {break;}
+                        $productInfo            = Product::find( $proItem->product_id );
+
+                        $salePrices             = getProductPrice( $productInfo );
+                        
+                        $pro['id']              = $productInfo->id;
+                        $pro['product_name']    = $productInfo->product_name;
+                        $pro['hsn_code']        = $productInfo->hsn_code;
+                        $pro['product_url']     = $productInfo->product_url;
+                        $pro['sku']             = $productInfo->sku;
+                        $pro['has_video_shopping'] = $productInfo->has_video_shopping;
+                        $pro['stock_status']    = $productInfo->stock_status;
+                        $pro['is_featured']     = $productInfo->is_featured;
+                        $pro['is_best_selling'] = $productInfo->is_best_selling;
+                        $pro['is_new']          = $productInfo->is_new;
+                        $pro['sale_prices']     = $salePrices;
+                        $pro['mrp_price']       = $productInfo->price;
+                        $pro['image']           = $productInfo->base_image;
+                        $pro['category']        = $productInfo->ProductCategory->name ?? null;
+                        $pro['category_slug']   = $productInfo->ProductCategory->slug ?? null;
+
+                        $imagePath              = $productInfo->base_image;
+
+                        if(!Storage::exists( $imagePath)) {
+                            $path               = asset('userImage/no_Image.jpg');
+                        } else {
+                            $url                = Storage::url($imagePath);
+                            $path               = asset($url);
+                        }
+
+                        $pro['image']           = $path;
+
+                        $tmp['products'][]      = $pro; 
+
+                        $i++;
+                        
+                    }
+                }
+
+                $collection[] = $tmp;
+                
+                
+            }
+        }
+        return $collection;       
+    }
 
 }

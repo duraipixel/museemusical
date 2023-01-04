@@ -34,6 +34,7 @@
                                 <th> Brand  </th>
                                 <th> Price </th>
                                 <th> Video Booking </th>
+                                <th> Stock Status </th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -88,6 +89,10 @@
                 {
                     data: 'has_video_shopping',
                     name: 'has_video_shopping'
+                },
+                {
+                    data: 'stock_status',
+                    name: 'stock_status'
                 },
                 {
                     data: 'status',

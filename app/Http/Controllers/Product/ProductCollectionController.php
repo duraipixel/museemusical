@@ -75,7 +75,10 @@ class ProductCollectionController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Product Collection';
-        $products           = Product::where('status', 'published')->get();
+        $products           = Product::where('status', 'published')
+                                ->whereRaw('id not IN(SELECT product_id FROM `mm_product_collections_products`)')
+                                ->get();
+        
         $productCategory    = ProductCollection::where('status', 'published')->get();
 
         if (isset($id) && !empty($id)) {

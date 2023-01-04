@@ -96,6 +96,7 @@ class ProductController extends Controller
                         $query->where(function($que) use($keywords, $date){
                             $que->where('has_video_shopping', 'like', "%{$keywords}%")
                                 ->orWhere('products.status', 'like', "%{$keywords}%")
+                                ->orWhere('products.stock_status', 'like', "%{$keywords}%")
                                 ->orWhere('brands.brand_name', 'like', "%{$keywords}%")
                                 ->orWhere('product_categories.name', 'like', "%{$keywords}%")
                                 ->orWhere('products.product_name', 'like', "%{$keywords}%")
@@ -111,9 +112,9 @@ class ProductController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'products\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                // ->addColumn('category', function($row){
-                //     return $row->productCategory->name ?? '';
-                // })
+                ->editColumn('stock_status', function($row){
+                    return ucwords(str_replace( "_", " ", $row->stock_status ) );
+                })
                 // ->editColumn('brand', function($row){
                 //     return $row->productBrand->brand_name ?? '';
                 // })

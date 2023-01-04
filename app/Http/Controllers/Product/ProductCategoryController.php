@@ -168,7 +168,7 @@ class ProductCategoryController extends Controller
             }
 
             $ins['slug']                = Str::slug($request->name.' '.$parent_name);
-            
+            // dd( $ins );
             $error                      = 0;
             $categeryInfo               = ProductCategory::updateOrCreate(['id' => $id], $ins);
             $categoryId                 = $categeryInfo->id;

@@ -134,7 +134,10 @@ class DiscountController extends Controller
         }
         if($name == '3')
         {
-            $data = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
+            $data = DB::table('product_categories')
+                            ->select('id','name')
+                            ->whereRaw('id not IN(select category_id from mm_coupon_categories)')
+                            ->where('status', 'published')->get();
             $title = "Categories"; 
             foreach($data as $key=>$val)
             {
@@ -144,7 +147,12 @@ class DiscountController extends Controller
         }
         if($name == '4')
         {
-            $data = DB::table('product_collections')->select('id','collection_name')->where('status', 'published')->where('can_map_discount', 'yes')->get();
+            $data = DB::table('product_collections')
+                        ->select('id','collection_name')
+                        ->where('status', 'published')
+                        ->where('can_map_discount', 'yes')
+                        ->whereRaw('id not in (select product_collection_id from mm_coupon_product_collection)')
+                        ->get();
             $title = "Product Collection"; 
             foreach($data as $key=>$val)
             {
@@ -166,7 +174,6 @@ class DiscountController extends Controller
                                         'start_date' => 'required',
                                         'end_date' => 'required',
                                         'repeated_coupon'=> 'required_if:coupon_type,==,2',
-                                        'quantity'=>'numeric|gt:0',
                                         'minimum_order_value'=>'numeric|gt:0',
                                         
                                     ]);
@@ -180,6 +187,12 @@ class DiscountController extends Controller
                     $isAll          = true;
                 }
             }
+            /**
+             * 
+             *  discounttype => [ 3 = category, 4 = product_collection]
+             */
+            $discount_type = array(3=>'category', 4=>'product_collection');
+            
 
             $ins['is_applied_all']              = $isAll ? 'yes' :'no';
             $ins['coupon_name']                 = $request->discount_name;
@@ -189,9 +202,10 @@ class DiscountController extends Controller
             $ins['calculate_type']              = $request->calculate_type;
             $ins['calculate_value']             = $request->calculate_value;
             $ins['coupon_type']                 = $request->discount_type;
+            $ins['from_coupon']                 = $discount_type[$request->discount_type];
             $ins['minimum_order_value']         = $request->minimum_order_value;
             $ins['is_discount_on']              = "yes";
-            $ins['quantity']                    = $request->quantity;
+            $ins['quantity']                    = 100;
             $ins['repeated_use_count']          = $request->repeated_coupon ?? 0;
             $ins['order_by']                    = $request->order_by ?? 0;
             $ins['added_by']                    = auth()->user()->id;
@@ -287,7 +301,7 @@ class DiscountController extends Controller
                     foreach($request->product_id  as $val){
                         $productCollect['coupon_id']                  = $info->id;
                         $productCollect['product_collection_id']      = $val;
-                        $productCollect['quantity']                   = $request->quantity;
+                        $productCollect['quantity']                   = 100;
                         CouponProductCollection::Create($productCollect);
                     }
                 }
