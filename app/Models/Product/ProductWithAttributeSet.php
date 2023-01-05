@@ -11,6 +11,7 @@ class ProductWithAttributeSet extends Model
     protected $fillable = [
         'product_id',
         'product_attribute_set_id',
+        'title',
         'tag_line',
         'attribute_values',
         'order_by',

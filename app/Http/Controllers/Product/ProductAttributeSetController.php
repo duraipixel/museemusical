@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Product;
 
 use App\Exports\ProductAttributeSetExport;
 use App\Http\Controllers\Controller;
+use App\Models\Product\Product;
 use App\Models\Product\ProductAttributeSet;
+use App\Models\Product\ProductCategory;
 use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Str;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Excel;
 use PDF;
+use Illuminate\Validation\Rule;
 
 class ProductAttributeSetController extends Controller
 {
@@ -62,6 +65,10 @@ class ProductAttributeSetController extends Controller
                     $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                     return $created_at;
                 })
+                ->editColumn('category', function ($row) {
+                    
+                    return $row->category->name ?? null;
+                })
                 ->addColumn('action', function ($row) {
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'product-attribute\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                                     <i class="fa fa-edit"></i>
@@ -70,7 +77,7 @@ class ProductAttributeSetController extends Controller
                                 <i class="fa fa-trash"></i></a>';
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'product_list', 'compare', 'search']);
+                ->rawColumns(['action', 'status', 'product_list', 'compare', 'search', 'category']);
             return $datatables->make(true);
         }
         return view('platform.product_attribute_sets.index', compact('title','breadCrum'));
@@ -80,30 +87,43 @@ class ProductAttributeSetController extends Controller
     {
         $id                 = $request->id;
         $from               = $request->from ?? '';
+        $category_id        = $request->categoryId ?? '';
+        $category_info      = ProductCategory::find($category_id);
         $info               = '';
         $modal_title        = 'Add Product Attribute Sets';
+        $sub_category       = ProductCategory::where('parent_id', '0')->get();
         if (isset($id) && !empty($id)) {
             $info           = ProductAttributeSet::find($id);
             $modal_title    = 'Update Product Attribute Sets';
         }
         
-        return view('platform.product_attribute_sets.add_edit_modal', compact('info', 'modal_title', 'from'));
+        return view('platform.product_attribute_sets.add_edit_modal', compact('info', 'modal_title', 'from', 'sub_category', 'category_info'));
     }
 
     public function saveForm(Request $request,$id = null)
     {
         
         $id             = $request->id;
+        $product_category_id    = $request->product_category_id;
         $validator      = Validator::make($request->all(), [
-                            'title' => 'required|string|unique:product_attribute_sets,title,' . $id,
-                        ]);
+                            'title' => ['required','string',
+                                            Rule::unique('product_attribute_sets')->where(function ($query) use($id, $product_category_id) {
+                                                return $query->where('product_category_id', $product_category_id)->when($id != '', function($q) use($id){
+                                                    return $q->where('id', '!=', $id);
+                                                });
+                                            }),],
+                            
+                            'product_category_id' => 'required'
+                        ]
+                    );
 
         $categoryId         = '';
         if ($validator->passes()) {
             
             $ins['title'] = $request->title;
             $ins['slug'] = Str::slug($request->title);
-            $ins['order_by'] = $request->order_by;
+            $ins['product_category_id'] = $request->product_category_id;
+            $ins['order_by'] = $request->order_by ?? 0;
             $ins['tag_line'] = $request->tag_line;
             $ins['is_searchable'] = $request->is_searchable ?? '0';
             $ins['is_comparable'] = $request->is_comparable ?? '0';
@@ -164,8 +184,10 @@ class ProductAttributeSetController extends Controller
 
     public function getAttributeRow(Request $request)
     {
+        $product_id             = $request->product_id;
+        $info                   = Product::find($product_id);
         $attributes             = ProductAttributeSet::where('status', 'published')->orderBy('order_by','ASC')->get();
-        return view('platform.product.form.filter._items', compact('attributes'));
+        return view('platform.product.form.filter._items', compact('attributes', 'info'));
     }
 
 }

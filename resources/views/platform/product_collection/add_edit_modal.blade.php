@@ -49,7 +49,7 @@
 
                         <div class="fv-row mb-7">
                             <label class=" fw-bold fs-6 mb-2">Products</label>
-                            <select name="collection_product[]" id="collection_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2" required>
+                            <select name="collection_product[]" id="collection_product" aria-label="Select a Product" multiple="multiple" data-placeholder="Select a Product..." class="form-select mb-2" required>
                                 <option value=""></option>
                                 @isset($products)
                                     @foreach ($products as $item)

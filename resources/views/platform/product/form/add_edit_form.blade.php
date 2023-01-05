@@ -89,7 +89,9 @@
 @section('add_on_script')
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script>
-
+    @if(isset( $info->id) && !empty( $info->id))
+    addVariationRow('{{ $info->id }}');
+    @endif
     $('.product-tab').click(function() {
         
         let types = $(this).attr('href');
@@ -101,6 +103,7 @@
         }
 
     });
+
 
     var isImage = false;
     var product_url = "{{ route('products') }}";
@@ -308,7 +311,7 @@
 
     }
 
-    function addVariationRow() {
+    function addVariationRow( id = '') {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -317,8 +320,8 @@
         $.ajax({
             url:"{{ route('products.attribute.row') }}",
             type: "POST",
+            data:{product_id:id},
             success: function(res){
-                // console.log(res);
                 $('#formRepeaterId').append( res );
             }
 

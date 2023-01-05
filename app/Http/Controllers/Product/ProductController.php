@@ -315,22 +315,23 @@ class ProductController extends Controller
 
             $request->session()->put('image_product_id', $product_id);
             $request->session()->put('brochure_product_id', $product_id);
-
+            
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
-                $proAttributes              = array_combine($request->filter_variation, $request->filter_variation_value);
-                
-                if( isset( $proAttributes ) && !empty( $proAttributes )) {
-                    ProductWithAttributeSet::where('product_id', $product_id)->delete();
-                    foreach ( $proAttributes as $akey => $avalue ) {
+                $filter_variation = $request->filter_variation;
+                $filter_variation_value = $request->filter_variation_value;
+                $filter_variation_title = $request->filter_variation_title;
+                ProductWithAttributeSet::where('product_id', $product_id)->delete();
 
-                        $insAttr['product_attribute_set_id']    = $akey;
-                        $insAttr['attribute_values']            = $avalue;
-                        $insAttr['product_id']                  = $product_id;
+                for ($i=0; $i < count($request->filter_variation); $i++) { 
+                    $insAttr = [];
+                    $insAttr['product_attribute_set_id']    = $filter_variation[$i];
+                    $insAttr['attribute_values']            = $filter_variation_value[$i];
+                    $insAttr['title']                       = $filter_variation_title[$i];
+                    $insAttr['product_id']                  = $product_id;
 
-                        ProductWithAttributeSet::create($insAttr);
-
-                    }
+                    ProductWithAttributeSet::create($insAttr);
                 }
+               
             } 
             
             $meta_ins['meta_title']         = $request->meta_title ?? '';
@@ -362,20 +363,20 @@ class ProductController extends Controller
                 $url = $request->url;
                 $url_type = $request->url_type;
                 
-                $linkArr                        = array_combine($url_type, $url);
+                // $linkArr                        = array_combine($url_type, $url);
                 
-                if( isset( $linkArr ) && !empty( $linkArr )) {
+                if( isset( $url ) && !empty( $url )) {
                     
                     ProductLink::where('product_id', $product_id)->delete();
-                    foreach ( $linkArr as $akey => $avalue ) {
-
-                        $insAttr['url']         = $avalue;
-                        $insAttr['url_type']    = $akey;
+                    for ($i=0; $i < count($url); $i++) { 
+                        $insAttr = [];
+                        $insAttr['url']         = $url[$i];
+                        $insAttr['url_type']    = $url_type[$i];
                         $insAttr['product_id']  = $product_id;
 
                         ProductLink::create($insAttr);
-
                     }
+                    
                 }
 
             } 

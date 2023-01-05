@@ -31,11 +31,10 @@
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
 
-                      
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
                         <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
 
-                      
+
                         <div class="fv-row mb-7">
                             <label class="required fw-bold fs-6 mb-2">Title</label>
                             <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
@@ -47,47 +46,79 @@
                                 placeholder="Tag Line" value="{{ $info->tag_line ?? '' }}" />
                         </div>
 
+                        <div class="fv-row mb-7">
+                            <label class="required fw-bold fs-6 mb-2">Product Category</label>
+                            @if (isset($category_info) && !empty($category_info))
+                                <input type="hidden" name="product_category_id" id="product_category_id"
+                                    value="{{ $category_info->id }}">
+                                <p>{{ $category_info->name ?? '' }}</p>
+                            @else
+                                <select name="product_category_id" id="product_category_id"
+                                    aria-label="Select a Category" data-control="select2"
+                                    data-placeholder="Select a Category..." class="form-select mb-2">
+                                    <option value="">-select--</option>
+                                    @if (isset($sub_category) && !empty($sub_category))
+                                        @foreach ($sub_category as $item)
+                                            <option value="{{ $item->id }}"
+                                                @if (isset($info->product_category_id) && $info->product_category_id == $item->id) selected @endif>{{ $item->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            @endif
+
+                        </div>
+
                         <br>
                         <div class="row mb-7">
                             <div class="col-md-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Searchable </label>
-                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="is_searchable" value="1"  @if(isset( $info->is_searchable) && $info->is_searchable == '1') checked @endif />
+                                    <div
+                                        class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox" name="is_searchable"
+                                            value="1" @if (isset($info->is_searchable) && $info->is_searchable == '1') checked @endif />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Comparable </label>
-                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="is_comparable" value="1"  @if(isset( $info->is_comparable) && $info->is_comparable == '1') checked @endif />
+                                    <div
+                                        class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox" name="is_comparable"
+                                            value="1" @if (isset($info->is_comparable) && $info->is_comparable == '1') checked @endif />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Use in Product listing </label>
-                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="is_use_in_product_listing" value="1"  @if(isset( $info->is_use_in_product_listing) && $info->is_use_in_product_listing == '1') checked @endif />
+                                    <div
+                                        class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                            name="is_use_in_product_listing" value="1"
+                                            @if (isset($info->is_use_in_product_listing) && $info->is_use_in_product_listing == '1') checked @endif />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                      
+
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Sorting Order</label>
-                            <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                            <input type="text" name="order_by"
+                                class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
-                     
+
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2"> Status </label>
                             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if(isset( $info->status) && $info->status == 'published') checked @endif />
+                                <input class="form-check-input" type="checkbox" name="status" value="1"
+                                    @if (isset($info->status) && $info->status == 'published') checked @endif />
                             </div>
                         </div>
-                     
+
                     </div>
                 </div>
             </div>
@@ -114,7 +145,7 @@
 </style>
 
 <script>
- $('.mobile_num').keypress(
+    $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
                 //do nothing
@@ -125,6 +156,8 @@
             }
         }
     );
+
+    $('#product_category_id').select2();
     var add_url = "{{ route('product-attribute.save') }}";
 
     // Class definition
@@ -149,6 +182,13 @@
                             validators: {
                                 notEmpty: {
                                     message: 'Title is required'
+                                }
+                            }
+                        },
+                        'product_category_id': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Product Category is required'
                                 }
                             }
                         },
@@ -199,7 +239,8 @@
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
 
-                            var formData = new FormData(document.getElementById("add_product_attribute_form"));
+                            var formData = new FormData(document.getElementById(
+                                "add_product_attribute_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
@@ -213,7 +254,7 @@
                                 contentType: false,
                                 beforeSend: function() {},
                                 success: function(res) {
-                                    console.log( res.views );
+                                    console.log(res.views);
                                     if (res.error == 1) {
                                         // Remove loading indication
                                         submitButton.removeAttribute(
@@ -231,10 +272,10 @@
                                             }
                                         });
                                     } else {
-                                        if( !from ) {
+                                        if (!from) {
                                             dtTable.ajax.reload();
                                         }
-                                        
+
                                         Swal.fire({
                                             text: res.message,
                                             icon: "success",
@@ -247,8 +288,7 @@
                                             if (result
                                                 .isConfirmed) {
                                                 commonDrawer.hide();
-                                                if( res.from ) {
-                                                }
+                                                if (res.from) {}
 
                                             }
                                         });
@@ -286,5 +326,4 @@
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
     });
-
 </script>

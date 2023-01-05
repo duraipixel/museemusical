@@ -215,4 +215,106 @@ class FilterController extends Controller
 
         return array('products' => $tmp, 'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
     }
+
+    public function getProductBySlug(Request $request)
+    {
+        
+        $product_url = $request->product_url;
+        $items = Product::where('product_url', $product_url)->first();
+
+        $category               = $items->productCategory;
+        $salePrices             = getProductPrice($items);
+        
+        $pro                    = [];
+        $pro['id']              = $items->id;
+        $pro['product_name']    = $items->product_name;
+        $pro['category_name']   = $category->name ?? '';
+        $pro['category_slug']   = $category->slug ?? '';
+        $pro['parent_category_name']   = $category->parent->name ?? '';
+        $pro['parent_category_slug']   = $category->parent->slug ?? '';
+        $pro['brand_name']      = $items->productBrand->brand_name ?? '';
+        $pro['hsn_code']        = $items->hsn_code;
+        $pro['product_url']     = $items->product_url;
+        $pro['sku']             = $items->sku;
+        $pro['has_video_shopping'] = $items->has_video_shopping;
+        $pro['stock_status']    = $items->stock_status;
+        $pro['is_featured']     = $items->is_featured;
+        $pro['is_best_selling'] = $items->is_best_selling;
+        $pro['is_new']          = $items->is_new;
+        $pro['sale_prices']     = $salePrices;
+        $pro['mrp_price']       = $items->price;
+        $pro['videolinks']      = $items->productVideoLinks;
+        $pro['links']           = $items->productLinks;
+        $pro['image']           = $items->base_image;
+
+
+        $imagePath              = $items->base_image;
+
+        if (!Storage::exists($imagePath)) {
+            $path               = asset('userImage/no_Image.jpg');
+        } else {
+            $url                = Storage::url($imagePath);
+            $path               = asset($url);
+        }
+
+        $pro['image']                   = $path;
+
+        $pro['description']             = $items->description;
+        $pro['technical_information']   = $items->technical_information;
+        $pro['feature_information']     = $items->feature_information;
+        $pro['specification']           = $items->specification;
+        $pro['brochure_upload']         = $items->brochure_upload;
+        $pro['gallery']                 = $items->productImages;
+
+        // $attributes = [];
+        // if( isset( $items->productAttributes ) && !empty( $items->productAttributes ) ) {
+        //     foreach ( $items->productAttributes as $att) {
+                
+        //     }
+        // }
+
+        $pro['attributes']              = $items->productAttributes;
+        $related_arr                    = [];
+        if( isset( $items->productRelated ) && !empty( $items->productRelated ) ) {
+            foreach ($items->productRelated as $related ) {
+                
+                $productInfo            = Product::find($related->to_product_id);
+                $category               = $productInfo->productCategory;
+                $salePrices1            = getProductPrice($productInfo);
+                
+                $tmp2                    = [];
+                $tmp2['id']              = $productInfo->id;
+                $tmp2['product_name']    = $productInfo->product_name;
+                $tmp2['category_name']   = $category->name ?? '';
+                $tmp2['brand_name']      = $productInfo->productBrand->brand_name ?? '';
+                $tmp2['hsn_code']        = $productInfo->hsn_code;
+                $tmp2['product_url']     = $productInfo->product_url;
+                $tmp2['sku']             = $productInfo->sku;
+                $tmp2['has_video_shopping'] = $productInfo->has_video_shopping;
+                $tmp2['stock_status']    = $productInfo->stock_status;
+                $tmp2['is_featured']     = $productInfo->is_featured;
+                $tmp2['is_best_selling'] = $productInfo->is_best_selling;
+                $tmp2['is_new']          = $productInfo->is_new;
+                $tmp2['sale_prices']     = $salePrices1;
+                $tmp2['mrp_price']       = $productInfo->price;
+                $tmp2['image']           = $productInfo->base_image;
+
+                $imagePath              = $productInfo->base_image;
+
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('userImage/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
+                }
+
+                $tmp2['image']           = $path;
+                $related_arr[]          = $tmp2;
+            }
+        }
+        $pro['related_products']    = $related_arr;
+        
+        return $pro;
+
+    }
 }

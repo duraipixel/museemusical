@@ -108,7 +108,17 @@ class Product extends Model
 
     public function productLinks()
     {
+        return $this->hasMany(ProductLink::class, 'product_id', 'id')->where('url_type', '!=', 'video_link');
+    }
+
+    public function productAllLinks()
+    {
         return $this->hasMany(ProductLink::class, 'product_id', 'id');
+    }
+
+    public function productVideoLinks()
+    {
+        return $this->hasMany(ProductLink::class, 'product_id', 'id')->where('url_type', 'video_link');
     }
 
 

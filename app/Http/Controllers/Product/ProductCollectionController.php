@@ -76,13 +76,19 @@ class ProductCollectionController extends Controller
         $info               = '';
         $modal_title        = 'Add Product Collection';
         $products           = Product::where('status', 'published')
-                                ->whereRaw('id not IN(SELECT product_id FROM `mm_product_collections_products`)')
+                                ->when($id != '', function($q) use($id){
+                                    $q->whereRaw('id not IN(SELECT product_id FROM `mm_product_collections_products` where product_collection_id  != '.$id.')');
+                                } )
+                                ->when($id == '', function($q){
+                                    $q->whereRaw('id not IN(SELECT product_id FROM `mm_product_collections_products`)');
+                                } )
                                 ->get();
         
         $productCategory    = ProductCollection::where('status', 'published')->get();
 
         if (isset($id) && !empty($id)) {
             $info           = ProductCollection::find($id);
+            
             $modal_title    = 'Update Product Collection';
         }
         

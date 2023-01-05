@@ -11,6 +11,7 @@ class ProductAttributeSet extends Model
     protected $fillable = [
         'title',
         'slug',
+        'product_category_id',
         'tag_line',
         'is_searchable',
         'is_comparable',
@@ -18,4 +19,9 @@ class ProductAttributeSet extends Model
         'status',
         'order_by',
     ];
+
+    public function category()  
+    {
+        return $this->hasOne(ProductCategory::class, 'id', 'product_category_id');
+    }
 }

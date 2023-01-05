@@ -16,8 +16,25 @@
         exportModal.hide();
     })
 
-    function openForm(module_type, id = '', from = '', dynamicModel = '') {
-               
+    function openForm(module_type, id = '', from = '', dynamicModel = '', categoryId = '' ) {
+        
+        // if( from == 'product' ) {
+        //     categoryId = $('#category_id').val();
+        //     if( categoryId == '' || categoryId == null || categoryId == undefined ) {
+        //         Swal.fire({
+        //             html: 'Please select Product category',
+        //             icon: "error",
+        //             buttonsStyling: false,
+        //             confirmButtonText: "Ok, got it!",
+        //             customClass: {
+        //                 confirmButton: "btn btn-primary"
+        //             }
+        //             });
+        //         return false;
+        //     }
+        // }
+        
+       
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -27,7 +44,7 @@
         $.ajax({
             url: config.routes[module_type].add,
             type: 'POST',
-            data: {id:id, from:from, dynamicModel:dynamicModel},
+            data: {id:id, from:from, dynamicModel:dynamicModel, categoryId:categoryId},
             success: function(res) {
                 $( '#form-common-content' ).html(res);
                 const drawerEl = document.querySelector("#kt_common_add_form");

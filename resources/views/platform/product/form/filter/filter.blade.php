@@ -7,7 +7,7 @@
             <h2 class="w-100">
                 Filter Variations
 
-                <div class="form-group mt-5 float-end">
+                {{-- <div class="form-group mt-5 float-end">
                     <button type="button" data-repeater-create="" onclick="return openForm('product-attribute', '', 'product')" class="btn btn-sm btn-light-primary">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr087.svg-->
                     <span class="svg-icon svg-icon-2">
@@ -17,7 +17,7 @@
                         </svg>
                     </span>
                     <!--end::Svg Icon-->Add Product Attribute Set</button>
-                </div>
+                </div> --}}
             </h2>
 
             

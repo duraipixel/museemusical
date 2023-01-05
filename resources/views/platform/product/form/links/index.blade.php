@@ -25,8 +25,8 @@
                 <!--begin::Form group-->
                 <div class="form-group">
                     <div class="d-flex flex-column gap-3" id="formRepeaterUrl">
-                        @if( isset( $info->productLinks) && !empty($info->productLinks) )
-                        @foreach ($info->productLinks as $item)
+                        @if( isset( $info->productAllLinks) && !empty($info->productAllLinks) )
+                        @foreach ($info->productAllLinks as $item)
                         <div class="form-group d-flex flex-wrap gap-5 childUrlRow" id="child-url" >
                             
                             <input type="text" name="url[]" placeholder="Url" value="{{ $item->url ?? '' }}" class="form-control mw-100 w-500px">

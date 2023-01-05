@@ -26,6 +26,7 @@ Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\Col
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
+Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -38,6 +38,7 @@
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Title  </th>
+                                <th> Category  </th>
                                 <th> Tag Line </th>
                                 <th> Can Searchable </th>
                                 <th> Can Comparable </th>
@@ -71,6 +72,10 @@
                 {
                     data: 'title',
                     name: 'title',
+                },
+                {
+                    data: 'category',
+                    name: 'category'
                 },
                 {
                     data: 'tag_line',
