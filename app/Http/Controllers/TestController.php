@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TestMail;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Mail;
 
 class TestController extends Controller
 {
@@ -62,5 +64,21 @@ class TestController extends Controller
         
         $pdf = PDF::loadView('platform.invoice.index')->setPaper('a4', 'portrait');;
         return $pdf->stream('test.pdf');
+    }
+
+    public function sendMail()
+    {
+        $email = 'duraibytes@gmail.com';
+   
+        $mailData = [
+            'title' => 'Demo Email',
+            'url' => 'https://www.positronx.io'
+        ];
+  
+        Mail::to($email)->send(new TestMail($mailData));
+   
+        return response()->json([
+            'message' => 'Email has been sent.'
+        ]);
     }
 }
