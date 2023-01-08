@@ -291,6 +291,7 @@ if( !function_exists('getSaleProductPrices') ) {
             
             $coupon_used['strike_rate']     = number_format($strike_rate, 2);
             $coupon_used['price']           = number_format($price,2);
+            $coupon_used['price_original']  = $price;
             $coupon_used['discount']        = $discount;
             $coupon_used['overall_discount_percentage'] = $overall_discount_percentage;
             

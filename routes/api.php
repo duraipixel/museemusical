@@ -28,6 +28,12 @@ Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterContr
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 
+Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
+Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);
+
+Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
