@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\AccessGuard;
+use App\Models\Master\Customer;
 use App\Models\Product\Product;
 use App\Models\User;
 
@@ -93,6 +94,34 @@ if (! function_exists('generateProductSku')) {
             }
         } 
         return $sku;
+    }
+}
+
+if( !function_exists('getCustomerNo') ) {
+    function getCustomerNo() {
+
+        $countNumber    = '000001';
+        $customer_no    = 'MM'.$countNumber;
+
+        $checkCustomer  = Customer::where('customer_no', $customer_no)->first();
+
+        if( isset( $checkCustomer ) && !empty($checkCustomer) ) {
+            $old_no = $checkCustomer->customer_no;
+            $end = substr($old_no,2);
+            
+            $old_no = $end + 1;
+            
+            if( ( 6 - strlen($old_no) ) > 0 ){
+                $new_no = '';
+                for ($i=0; $i < (6 - strlen($old_no) ); $i++) { 
+                    $new_no .= '0';
+                }
+                $ord = $new_no.$old_no;
+                
+                $customer_no =  'MM'.$ord;
+            }
+        } 
+        return $customer_no;
     }
 }
 
