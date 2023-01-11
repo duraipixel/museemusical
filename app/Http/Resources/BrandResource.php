@@ -11,16 +11,13 @@ class BrandResource extends JsonResource
     public function toArray($request)
     {
 
-        $brandLogoPath          = 'brands/'.$this->id.'/option1/'.$this->brand_logo;
-
-        if(!Storage::exists( $brandLogoPath)) {
+        $brandLogoPath          = 'public/brands/'.$this->id.'/default/'.$this->brand_logo;
+        if( !Storage::exists( $brandLogoPath ) ) {
             $path               = asset('userImage/no_Image.jpg');
         } else {
             $url                    = Storage::url($brandLogoPath);
             $path                   = asset($url);
         }
-
-        
 
         $tmp[ 'id' ]            = $this->id;
         $tmp[ 'title' ]         = $this->brand_name;

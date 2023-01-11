@@ -193,11 +193,12 @@ class FilterController extends Controller
                 $pro['sale_prices']     = $salePrices;
                 $pro['mrp_price']       = $items->price;
                 $pro['image']           = $items->base_image;
+                $pro['max_quantity']    = $items->quantity;
 
                 $imagePath              = $items->base_image;
 
                 if (!Storage::exists($imagePath)) {
-                    $path               = asset('userImage/no_Image.jpg');
+                    $path               = asset('assets/logo/product-noimg.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);
@@ -246,6 +247,7 @@ class FilterController extends Controller
         $pro['videolinks']      = $items->productVideoLinks;
         $pro['links']           = $items->productLinks;
         $pro['image']           = $items->base_image;
+        $pro['max_quantity']    = $items->quantity;
 
 
         $imagePath              = $items->base_image;

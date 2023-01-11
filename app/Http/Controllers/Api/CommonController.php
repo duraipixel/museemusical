@@ -57,7 +57,7 @@ class CommonController extends Controller
                 if( isset( $data ) && !empty( $data ) ) {
                     foreach ($data as $daitem ) {
                         $tmp1                    = [];
-                        $brandLogoPath           = 'brands/'.$daitem->id.'/option1/'.$daitem->brand_logo;
+                        $brandLogoPath           = 'brands/'.$daitem->id.'/default/'.$daitem->brand_logo;
                         $url                     = Storage::url($brandLogoPath);
                         $path                    = asset($url);
 

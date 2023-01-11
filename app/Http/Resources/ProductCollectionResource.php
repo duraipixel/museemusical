@@ -46,7 +46,7 @@ class ProductCollectionResource extends JsonResource
                 $imagePath              = $items->product->base_image;
 
                 if(!Storage::exists( $imagePath)) {
-                    $path               = asset('userImage/no_Image.jpg');
+                    $path               = asset('assets/logo/no-img-1.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);

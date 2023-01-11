@@ -24,7 +24,7 @@ class BrandController extends Controller
         $title = "Brand";
         
         if ($request->ajax()) {
-            $data =Brands::select('brands.*','users.name as users_name')->join('users', 'users.id', '=', 'brands.added_by');
+            $data =Brands::select('brands.*','users.name as users_name')->leftJoin('users', 'users.id', '=', 'brands.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -156,6 +156,10 @@ class BrandController extends Controller
                     mkdir(storage_path("app/public/brands/".$brand_id."/thumb"), 0775, true);
                 }
 
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/default"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/default"), 0775, true);
+                }
+
                 $option1Path            = 'public/brands/'.$brand_id.'/option1/' . $imageName;
                 Image::make($file)->resize(350,690)->save(storage_path('app/' . $option1Path));
                 
@@ -170,6 +174,9 @@ class BrandController extends Controller
 
                 $option5Path            = 'public/brands/'.$brand_id.'/thumb/' . $imageName;
                 Image::make($file)->resize(285,30)->save(storage_path('app/' . $option5Path)); 
+
+                $option6Path            = 'public/brands/'.$brand_id.'/default/' . $imageName;
+                Image::make($file)->save(storage_path('app/' . $option6Path)); 
 
                 $info->brand_logo       = $imageName;
                 $info->update();

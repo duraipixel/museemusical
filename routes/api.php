@@ -34,6 +34,7 @@ Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLo
 Route::middleware(['client'])->group(function(){
     
     Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
+    Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
     Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
 

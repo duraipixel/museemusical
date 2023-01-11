@@ -13,19 +13,17 @@ class CustomerController extends Controller
     public function registerCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string',
+            'firstName' => 'required|string',
             'email' => 'required|email|unique:customers,email',
-            'mobile_no' => 'required|digits:10|unique:customers,mobile_no',
             'password' => 'required|string',
 
-        ]);
-
+        ], ['email.unique' => 'Email id is already registered.Please try to login']);
+        
         if ($validator->passes()) {
 
-            $ins['first_name'] = $request->first_name;
-            $ins['last_name'] = $request->last_name;
+            $ins['first_name'] = $request->firstName;
             $ins['email'] = $request->email;
-            $ins['mobile_no'] = $request->mobile_no;
+            // $ins['mobile_no'] = $request->mobile_no;
             $ins['customer_no'] = getCustomerNo();
             $ins['password'] = Hash::make($request->password);
             $ins['status'] = 'published';
@@ -47,18 +45,29 @@ class CustomerController extends Controller
     {
         $email = $request->email;
         $password = $request->password;
-
-        $checkCustomer = Customer::where('email', $email)->where('password', Hash::make($password))->first();
+        
+        $checkCustomer = Customer::where('email', $email)->first();
         if( $checkCustomer ) {
-            $error = 0;
-            $message = 'Login Success';
-            $status = 'success';
+            // dd( $password );
+            if( Hash::check( $password, $checkCustomer->password ) ) {
+                $error = 0;
+                $message = 'Login Success';
+                $status = 'success';
+                $customer_data = $checkCustomer;
+            } else {
+                $error = 1;
+                $message = 'Invalid credentials';
+                $status = 'error';
+                $customer_data = ''; 
+            }
+           
         } else {
             $error = 1;
             $message = 'Invalid credentials';
             $status = 'error';
+            $customer_data = '';
         }
-        return array( 'error' => $error, 'message' => $message, 'status' => $status );
+        return array( 'error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data );
 
     }
 }
