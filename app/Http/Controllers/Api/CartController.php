@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product\Product;
+use App\Models\Settings\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,6 +48,7 @@ class CartController extends Controller
             }
 
         } else {
+
             if( $product_info->quantity <= $quantity ) {
                 $quantity = $product_info->quantity;
             }
@@ -63,6 +65,42 @@ class CartController extends Controller
         return $this->getCartListAll($customer_id);
     }
 
+    public function updateCart(Request $request)
+    {
+
+        $cart_id        = $request->cart_id;        
+        $quantity       = $request->quantity ?? 1;        
+        $checkCart      = Cart::where('id', $cart_id)->first();
+
+        $checkCart->quantity = $quantity;
+        $checkCart->sub_total = $checkCart->price * $quantity;
+        $checkCart->update();
+        return $this->getCartListAll($checkCart->customer_id);
+
+    }
+
+    public function deleteCart(Request $request)
+    {
+
+        $cart_id        = $request->cart_id;    
+
+        $checkCart      = Cart::find($cart_id);
+        $customer_id    = $checkCart->customer_id;
+        $checkCart->delete();
+        return $this->getCartListAll($customer_id);
+
+    }
+
+    public function clearCart(Request $request)
+    {
+
+        $customer_id        = $request->customer_id;
+
+        Cart::where('customer_id', $customer_id)->delete();
+        return $this->getCartListAll($customer_id);
+
+    }
+
     public function getCarts(Request $request)
     {
 
@@ -73,18 +111,39 @@ class CartController extends Controller
 
     function getCartListAll($customer_id) {
         
-        $checkCart      = Cart::where('customer_id', $customer_id)->get();
-        $tmp = [];
-        
+        $checkCart          = Cart::where('customer_id', $customer_id)->get();
+        $tmp                = ['carts'];
+        $grand_total        = 0;
+        $tax_total          = 0;
+        $product_tax_exclusive_total = 0;
+        $tax_percentage = 0;
+
         if (isset($checkCart ) && !empty($checkCart )) {
             foreach ($checkCart as $citems ) {
                 foreach ($citems->products as $items ) {
-
+                    $tax = [];
                     $category               = $items->productCategory;
                     $salePrices             = getProductPrice($items);
                     
+                    if( isset( $category->parent->tax_id ) && !empty( $category->parent->tax_id ) ) {
+                        $tax_info = Tax::find( $category->parent->tax_id );
+                        
+                    } else if( isset( $category->tax_id ) && !empty( $category->tax_id ) ) {
+                        $tax_info = Tax::find( $category->tax_id );
+                        
+                    } 
+                    if( isset( $tax_info ) && !empty( $tax_info ) ) {
+                        $tax = getAmountExclusiveTax( $salePrices['price_original'], $tax_info->pecentage );
+                        $tax_total =  $tax_total + $tax['gstAmount'] ?? 0;
+                        $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] ?? 0 * $citems->quantity );
+                        $tax_percentage         = $tax['tax_percentage'] ?? 0;
+                    } else {
+                        $product_tax_exclusive_total = $product_tax_exclusive_total + $citems->sub_total; 
+                    }
+
                     $pro                    = [];
                     $pro['id']              = $items->id;
+                    $pro['tax']             = $tax;
                     $pro['product_name']    = $items->product_name;
                     $pro['category_name']   = $category->name ?? '';
                     $pro['brand_name']      = $items->productBrand->brand_name ?? '';
@@ -99,7 +158,7 @@ class CartController extends Controller
                     $pro['sale_prices']     = $salePrices;
                     $pro['mrp_price']       = $items->price;
                     $pro['image']           = $items->base_image;
-    
+                    $pro['max_quantity']    = $items->quantity;
                     $imagePath              = $items->base_image;
     
                     if (!Storage::exists($imagePath)) {
@@ -115,29 +174,19 @@ class CartController extends Controller
                     $pro['price']           = $citems->price;
                     $pro['quantity']        = $citems->quantity;
                     $pro['sub_total']       = $citems->sub_total;
-    
-                    $tmp[] = $pro;
+                    $grand_total            += $citems->sub_total;
+                    $tmp['carts'][] = $pro;
                 }
             }
-
+            $tmp['cart_total']         = array(
+                                                'total' => number_format( round($grand_total),2), 
+                                                'product_tax_exclusive_total' => number_format(round($product_tax_exclusive_total),2),
+                                                'tax_total' => number_format(round($tax_total), 2),
+                                                'tax_percentage' => number_format(round($tax_percentage),2)
+                                            );
             
         }
         return $tmp;
     }
-
-    public function deleteCart(Request $request)
-    {
-        $customer_id = $request->customer_id;
-        if( $customer_id ) {
-            Cart::where('customer_id', $customer_id)->delete();
-            $ins['message'] = 'deleted';
-            $ins['status'] = 'success';
-        } else {
-            Cart::where('customer_id', $customer_id)->delete();
-            $ins['message'] = 'can not delete. customer id not found';
-            $ins['status'] = 'error';
-        }
-        
-        return $ins;
-    }
+   
 }

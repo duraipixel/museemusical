@@ -2,6 +2,7 @@
 
 use App\Helpers\AccessGuard;
 use App\Models\Master\Customer;
+use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\User;
 
@@ -63,7 +64,7 @@ if (! function_exists('getAmountExclusiveTax')) {
             $basePrice = $productAmount - $gstAmount;
         } 
        
-        return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount );
+        return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage );
     }
 }
 
@@ -75,7 +76,7 @@ if (! function_exists('generateProductSku')) {
         }
         
 
-        $checkProduct = Product::where('sku', $sku)->first();
+        $checkProduct = Product::where('sku', $sku)->orderBy('id', 'desc')->first();
         if( isset( $checkProduct ) && !empty($checkProduct) ) {
             $old_no = $checkProduct->sku;
             $old_no = explode("-", $old_no );
@@ -103,7 +104,7 @@ if( !function_exists('getCustomerNo') ) {
         $countNumber    = '000001';
         $customer_no    = 'MM'.$countNumber;
 
-        $checkCustomer  = Customer::where('customer_no', $customer_no)->first();
+        $checkCustomer  = Customer::where('customer_no', $customer_no)->orderBy('id', 'desc')->first();
 
         if( isset( $checkCustomer ) && !empty($checkCustomer) ) {
             $old_no = $checkCustomer->customer_no;
@@ -122,6 +123,35 @@ if( !function_exists('getCustomerNo') ) {
             }
         } 
         return $customer_no;
+    }
+}
+
+if( !function_exists('getOrderNo') ) {
+    function getOrderNo() {
+
+        $countNumber    = '000001';
+        $order_no    = 'MM-ORD-'.$countNumber;
+
+        $checkCustomer  = Order::where('order_no', $order_no)->first();
+        
+        if( isset( $checkCustomer ) && !empty($checkCustomer) ) {
+            $old_no = $checkCustomer->order_no;
+            $old_no = explode("-", $old_no );
+            $end = end($old_no);
+            $old_no = $end + 1;
+            
+            if( ( 6 - strlen($old_no) ) > 0 ){
+                $new_no = '';
+                for ($i=0; $i < (6 - strlen($old_no) ); $i++) { 
+                    $new_no .= '0';
+                }
+                $ord = $new_no.$old_no;
+                
+                $order_no =  'MM-ORD-'.$ord;
+            }
+        }  
+        
+        return $order_no;
     }
 }
 
@@ -207,7 +237,7 @@ if( !function_exists('getSaleProductPrices') ) {
                 if( $productsObjects->productDiscount->discount_type == 'percentage' ) {
                     $overall_discount_percentage += $productsObjects->productDiscount->discount_value;
                 }
-                $discount[]         = array( 'discount_type' => $productsObjects->productDiscount->discount_type, 'discount_value' => $productsObjects->productDiscount->discount_value  );
+                $discount[]         = array( 'discount_type' => $productsObjects->productDiscount->discount_type, 'discount_value' => $productsObjects->productDiscount->discount_value, 'discount_name' => ''  );
 
             } 
             
@@ -246,14 +276,14 @@ if( !function_exists('getSaleProductPrices') ) {
                                     $strike_rate    = $price;
                                     $tmp['discount_amount'] = percentageAmountOnly( $price, $items->calculate_value );
                                     $price          = percentage( $price, $items->calculate_value );
-                                    $discount[]         = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value  );
+                                    $discount[]         = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value, 'discount_name' => $items->coupon_name  );
                                     $overall_discount_percentage += $items->calculate_value;
                                     $has_discount   = 'yes';
                                     break;
                                 case 'fixed_amount':
                                     $strike_rate    = $price;
                                     $tmp['discount_amount'] = $items->calculate_value;
-                                    $discount[]         = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value  );
+                                    $discount[]         = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value, 'discount_name' => $items->coupon_name  );
                                     $price          = $price - $items->calculate_value;
                                     $has_discount   = 'yes';
                                     break;
@@ -297,14 +327,14 @@ if( !function_exists('getSaleProductPrices') ) {
                                 $strike_rate    = $price;
                                 $tmp['discount_amount'] = percentageAmountOnly( $price, $items->calculate_value );
                                 $price          = percentage( $price, $items->calculate_value );
-                                $discount[]     = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value  );
+                                $discount[]     = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value, 'discount_name' => $items->coupon_name );
                                 $overall_discount_percentage += $items->calculate_value;
                                 $has_discount   = 'yes';
                                 break;
                             case 'fixed_amount':
                                 $strike_rate    = $price;
                                 $tmp['discount_amount'] = $items->calculate_value;
-                                $discount[]     = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value  );
+                                $discount[]     = array( 'discount_type' => $items->calculate_type, 'discount_value' => $items->calculate_value, 'discount_name' => $items->coupon_name );
                                 $price          = $price - $items->calculate_value;
                                 $has_discount   = 'yes';
                                 break;

@@ -35,8 +35,13 @@ Route::middleware(['client'])->group(function(){
     
     Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
     Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
+    Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
     Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
+    Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);    
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
+    Route::post('/add/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'addCustomerAddress']);
+    Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
+    Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
 
 });
 

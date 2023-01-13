@@ -33,10 +33,10 @@ class ProductCategory extends Model
         return $this->hasOne(CategoryMetaTags::class, 'category_id', 'id');
     }
 
-    // public function tax()
-    // {
-    //     return $this->hasOne(Tax::class, 'id', 'tax_id');
-    // }
+    public function tax()
+    {
+        return $this->hasOne(Tax::class, 'id', 'tax_id');
+    }
 
     public function userInfo()
     {

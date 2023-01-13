@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Category\MainCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,11 @@ class SiteResource extends JsonResource
             }
         }
         $tmp['links']       = $childTmp;
+        /**
+         *  get address types
+         */
+        $address_type       = MainCategory::where('slug', 'address-type')->first();
+        $tmp['address_type'] = $address_type->subCategory ?? [];
 
         return $tmp;
     }

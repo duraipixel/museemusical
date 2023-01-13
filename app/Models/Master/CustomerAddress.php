@@ -19,10 +19,10 @@ class CustomerAddress extends Model
         'address_line1',
         'address_line2',
         'landmark',
-        'city_id',
-        'state_id',
-        'country_id',
-        'post_code_id',
+        'country',
+        'post_code',
+        'state',
+        'city',
         'is_default',
     ];
     
