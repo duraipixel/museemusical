@@ -259,7 +259,7 @@
                 const drawerEl = document.querySelector("#kt_common_add_form");
                 const commonDrawer = KTDrawer.getInstance(drawerEl);
                 commonDrawer.hide();
-                console.log( res );
+                
                 $( '#product-category-brand' ).html(res);
             
                 return false;
@@ -269,7 +269,7 @@
 
     }
 
-    function getProductDynamicDropdown(id = '', tag = '' ) {
+    function getProductDynamicDropdown( id = '', tag = '' ) {
         
         $.ajaxSetup({
             headers: {
