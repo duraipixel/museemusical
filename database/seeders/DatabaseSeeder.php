@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CountrySeed::class,
+            OrderStatusSeeder::class,
+            EmailTemplateTypeSeeder::class
         ]);
     }
 }

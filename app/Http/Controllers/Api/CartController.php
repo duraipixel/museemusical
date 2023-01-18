@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
+use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -109,7 +110,7 @@ class CartController extends Controller
 
     }
 
-    function getCartListAll($customer_id) {
+    function getCartListAll($customer_id, $shipping_info = null ) {
         
         $checkCart          = Cart::where('customer_id', $customer_id)->get();
         $tmp                = ['carts'];
@@ -178,7 +179,17 @@ class CartController extends Controller
                     $tmp['carts'][] = $pro;
                 }
             }
-            $tmp['cart_total']         = array(
+
+            if( isset($shipping_info ) && !empty( $shipping_info ) ) {
+                $tmp['shipping_id']         = $shipping_info->id;
+                $grand_total                = $grand_total + $shipping_info->charges ?? 0;
+            }
+
+            $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $charges        = ShippingCharge::where('status', 'published')->where('minimum_order_amount', '<', $amount )->get();
+        
+            $tmp['shipping_charges']    = $charges;
+            $tmp['cart_total']          = array(
                                                 'total' => number_format( round($grand_total),2), 
                                                 'product_tax_exclusive_total' => number_format(round($product_tax_exclusive_total),2),
                                                 'tax_total' => number_format(round($tax_total), 2),
@@ -187,6 +198,27 @@ class CartController extends Controller
             
         }
         return $tmp;
+    }
+
+    public function getShippingCharges(Request $request)
+    {
+        $customer_id    = $request->customer_id;
+        
+        $amount         = filter_var($request->amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $charges        = ShippingCharge::where('status', 'published')->where('minimum_order_amount', '<', $amount )->get();
+        return $charges;
+    }
+
+    public function updateCartAmount(Request $request)
+    {
+
+        $customer_id    = $request->customer_id;
+        $shipping_id    = $request->shipping_id;
+
+        $shipping_info  = ShippingCharge::find($shipping_id);
+
+        return $this->getCartListAll($customer_id, $shipping_info );
+
     }
    
 }

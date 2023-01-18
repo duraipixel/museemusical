@@ -266,7 +266,16 @@
                    'excel': "{{ route('newsletter.export.excel') }}",
                    'pdf': "{{ route('newsletter.export.pdf') }}",
                 }
-            },  
+            }, 
+            'charges': {
+               'delete': "{{ route('charges.delete') }}",
+               'status': "{{ route('charges.status') }}",
+               'add': "{{ route('charges.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('charges.export.excel') }}",
+                   'pdf': "{{ route('charges.export.pdf') }}",
+                }
+            }, 
                 
        }
    };

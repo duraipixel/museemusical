@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function(){
         'brands' => App\Http\Controllers\Master\BrandController::class,
         'product-category' => App\Http\Controllers\Product\ProductCategoryController::class,
         'tax' => App\Http\Controllers\Settings\TaxController::class,
+        'charges' => App\Http\Controllers\ChargesController::class,
         'coupon' => App\Http\Controllers\Offers\CouponController::class,
         'discount' => App\Http\Controllers\Offers\DiscountController::class,
         'email-template' => App\Http\Controllers\Master\EmailTemplateController::class,

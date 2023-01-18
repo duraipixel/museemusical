@@ -270,15 +270,15 @@
                 </div>
             </div>
             @endif
-            @if( access()->hasAccess(['tax']) )
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['tax'])) hover show @endif">
+            @if( access()->hasAccess(['tax', 'charges']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['tax', 'charges'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <i class="bi-chat-left fs-3"></i>
                         </span>
                     </span>
-                    <span class="menu-title">Taxes</span>
+                    <span class="menu-title"> Taxes & Charges </span>
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
@@ -288,6 +288,14 @@
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title">Tax</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['charges'])) active @endif" href="{{ route('charges') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Shipping Charges</span>
                         </a>
                     </div>
                 </div>

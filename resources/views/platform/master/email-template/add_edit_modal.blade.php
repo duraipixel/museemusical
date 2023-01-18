@@ -166,7 +166,6 @@
                 theme: 'snow' // or 'bubble'
             });
             quill_meta.on('text-change', function(delta, oldDelta, source) {
-                console.log(quill_meta.container.firstChild.innerHTML);
                 if(quill_meta.container.firstChild.innerHTML == "<p><br></p>"){
                     $('#message_description').val("");
                 }

@@ -22,7 +22,7 @@ class CheckoutController extends Controller
         $keySecret = env('RAZORPAY_SECRET' );
         
         /***
-         * 
+         * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
          * 2.INSERT IN Order Products
          * 
@@ -33,6 +33,23 @@ class CheckoutController extends Controller
         $cart_total             = $request->cart_total;
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
+
+        #check product is out of stock
+        $errors                 = [];
+        if (isset($cart_items) && !empty($cart_items)) {
+            foreach ($cart_items as $item ) {
+                $product_id = $item['id'];
+                $product_info = Product::find($product_id);
+                if( $product_info->quantity < $item['quantity'] ) {
+                    
+                    $errors[]     = $item['product_name'].' is out of stock, Product will be removed from cart.Please choose another';
+                    $response['error'] = $errors;
+                }
+            }
+        }
+        if( !empty( $errors ) ) {
+            return $response;
+        }
         
         $shipping_amount        = 0;
         $discount_amount        = 0;
@@ -181,11 +198,12 @@ class CheckoutController extends Controller
 
                     $order_info->save();
                 
-                $order_items = OrderProduct::where('order_id', $order_info->id )->get();
+                    $order_items = OrderProduct::where('order_id', $order_info->id )->get();
+                
                     if( isset( $order_items ) && !empty( $order_items ) ) {
                         foreach ($order_items as $product) {
-                            $product_info = Product::find( $product->id );
-                            $pquantity = $product_info->quantity- $product->quantity;
+                            $product_info = Product::find( $product->product_id );
+                            $pquantity = $product_info->quantity - $product->quantity;
                             $product_info->quantity = $pquantity;
                             if( $pquantity == 0 ) {
                                 $product_info->stock_status = 'out_of_stock';
@@ -194,6 +212,7 @@ class CheckoutController extends Controller
                             
                         }
                     }
+
                     $pay_ins['order_id'] = $order_info->id;
                     $pay_ins['payment_no'] = $razor_response['razorpay_payment_id'];
                     $pay_ins['amount'] = $order_info->amount;

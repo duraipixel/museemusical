@@ -57,7 +57,7 @@ class ProductController extends Controller
 
             $data = Product::leftJoin('brands','brands.id','=','products.brand_id')->
             leftJoin('product_categories','product_categories.id','=','products.category_id')
-            ->select('Products.*','brands.brand_logo','brands.brand_name','product_categories.name as category')->when($f_product_category, function($q) use($f_product_category){
+            ->select('products.*','brands.brand_logo','brands.brand_name','product_categories.name as category')->when($f_product_category, function($q) use($f_product_category){
                 return $q->where('category_id', $f_product_category);
             })
             ->when($f_brand, function($q) use($f_brand) {

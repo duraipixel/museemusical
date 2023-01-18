@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category\MainCategory;
 use Illuminate\Http\Request;
 use App\Models\Master\EmailTemplate;
 use App\Models\Category\SubCategory;
@@ -63,12 +64,15 @@ class EmailTemplateController extends Controller
         $title      = 'Email Template';
         return view('platform.master.email-template.index', compact('subCategory','breadCrum', 'title'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
         $info               = '';
         $modal_title        = 'Add Email Template';
-        $subCat = SubCategory::select('id','parent_id','name')->where('status',"published")->get();
+        $subCat             = MainCategory::where('slug', 'email-template')->where('status',"published")->first();
+        $subCat             = $subCat->subCategory;
+        
         if (isset($id) && !empty($id)) {
             $info           = EmailTemplate::find($id);
             if($info['params']){
@@ -78,11 +82,12 @@ class EmailTemplateController extends Controller
         }
         return view('platform.master.email-template.add_edit_modal', compact('info', 'modal_title','subCat'));
     }
+
     public function saveForm(Request $request)
     {
         $id                         = $request->id;
         $validator                  = Validator::make($request->all(), [
-                                        'type_id' => 'required',
+                                        'type_id' => 'required|unique:email_templates,type_id,'.$id .',id,deleted_at,NULL',
                                         'title' => 'required|string|unique:email_templates,title,' . $id . ',id,deleted_at,NULL',
                                         'message_description' => 'required',
                                     ]);
