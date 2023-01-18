@@ -7,15 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TestMail extends Mailable
+class DynamicMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public $data;
     public $title;
 
@@ -25,16 +20,10 @@ class TestMail extends Mailable
         $this->title = $title;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
         return $this->view('email.testEmail', [
             "data" => $this->data
         ])->subject($this->title);
-        // return $this->markdown('email.testEmail');
     }
 }

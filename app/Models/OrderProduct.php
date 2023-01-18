@@ -12,11 +12,13 @@ class OrderProduct extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'product_name', 
+        'product_name',
+        'hsn_code' ,
         'sku',
         'quantity',
         'price',
         'tax_amount',
+        'tax_percentage',
         'sub_total'
     ];
 }

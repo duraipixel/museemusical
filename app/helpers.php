@@ -132,7 +132,7 @@ if( !function_exists('getOrderNo') ) {
         $countNumber    = '000001';
         $order_no    = 'MM-ORD-'.$countNumber;
 
-        $checkCustomer  = Order::where('order_no', $order_no)->first();
+        $checkCustomer  = Order::orderBy('id', 'desc')->first();
         
         if( isset( $checkCustomer ) && !empty($checkCustomer) ) {
             $old_no = $checkCustomer->order_no;

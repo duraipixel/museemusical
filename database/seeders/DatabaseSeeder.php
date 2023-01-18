@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CountrySeed::class,
             OrderStatusSeeder::class,
-            EmailTemplateTypeSeeder::class
+            EmailTemplateTypeSeeder::class,
+            EmailTemplateSeeder::class
         ]);
     }
 }

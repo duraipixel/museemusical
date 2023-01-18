@@ -123,6 +123,7 @@ class CartController extends Controller
             foreach ($checkCart as $citems ) {
                 foreach ($citems->products as $items ) {
                     $tax = [];
+                    $tax_percentage = 0;
                     $category               = $items->productCategory;
                     $salePrices             = getProductPrice($items);
                     
@@ -145,6 +146,8 @@ class CartController extends Controller
                     $pro                    = [];
                     $pro['id']              = $items->id;
                     $pro['tax']             = $tax;
+                    $pro['tax_percentage']  = $tax_percentage;
+                    $pro['hsn_no']          = $items->hsn_code ?? null;
                     $pro['product_name']    = $items->product_name;
                     $pro['category_name']   = $category->name ?? '';
                     $pro['brand_name']      = $items->productBrand->brand_name ?? '';
@@ -192,6 +195,7 @@ class CartController extends Controller
             $tmp['cart_total']          = array(
                                                 'total' => number_format( round($grand_total),2), 
                                                 'product_tax_exclusive_total' => number_format(round($product_tax_exclusive_total),2),
+                                                'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
                                                 'tax_total' => number_format(round($tax_total), 2),
                                                 'tax_percentage' => number_format(round($tax_percentage),2)
                                             );

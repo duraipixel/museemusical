@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\DynamicMail;
+use App\Models\GlobalSettings;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
+use App\Models\Master\EmailTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Mail;
 
 class CustomerController extends Controller
 {
@@ -19,7 +23,7 @@ class CustomerController extends Controller
             'password' => 'required|string',
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);
-        
+
         if ($validator->passes()) {
 
             $ins['first_name'] = $request->firstName;
@@ -31,6 +35,33 @@ class CustomerController extends Controller
 
             Customer::create($ins);
 
+            /** send email for new customer */
+            $emailTemplate = EmailTemplate::select('email_templates.*')
+                                ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+                                ->where('sub_categories.slug', 'new-registration')->first();
+
+            $globalInfo = GlobalSettings::first();
+
+            $extract = array(
+                'name' => $request->firstName,
+                'regards' => $globalInfo->site_name,
+                'company_website' => '',
+                'company_mobile_no' => $globalInfo->site_mobile_no,
+                'company_address' => $globalInfo->address
+            );
+
+            $templateMessage = $emailTemplate->message;
+            $templateMessage = str_replace("{", "", addslashes($templateMessage));
+            $templateMessage = str_replace("}", "", $templateMessage);
+            extract($extract);
+            eval("\$templateMessage = \"$templateMessage\";");
+           
+            $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
+            // return $send_mail->render();
+            Mail::to($request->email)->send($send_mail);
+
+            /** send sms for new customer */
+
             $error = 0;
             $message = 'Registered success';
             $status = 'success';
@@ -39,18 +70,18 @@ class CustomerController extends Controller
             $message = $validator->errors()->all();
             $status = 'error';
         }
-        return array( 'error' => $error, 'message' => $message, 'status' => $status );
+        return array('error' => $error, 'message' => $message, 'status' => $status);
     }
 
     public function doLogin(Request $request)
     {
         $email = $request->email;
         $password = $request->password;
-        
+
         $checkCustomer = Customer::where('email', $email)->first();
-        if( $checkCustomer ) {
+        if ($checkCustomer) {
             // dd( $password );
-            if( Hash::check( $password, $checkCustomer->password ) ) {
+            if (Hash::check($password, $checkCustomer->password)) {
                 $error = 0;
                 $message = 'Login Success';
                 $status = 'success';
@@ -60,10 +91,9 @@ class CustomerController extends Controller
                 $error = 1;
                 $message = 'Invalid credentials';
                 $status = 'error';
-                $customer_data = ''; 
+                $customer_data = '';
                 $customer_address = [];
             }
-           
         } else {
             $error = 1;
             $message = 'Invalid credentials';
@@ -71,9 +101,8 @@ class CustomerController extends Controller
             $customer_data = '';
             $customer_address = [];
         }
-        
-        return array( 'error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address  );
 
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address);
     }
 
     public function addCustomerAddress(Request $request)
@@ -92,8 +121,6 @@ class CustomerController extends Controller
         CustomerAddress::create($ins);
 
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array( 'error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address );
+        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address);
     }
-
-    
 }

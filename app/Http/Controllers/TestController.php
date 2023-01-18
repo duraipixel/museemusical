@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\TestMail;
+use App\Models\GlobalSettings;
+use App\Models\Master\EmailTemplate;
+use App\Models\Order;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PDF;
 use Mail;
 
@@ -61,24 +65,58 @@ class TestController extends Controller
 
     public function invoiceSample(Request $request)
     {
+        $info = 'teste';
         
-        $pdf = PDF::loadView('platform.invoice.index')->setPaper('a4', 'portrait');;
+        // $pdf = PDF::loadView('platform.invoice.index', compact('info'));    
+        // Storage::put('public/invoice_order/121220252.pdf', $pdf->output());
+        $order_info = Order::find(5);
+        $globalInfo = GlobalSettings::first();
+        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
         return $pdf->stream('test.pdf');
     }
 
     public function sendMail()
     {
-        $email = 'duraibytes@gmail.com';
+        // $email = 'duraibytes@gmail.com';
    
-        $mailData = [
-            'title' => 'Demo Email',
-            'url' => 'https://www.positronx.io'
-        ];
+        // $mailData = [
+        //     'title' => 'Demo Email',
+        //     'url' => 'https://www.positronx.io'
+        // ];
   
-        Mail::to($email)->send(new TestMail($mailData));
+        // Mail::to($email)->send(new TestMail($mailData));
    
-        return response()->json([
-            'message' => 'Email has been sent.'
-        ]);
+        // return response()->json([
+        //     'message' => 'Email has been sent.'
+        // ]);
+
+        $emailTemplate = EmailTemplate::select('email_templates.*')
+                                ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+                                ->where('sub_categories.slug', 'new-registration')->first();
+        
+        $globalInfo = GlobalSettings::first();
+        
+
+        $extract = array(
+                        'name' => 'Durairaj', 
+                        'regards' => $globalInfo->site_name, 
+                        'company_website' => '',
+                        'company_mobile_no' => $globalInfo->site_mobile_no,
+                        'company_address' => $globalInfo->address 
+                    );
+        $templateMessage = $emailTemplate->message;
+        $templateMessage = str_replace("{","",addslashes($templateMessage));
+        $templateMessage = str_replace("}","",$templateMessage);
+        extract($extract);
+        eval("\$templateMessage = \"$templateMessage\";");
+
+        $body = [
+            'content' => $templateMessage,
+            'title' => $emailTemplate->title
+        ];
+        $send_mail = new TestMail($templateMessage, $emailTemplate->title);
+        // return $send_mail->render();
+        Mail::to("durairaj.pixel@gmail.com")->send($send_mail);
+        
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Payment;
 use App\Models\Product\Product;
+use App\Models\ShippingCharge;
 use Exception;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
@@ -20,7 +21,7 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET' );
-        
+       
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
@@ -33,7 +34,8 @@ class CheckoutController extends Controller
         $cart_total             = $request->cart_total;
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
-
+        $shipping_id            = $request->shipping_id ?? 1;
+        
         #check product is out of stock
         $errors                 = [];
         if (isset($cart_items) && !empty($cart_items)) {
@@ -56,21 +58,34 @@ class CheckoutController extends Controller
         $coupon_amount          = 0;
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
+        $shipping_type_info = ShippingCharge::find( $shipping_id );
+
+        $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        $order_ins['shipping_options'] = '1'; //not sure what this field
-        $order_ins['shipping_type'] = 'Free';
+        $order_ins['shipping_options'] = $shipping_id; 
+        $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $cart_total['tax_total'];
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
-        $order_ins['shipping_amount'] = $shipping_amount;
+        $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
         $order_ins['discount_amount'] = $discount_amount;
         $order_ins['coupon_amount'] = $coupon_amount;
         $order_ins['coupon_code'] = '';
-        $order_ins['sub_total'] = $cart_total['product_tax_exclusive_total'];
+        $order_ins['sub_total'] = $cart_total['product_tax_exclusive_total_without_format'];
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
+        $order_ins['billing_name'] = $shipping_address['name'];
+        $order_ins['billing_email'] = $shipping_address['email'];
+        $order_ins['billing_mobile_no'] = $shipping_address['mobile_no'];
+        $order_ins['billing_address_line1'] = $shipping_address['address_line1'];
+        $order_ins['billing_address_line2'] = $shipping_address['address_line2'];
+        $order_ins['billing_landmark'] = $shipping_address['landmark'];
+        $order_ins['billing_country'] = $shipping_address['country'];
+        $order_ins['billing_post_code'] = $shipping_address['post_code'];
+        $order_ins['billing_state'] = $shipping_address['state'];
+        $order_ins['billing_city'] = $shipping_address['city'];
 
         $order_id = Order::create($order_ins)->id;
 
@@ -80,10 +95,12 @@ class CheckoutController extends Controller
                 $items_ins['order_id'] = $order_id;
                 $items_ins['product_id'] = $item['id'];
                 $items_ins['product_name'] = $item['product_name'];
+                $items_ins['hsn_code'] = $item['hsn_no'];
                 $items_ins['sku'] = $item['sku'];
                 $items_ins['quantity'] = $item['quantity'];
                 $items_ins['price'] = $item['price'];
-                $items_ins['tax_amount'] = $item['gstAmount'] ?? 0;
+                $items_ins['tax_amount'] = $item['tax']['gstAmount'] ?? 0;
+                $items_ins['tax_percentage'] = $item['tax_percentage'] ?? 0;
                 $items_ins['sub_total'] = $item['sub_total'];
 
                 OrderProduct::create($items_ins);
@@ -144,12 +161,10 @@ class CheckoutController extends Controller
     public function verifySignature(Request $request)
     {
         
-
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET' );
 
         $customer_id = $request->customer_id;
-
         
         $razor_response = $request->razor_response;
         $status = $request->status;
@@ -168,7 +183,7 @@ class CheckoutController extends Controller
             
 			try
 			{
-			     $attributes = array(
+			    $attributes = array(
 					'razorpay_order_id' => $razorpay_order_id,
 					'razorpay_payment_id' => $razor_response['razorpay_payment_id'],
 					'razorpay_signature' => $razor_response['razorpay_signature']
@@ -183,6 +198,7 @@ class CheckoutController extends Controller
 			}
            
             if( $success ) {
+
                 Cart::where('customer_id', $customer_id)->delete();
                 /** 
                  *  1. do quantity update in product
@@ -223,6 +239,12 @@ class CheckoutController extends Controller
                     $pay_ins['status'] = $finalorder['status'];
 
                     Payment::create($pay_ins);
+
+                    /****
+                     * 1.send email for order placed
+                     * 2.send sms for notification
+                     */
+
                 }
             }
            

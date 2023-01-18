@@ -12,11 +12,12 @@ class RazorpayPaymentController extends Controller
     public function index()
     {        
 
-        // $keyId = env('RAZORPAY_KEY');
-        // $keySecret = env('RAZORPAY_SECRET' );
-        
-        $keyId = 'rzp_test_c6EAGa2fqXqKSG';
-        $keySecret = 'AwVXJ0z7rEmnJHoEoV5Ynze2';
+        $keyId = env('RAZORPAY_KEY');
+        $keySecret = env('RAZORPAY_SECRET' );
+        // dump( $keyId );
+        // dd( $keySecret );
+        // $keyId = 'rzp_test_c6EAGa2fqXqKSG';
+        // $keySecret = 'AwVXJ0z7rEmnJHoEoV5Ynze2';
 
         $order_id = 'ORD9090909';
         
