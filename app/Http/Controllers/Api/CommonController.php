@@ -14,6 +14,7 @@ use App\Models\Master\Brands;
 use App\Models\Offers\Coupons;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCollection;
+use App\Models\RecentView;
 use App\Models\Testimonials;
 use App\Models\WalkThrough;
 use Illuminate\Http\Request;
@@ -146,6 +147,19 @@ class CommonController extends Controller
             }
         }
         return $collection;       
+    }
+
+    public function setRecentView( Request $request)
+    {
+        $ins['customer_id'] = $request->customer_id;
+        $product_url = $request->product_url;
+        $product_info = Product::where('product_url', $product_url)->first();
+        $ins['product_id'] = $product_info->id;
+        RecentView::where('customer_id', $request->customer_id)->where('product_id', $product_info->id)->delete();
+
+        RecentView::create($ins);
+
+        return true;
     }
 
 }

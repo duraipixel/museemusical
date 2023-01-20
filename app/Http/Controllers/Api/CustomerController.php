@@ -28,7 +28,7 @@ class CustomerController extends Controller
 
             $ins['first_name'] = $request->firstName;
             $ins['email'] = $request->email;
-            // $ins['mobile_no'] = $request->mobile_no;
+            $ins['mobile_no'] = $request->mobile_no ?? null;
             $ins['customer_no'] = getCustomerNo();
             $ins['password'] = Hash::make($request->password);
             $ins['status'] = 'published';
@@ -61,6 +61,18 @@ class CustomerController extends Controller
             Mail::to($request->email)->send($send_mail);
 
             /** send sms for new customer */
+            if($request->mobile_no) {
+
+                $sms_params = array(
+                                'name' => $request->firstName,
+                                'reference_id' => $ins['customer_no'],
+                                'company_name' => env('APP_NAME'),
+                                'login_details' => $ins['email'].'/'.$request->password,
+                                'mobile_no' => [$request->mobile_no]
+                            );
+    
+                sendMuseeSms('register', $sms_params);
+            }
 
             $error = 0;
             $message = 'Registered success';

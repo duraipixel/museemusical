@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderMail;
 use App\Models\Cart;
+use App\Models\GlobalSettings;
+use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\OrderProduct;
 use App\Models\Payment;
 use App\Models\Product\Product;
 use App\Models\ShippingCharge;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Razorpay\Api\Api;
+use PDF;
+use Mail;
 
 class CheckoutController extends Controller
 {
@@ -20,8 +27,8 @@ class CheckoutController extends Controller
     {
 
         $keyId = env('RAZORPAY_KEY');
-        $keySecret = env('RAZORPAY_SECRET' );
-       
+        $keySecret = env('RAZORPAY_SECRET');
+
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
@@ -35,35 +42,35 @@ class CheckoutController extends Controller
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
         $shipping_id            = $request->shipping_id ?? 1;
-        
+
         #check product is out of stock
         $errors                 = [];
         if (isset($cart_items) && !empty($cart_items)) {
-            foreach ($cart_items as $item ) {
+            foreach ($cart_items as $item) {
                 $product_id = $item['id'];
                 $product_info = Product::find($product_id);
-                if( $product_info->quantity < $item['quantity'] ) {
-                    
-                    $errors[]     = $item['product_name'].' is out of stock, Product will be removed from cart.Please choose another';
+                if ($product_info->quantity < $item['quantity']) {
+
+                    $errors[]     = $item['product_name'] . ' is out of stock, Product will be removed from cart.Please choose another';
                     $response['error'] = $errors;
                 }
             }
         }
-        if( !empty( $errors ) ) {
+        if (!empty($errors)) {
             return $response;
         }
-        
+
         $shipping_amount        = 0;
         $discount_amount        = 0;
         $coupon_amount          = 0;
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        $shipping_type_info = ShippingCharge::find( $shipping_id );
+        $shipping_type_info = ShippingCharge::find($shipping_id);
 
         $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        $order_ins['shipping_options'] = $shipping_id; 
+        $order_ins['shipping_options'] = $shipping_id;
         $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $cart_total['tax_total'];
@@ -90,8 +97,8 @@ class CheckoutController extends Controller
         $order_id = Order::create($order_ins)->id;
 
         if (isset($cart_items) && !empty($cart_items)) {
-            foreach ($cart_items as $item ) {
-                
+            foreach ($cart_items as $item) {
+
                 $items_ins['order_id'] = $order_id;
                 $items_ins['product_id'] = $item['id'];
                 $items_ins['product_name'] = $item['product_name'];
@@ -107,19 +114,19 @@ class CheckoutController extends Controller
             }
         }
 
-        try{
+        try {
 
             $api = new Api($keyId, $keySecret);
             $orderData = [
-                    'receipt'         => $order_id,
-                    'amount'          => $pay_amount * 100, 
-                    'currency'        => "INR",
-                    'payment_capture' => 1 // auto capture
-                ];
+                'receipt'         => $order_id,
+                'amount'          => $pay_amount * 100,
+                'currency'        => "INR",
+                'payment_capture' => 1 // auto capture
+            ];
 
             $razorpayOrder = $api->order->create($orderData);
             $razorpayOrderId = $razorpayOrder['id'];
-            
+
             session()->put('razorpay_order_id', $razorpayOrderId);
 
             $amount = $orderData['amount'];
@@ -128,76 +135,70 @@ class CheckoutController extends Controller
                 "key"               => $keyId,
                 "amount"            => round($amount),
                 "currency"          => "INR",
-                "name"              => 'Musee Musical',		
+                "name"              => 'Musee Musical',
                 "image"             => asset(gSetting('logo')),
                 "description"       => "Secure Payment",
                 "prefill"           => [
                     "name"              => $shipping_address['name'],
                     "email"             => $shipping_address['email'],
                     "contact"           => $shipping_address['mobile_no'],
-                    ],
+                ],
                 "notes"             => [
                     "address"           => "",
                     "merchant_order_id" => $order_id,
-                    ],
+                ],
                 "theme"             => [
                     "color"             => "#F37254"
-                    ],
-                "order_id"          => $razorpayOrderId,                
+                ],
+                "order_id"          => $razorpayOrderId,
             ];
 
-            $order_info = Order::find( $order_id );
+            $order_info = Order::find($order_id);
             $order_info->payment_response_id = $razorpayOrderId;
             $order_info->save();
 
             return $data;
-        } catch(Exception $e)
-        {
-            dd( $e );
-        }   
-        
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 
     public function verifySignature(Request $request)
     {
-        
+
         $keyId = env('RAZORPAY_KEY');
-        $keySecret = env('RAZORPAY_SECRET' );
+        $keySecret = env('RAZORPAY_SECRET');
 
         $customer_id = $request->customer_id;
-        
+
         $razor_response = $request->razor_response;
         $status = $request->status;
 
-		$success = true;
-		$error_message = "Payment Success";
-        
-		if ( isset( $razor_response['razorpay_payment_id'] ) && empty($razor_response['razorpay_payment_id']) === false)
-		{
+        $success = true;
+        $error_message = "Payment Success";
+
+        if (isset($razor_response['razorpay_payment_id']) && empty($razor_response['razorpay_payment_id']) === false) {
             $razorpay_order_id = $razor_response['razorpay_order_id'];
             $razorpay_signature = $razor_response['razorpay_signature'];
             // $razorpay_order_id = session()->get('razorpay_order_id');
-            
-			$api = new Api($keyId, $keySecret);
-		    $finalorder = $api->order->fetch( $razorpay_order_id);
-            
-			try
-			{
-			    $attributes = array(
-					'razorpay_order_id' => $razorpay_order_id,
-					'razorpay_payment_id' => $razor_response['razorpay_payment_id'],
-					'razorpay_signature' => $razor_response['razorpay_signature']
-				);
 
-				$api->utility->verifyPaymentSignature($attributes);
-			}
-			catch(SignatureVerificationError $e)
-			{
-				$success = false;
-				$error_message = 'Razorpay Error : ' . $e->getMessage();
-			}
-           
-            if( $success ) {
+            $api = new Api($keyId, $keySecret);
+            $finalorder = $api->order->fetch($razorpay_order_id);
+
+            try {
+                $attributes = array(
+                    'razorpay_order_id' => $razorpay_order_id,
+                    'razorpay_payment_id' => $razor_response['razorpay_payment_id'],
+                    'razorpay_signature' => $razor_response['razorpay_signature']
+                );
+
+                $api->utility->verifyPaymentSignature($attributes);
+            } catch (SignatureVerificationError $e) {
+                $success = false;
+                $error_message = 'Razorpay Error : ' . $e->getMessage();
+            }
+
+            if ($success) {
 
                 Cart::where('customer_id', $customer_id)->delete();
                 /** 
@@ -206,26 +207,25 @@ class CheckoutController extends Controller
                  *  3. insert in payment entry 
                  */
                 $order_info = Order::where('payment_response_id', $razorpay_order_id)->first();
-                if( $order_info ) {
+                if ($order_info) {
                     $order_status    = OrderStatus::where('status', 'published')->where('order', 2)->first();
 
-                    $order_info->status = 'completed';
+                    $order_info->status = 'placed';
                     $order_info->order_status_id = $order_status->id;
 
                     $order_info->save();
-                
-                    $order_items = OrderProduct::where('order_id', $order_info->id )->get();
-                
-                    if( isset( $order_items ) && !empty( $order_items ) ) {
+
+                    $order_items = OrderProduct::where('order_id', $order_info->id)->get();
+
+                    if (isset($order_items) && !empty($order_items)) {
                         foreach ($order_items as $product) {
-                            $product_info = Product::find( $product->product_id );
+                            $product_info = Product::find($product->product_id);
                             $pquantity = $product_info->quantity - $product->quantity;
                             $product_info->quantity = $pquantity;
-                            if( $pquantity == 0 ) {
+                            if ($pquantity == 0) {
                                 $product_info->stock_status = 'out_of_stock';
                             }
                             $product_info->save();
-                            
                         }
                     }
 
@@ -240,52 +240,108 @@ class CheckoutController extends Controller
 
                     Payment::create($pay_ins);
 
+                    /**** order history */
+                    $his['order_id'] = $order_info->id;
+                    $his['action'] = 'Order Placed';
+                    $his['description'] = 'Order has been placed successfully';
+                    OrderHistory::create($his);
+
                     /****
                      * 1.send email for order placed
                      * 2.send sms for notification
                      */
+                    #generate invoice
+                    $globalInfo = GlobalSettings::first();
+                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+                    Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
+                    #send mail
+                    $emailTemplate = EmailTemplate::select('email_templates.*')
+                        ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+                        ->where('sub_categories.slug', 'new-order')->first();
 
+                    $globalInfo = GlobalSettings::first();
+
+                    $extract = array(
+                        'name' => $order_info->billing_name,
+                        'regards' => $globalInfo->site_name,
+                        'company_website' => '',
+                        'company_mobile_no' => $globalInfo->site_mobile_no,
+                        'company_address' => $globalInfo->address,
+                        'dynamic_content' => '',
+                        'order_id' => $order_info->order_no
+                    );
+                    $templateMessage = $emailTemplate->message;
+                    $templateMessage = str_replace("{", "", addslashes($templateMessage));
+                    $templateMessage = str_replace("}", "", $templateMessage);
+                    extract($extract);
+                    eval("\$templateMessage = \"$templateMessage\";");
+
+                    $title = $emailTemplate->title;
+                    $title = str_replace("{", "", addslashes($title));
+                    $title = str_replace("}", "", $title);
+                    eval("\$title = \"$title\";");
+
+                    $filePath = 'storage/invoice_order/'.$order_info->order_no.'.pdf';
+                    $send_mail = new OrderMail($templateMessage, $title, $filePath);
+                    // return $send_mail->render();
+                    Mail::to($order_info->billing_email)->send($send_mail);
+
+                    #send sms for notification
+                    $sms_params = array(
+                        'name' => $order_info->billing_name,
+                        'order_no' => $order_info->order_no,
+                        'amount' => $order_info->amount,
+                        'payment_through' => 'Razorpay online payment',
+                        'mobile_no' => [$order_info->billing_mobile_no]
+                    );
+                    sendMuseeSms('new_order', $sms_params);
+
+                    #send sms for notification
+                    $sms_params = array(
+                        'company_name' => env('APP_NAME'),
+                        'order_no' => $order_info->order_no,
+                        'reference_no' => '',
+                        'mobile_no' => [$order_info->billing_mobile_no]
+                    );
+                    sendMuseeSms('confirm_order', $sms_params);
                 }
             }
-           
-		} else{	
+        } else {
             $success = false;
             $error_message = 'Payment Failed';
 
-            if(isset($request->razor_response['error']) && !empty( $request->razor_response['error'] ) )
-            {
-                
+            if (isset($request->razor_response['error']) && !empty($request->razor_response['error'])) {
+
                 $orderdata = $request->razor_response['error']['metadata'];
                 $razorpay_payment_id = $orderdata['payment_id'];
                 $razorpay_order_id = $orderdata['order_id'];
 
                 $api = new Api($keyId, $keySecret);
 
-                $finalorder = $api->order->fetch( $orderdata['order_id'] );	
+                $finalorder = $api->order->fetch($orderdata['order_id']);
 
                 $order_info = Order::where('payment_response_id', $razorpay_order_id)->first();
 
-                if( $order_info ) {
+                if ($order_info) {
 
                     $order_status    = OrderStatus::where('status', 'published')->where('order', 3)->first();
 
-                    $order_info->status = 'cancelled';
+                    $order_info->status = 'payment_pending';
                     $order_info->order_status_id = $order_status->id;
 
                     $order_info->save();
-                
-                    $order_items = OrderProduct::where('order_id', $order_info->id )->get();
 
-                    if( isset( $order_items ) && !empty( $order_items ) ) {
+                    $order_items = OrderProduct::where('order_id', $order_info->id)->get();
+
+                    if (isset($order_items) && !empty($order_items)) {
                         foreach ($order_items as $product) {
-                            $product_info = Product::find( $product->id );
-                            $pquantity = $product_info->quantity- $product->quantity;
+                            $product_info = Product::find($product->id);
+                            $pquantity = $product_info->quantity - $product->quantity;
                             $product_info->quantity = $pquantity;
-                            if( $pquantity == 0 ) {
+                            if ($pquantity == 0) {
                                 $product_info->stock_status = 'out_of_stock';
                             }
                             $product_info->save();
-                            
                         }
                     }
 
@@ -302,11 +358,16 @@ class CheckoutController extends Controller
                     $error_message = $request->razor_response['error']['description'];
 
                     Payment::create($pay_ins);
-                }
-                
-            }					
-		}
 
-        return  array( 'success' => $success, 'message' => $error_message );
+                    // /**** order history */
+                    // $his['order_id'] = $order_info->id;
+                    // $his['action'] = 'Order Placed';
+                    // $his['description'] = 'Order has been placed successfully';
+                    // OrderHistory::create($his);
+                }
+            }
+        }
+
+        return  array('success' => $success, 'message' => $error_message);
     }
 }

@@ -131,6 +131,14 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/address/delete', [App\Http\Controllers\CustomerController::class, 'addressDelete'])->name('customer.delete')->middleware(['checkAccess:delete']);
     });
 
+    Route::prefix('order')->group(function(){
+        Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('order');
+        Route::post('/view', [App\Http\Controllers\OrderController::class, 'orderView'])->name('order.view');
+        Route::post('/open/orderStatus/modal', [App\Http\Controllers\OrderController::class, 'openOrderStatusModal'])->name('order.status.modal');
+        Route::post('/change/order/status', [App\Http\Controllers\OrderController::class, 'changeOrderStatus'])->name('order.change.status');
+
+    });
+
     Route::prefix('reports')->middleware(['checkAccess:visible'])->group(function(){
         Route::prefix('products')->group(function(){
             Route::get('/list', [App\Http\Controllers\ReportProductController::class, 'index'])->name('reports.products.list');

@@ -67,7 +67,7 @@
             <td colspan="2">
                 <table class="no-border" style="width: 100%">
                     <tr>
-                        <td class="w-30"> <span><img src="{{ public_path('assets/logo/logo.png') }}" alt=""
+                        <td class="w-30"> <span><img src="{{ asset('assets/logo/logo.png') }}" alt=""
                                     height="100"></span> </td>
                         <td class="w-30">
                             <h3> {{ $globalInfo->site_name }} </h3>

@@ -7,22 +7,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TestMail extends Mailable
+class OrderMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public $data;
     public $title;
+    public $filePath;
 
-    public function __construct($data, $title)
+    public function __construct($data, $title, $filePath)
     {
         $this->data = $data;
         $this->title = $title;
+        $this->filePath = $filePath;
     }
 
     /**
@@ -34,7 +31,7 @@ class TestMail extends Mailable
     {
         return $this->view('email.testEmail', [
             "data" => $this->data
-        ])->subject($this->title)->attach( public_path('storage/invoice_order/MM-ORD-000005.pdf'));
+        ])->subject($this->title)->attach( public_path($this->filePath));
         // return $this->markdown('email.testEmail');
     }
 }
