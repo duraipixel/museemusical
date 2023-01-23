@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    @include('platform.layouts._head')
+	@include('platform.layouts._head')
+	<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+	<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 	<!--end::Head-->
 	<!--begin::Body-->
 	<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
@@ -127,8 +129,6 @@
 		<!--begin::Javascript-->
 		<script>var hostUrl = "{{ asset('assets/index.html') }}";</script>
 		<!--begin::Global Javascript Bundle(used by all pages)-->
-		<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-		<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 		@include('platform.layouts.parts.common._script')
 		<!--end::Global Javascript Bundle-->
         @yield('add_on_script')
