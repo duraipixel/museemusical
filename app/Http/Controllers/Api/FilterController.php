@@ -266,14 +266,18 @@ class FilterController extends Controller
         $pro['feature_information']     = $items->feature_information;
         $pro['specification']           = $items->specification;
         $pro['brochure_upload']         = $items->brochure_upload;
-        $pro['gallery']                 = $items->productImages;
+        // $pro['gallery']                 = $items->productImages;
 
-        // $attributes = [];
-        // if( isset( $items->productAttributes ) && !empty( $items->productAttributes ) ) {
-        //     foreach ( $items->productAttributes as $att) {
+        if( isset( $items->productImages ) && !empty( $items->productImages ) ) {
+            foreach ( $items->productImages as $att) {
+
+                $gallery_url            = Storage::url($att->gallery_path);
+                $path                   = asset($gallery_url);
+                                
+                $pro['gallery'][] = $path;
                 
-        //     }
-        // }
+            }
+        }
 
         $pro['attributes']              = $items->productAttributes;
         $related_arr                    = [];

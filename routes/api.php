@@ -48,5 +48,8 @@ Route::middleware(['client'])->group(function(){
 
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
 
+    Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
+    Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
+
 });
 

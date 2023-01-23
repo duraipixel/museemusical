@@ -87,7 +87,7 @@
     
 @endsection
 @section('add_on_script')
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
 <script>
     @if(isset( $info->id) && !empty( $info->id))
     addVariationRow('{{ $info->id }}');
@@ -464,6 +464,9 @@ $(document).ready(function() {
     $(document).ready(function() {
         $('#related_product').select2();
         $('#cross_selling_product').select2();
+        $("body").on("click", ".removeUrlRow", function () {
+            $(this).parents(".childUrlRow").remove();
+        })
     });
 
 
@@ -472,9 +475,7 @@ $(document).ready(function() {
         $("#child-url").clone().appendTo("#formRepeaterUrl").find("input[type='text']").val("");                
     }
 
-    $("body").on("click", ".removeUrlRow", function () {
-        $(this).parents(".childUrlRow").remove();
-    })
+   
 
 </script>
 <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>

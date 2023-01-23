@@ -92,7 +92,7 @@
 <!--end::Variations-->
 
 <script>
-    $("body").on("click", ".removeUrlRow", function () {
-        $(this).parents(".childUrlRow").remove();
-    })
+    // $("body").on("click", ".removeUrlRow", function () {
+    //     $(this).parents(".childUrlRow").remove();
+    // })
 </script>

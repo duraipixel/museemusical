@@ -135,4 +135,50 @@ class CustomerController extends Controller
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
         return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address);
     }
+
+    public function updateProfile(Request $request)
+    {
+
+        $customer_id = $request->customer_id;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
+        $email = $request->email;
+        $mobile_no = $request->mobile_no;
+
+        $customerInfo = Customer::find( $customer_id );
+        $customerInfo->first_name = $first_name;
+        $customerInfo->last_name = $last_name;
+        $customerInfo->email = $email;
+        $customerInfo->mobile_no = $mobile_no;
+        $customerInfo->update();
+        return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success' );
+
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        $customer_id = $request->customer_id;
+        $current_password = $request->current_password;
+        $newPassword = $request->newPassword;
+
+        $customerInfo = Customer::find($customer_id);
+        if( isset( $customerInfo ) && !empty( $customerInfo ) ) {
+            
+            if (Hash::check($current_password, $customerInfo->password)) {
+                $error = 0;
+
+                $customerInfo->password = Hash::make($newPassword);
+                $customerInfo->update();
+                
+                $message = 'Password changed successfully';
+            } else {
+                $error = 1;
+                $message = 'Current password is not match';
+            }
+        }
+        
+        return array('error' => $error, 'message' => $message );
+        
+    }
 }
