@@ -11,6 +11,7 @@ use App\Http\Resources\ProductCollectionResource;
 use App\Http\Resources\TestimonialResource;
 use App\Models\Banner;
 use App\Models\Master\Brands;
+use App\Models\Master\State;
 use App\Models\Offers\Coupons;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCollection;
@@ -160,6 +161,11 @@ class CommonController extends Controller
         RecentView::create($ins);
 
         return true;
+    }
+
+    public function getSates()
+    {
+        return State::select('state_name', 'id', 'state_code')->where('status', 1)->get();
     }
 
 }

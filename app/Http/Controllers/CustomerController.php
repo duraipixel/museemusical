@@ -148,10 +148,11 @@ class CustomerController extends Controller
         return response()->json(['error' => $error, 'message' => $message]);
     }
 
-    public function delete(Request $request)
+    public function customerDelete(Request $request)
     {
         $id         = $request->id;
         $info       = Customer::find($id);
+        
         $info->delete();
         return response()->json(['message'=>"Successfully deleted customer!",'status'=>1]);
     }

@@ -27,6 +27,7 @@ Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
+Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
 
 Route::post('/register/customer', [App\Http\Controllers\Api\CustomerController::class, 'registerCustomer']);
 Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLogin']);
@@ -42,6 +43,9 @@ Route::middleware(['client'])->group(function(){
 
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
     Route::post('/add/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'addCustomerAddress']);
+    Route::post('/update/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'updateCustomerAddress']);
+    Route::post('/get/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddress']);
+    Route::post('/delete/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomerAddress']);
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
     Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);

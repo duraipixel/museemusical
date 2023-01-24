@@ -22,6 +22,7 @@ class CustomerAddress extends Model
         'country',
         'post_code',
         'state',
+        'stateid',
         'city',
         'is_default',
     ];
