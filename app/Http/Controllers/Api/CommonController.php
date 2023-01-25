@@ -127,7 +127,7 @@ class CommonController extends Controller
                         $imagePath              = $productInfo->base_image;
 
                         if(!Storage::exists( $imagePath)) {
-                            $path               = asset('userImage/no_Image.jpg');
+                            $path               = asset('assets/logo/no-img-1.jpg');
                         } else {
                             $url                = Storage::url($imagePath);
                             $path               = asset($url);
@@ -167,5 +167,23 @@ class CommonController extends Controller
     {
         return State::select('state_name', 'id', 'state_code')->where('status', 1)->get();
     }
+
+    public function getMetaInfo(Request $request)
+    {
+        $page = $request->page;
+
+        switch ($page) {
+            case 'profile':
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        
+    }
+
+    
 
 }

@@ -56,4 +56,9 @@ class Order extends Model
         return $this->hasOne(Customer::class,'id', 'customer_id');
     }
 
+    public function tracking()
+    {
+        return $this->hasMany(OrderHistory::class, 'order_id', 'id');
+    }
+
 }

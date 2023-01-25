@@ -28,6 +28,10 @@ Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterContr
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
+Route::post('/get/meta', [App\Http\Controllers\Api\CommonController::class, 'getMetaInfo']);
+Route::post('/get/global/search', [App\Http\Controllers\Api\FilterController::class, 'globalSearch']);
+Route::post('/get/other/category', [App\Http\Controllers\Api\FilterController::class, 'getOtherCategories']);
+Route::post('/get/dynamic/filter/category', [App\Http\Controllers\Api\FilterController::class, 'getDynamicFilterCategory']);
 
 Route::post('/register/customer', [App\Http\Controllers\Api\CustomerController::class, 'registerCustomer']);
 Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLogin']);
@@ -54,6 +58,9 @@ Route::middleware(['client'])->group(function(){
 
     Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
+
+    Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);
+    Route::post('/get/recent/view', [App\Http\Controllers\Api\CollectionController::class, 'getRecentViews']);
 
 });
 

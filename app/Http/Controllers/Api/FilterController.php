@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category\SubCategory;
 use App\Models\Product\Product;
+use App\Models\Product\ProductAttributeSet;
+use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductCollection;
+use App\Models\Product\ProductWithAttributeSet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -127,7 +130,7 @@ class FilterController extends Controller
             })
             ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
                 $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id' );
+                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
             })
             ->count();
@@ -155,16 +158,16 @@ class FilterController extends Controller
             })
             ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
                 $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id' );
+                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
             })
-            ->when($sort == 'price_high_to_low', function($q){
+            ->when($sort == 'price_high_to_low', function ($q) {
                 $q->orderBy('products.price', 'desc');
             })
-            ->when($sort == 'price_low_to_high', function($q){
+            ->when($sort == 'price_low_to_high', function ($q) {
                 $q->orderBy('products.price', 'asc');
             })
-            ->when($sort == 'is_featured', function($q){
+            ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
             ->skip(0)->take($take_limit)
@@ -176,7 +179,7 @@ class FilterController extends Controller
 
                 $category               = $items->productCategory;
                 $salePrices             = getProductPrice($items);
-                
+
                 $pro                    = [];
                 $pro['id']              = $items->id;
                 $pro['product_name']    = $items->product_name;
@@ -210,7 +213,7 @@ class FilterController extends Controller
             }
         }
 
-        if( $total < $limit  ) {
+        if ($total < $limit) {
             $to = $total;
         }
 
@@ -219,13 +222,13 @@ class FilterController extends Controller
 
     public function getProductBySlug(Request $request)
     {
-        
+
         $product_url = $request->product_url;
         $items = Product::where('product_url', $product_url)->first();
 
         $category               = $items->productCategory;
         $salePrices             = getProductPrice($items);
-        
+
         $pro                    = [];
         $pro['id']              = $items->id;
         $pro['product_name']    = $items->product_name;
@@ -268,26 +271,25 @@ class FilterController extends Controller
         $pro['brochure_upload']         = $items->brochure_upload;
         // $pro['gallery']                 = $items->productImages;
 
-        if( isset( $items->productImages ) && !empty( $items->productImages ) ) {
-            foreach ( $items->productImages as $att) {
+        if (isset($items->productImages) && !empty($items->productImages)) {
+            foreach ($items->productImages as $att) {
 
                 $gallery_url            = Storage::url($att->gallery_path);
                 $path                   = asset($gallery_url);
-                                
+
                 $pro['gallery'][] = $path;
-                
             }
         }
 
         $pro['attributes']              = $items->productAttributes;
         $related_arr                    = [];
-        if( isset( $items->productRelated ) && !empty( $items->productRelated ) ) {
-            foreach ($items->productRelated as $related ) {
-                
+        if (isset($items->productRelated) && !empty($items->productRelated)) {
+            foreach ($items->productRelated as $related) {
+
                 $productInfo            = Product::find($related->to_product_id);
                 $category               = $productInfo->productCategory;
                 $salePrices1            = getProductPrice($productInfo);
-                
+
                 $tmp2                    = [];
                 $tmp2['id']              = $productInfo->id;
                 $tmp2['product_name']    = $productInfo->product_name;
@@ -308,7 +310,7 @@ class FilterController extends Controller
                 $imagePath              = $productInfo->base_image;
 
                 if (!Storage::exists($imagePath)) {
-                    $path               = asset('userImage/no_Image.jpg');
+                    $path               = asset('assets/logo/no-img-1.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);
@@ -319,8 +321,167 @@ class FilterController extends Controller
             }
         }
         $pro['related_products']    = $related_arr;
-        
-        return $pro;
+        $pro['meta'] = $items->productMeta;
 
+        return $pro;
+    }
+
+    public function globalSearch(Request $request)
+    {
+        $search_type = $request->search_type;
+        $query = $request->search_field;
+
+        $searchData = [];
+        if( !empty( $query ) ) {
+            
+            switch ($search_type) {
+                case 'product':
+                    $productInfo = Product::where(function($qr) use($query){
+                        $qr->where('product_name', 'like', "%{$query}%")
+                        ->orWhere('sku', 'like', "%{$query}%");
+                    })->where('status', 'published')->get();
+                    
+                    if (isset($productInfo) && !empty($productInfo) && count( $productInfo ) > 0 ) {
+                        
+                        foreach ($productInfo as $items) {
+                            
+                            $category               = $items->productCategory;
+                            $salePrices             = getProductPrice($items);
+    
+                            $pro                    = [];
+                            $pro['has_data']        = 'yes';
+                            $pro['id']              = $items->id;
+                            $pro['product_name']    = $items->product_name;
+                            $pro['category_name']   = $category->name ?? '';
+                            $pro['category_slug']   = $category->slug ?? '';
+                            $pro['parent_category_name']   = $category->parent->name ?? '';
+                            $pro['parent_category_slug']   = $category->parent->slug ?? '';
+                            $pro['brand_name']      = $items->productBrand->brand_name ?? '';
+                            $pro['hsn_code']        = $items->hsn_code;
+                            $pro['product_url']     = $items->product_url;
+                            $pro['sku']             = $items->sku;
+                            $pro['has_video_shopping'] = $items->has_video_shopping;
+                            $pro['stock_status']    = $items->stock_status;
+                            $pro['is_featured']     = $items->is_featured;
+                            $pro['is_best_selling'] = $items->is_best_selling;
+                            $pro['is_new']          = $items->is_new;
+                            $pro['sale_prices']     = $salePrices;
+                            $pro['mrp_price']       = $items->price;
+                            $pro['videolinks']      = $items->productVideoLinks;
+                            $pro['links']           = $items->productLinks;
+                            $pro['image']           = $items->base_image;
+                            $pro['max_quantity']    = $items->quantity;
+    
+                            $imagePath              = $items->base_image;
+    
+                            if (!Storage::exists($imagePath)) {
+                                $path               = asset('assets/logo/no-img-1.jpg');
+                            } else {
+                                $url                = Storage::url($imagePath);
+                                $path               = asset($url);
+                            }
+    
+                            $pro['image']                   = $path;
+                            $searchData[] = $pro;
+                        }
+                    } else {
+                        $pro = [];
+                        $pro['has_data']        = 'no';
+                        $pro['message']         = 'No record found';
+                        
+                        $searchData[] = $pro;
+                    }
+    
+                    break;
+    
+                case 'category':
+    
+                    break;
+    
+                default:
+                    # code...
+                    break;
+            }
+        }
+        
+        return $searchData;
+    }
+
+    public function getOtherCategories(Request $request)
+    {
+
+        $category       = $request->category;
+
+        $otherCategory   = ProductCategory::select('id', 'name', 'slug')
+                        ->when($category != '', function ($q) use ($category) {
+                            $q->where('slug', '!=', $category);
+                        })
+                        ->where(['status' => 'published', 'parent_id' => 0])
+                        ->orderBy('order_by', 'asc')
+                        ->get();
+        $data = [];
+        if( isset( $otherCategory ) && !empty( $otherCategory ) ) {
+            foreach ($otherCategory as $item) {
+
+                $tmp = [];
+                $tmp['id'] = $item->id;
+                $tmp['name'] = $item->name;
+                $tmp['slug'] = $item->slug;
+                $tmp['description'] = $item->description;
+
+                $imagePath              = $item->image;
+    
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('assets/logo/no-img-1.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
+                }
+
+                $tmp['image'] = $path;
+
+                $data[] = $tmp;
+
+            }
+        } 
+        return $data;
+        
+    }
+
+    public function getDynamicFilterCategory(Request $request)
+    {
+        $category_slug = $request->category_slug;
+
+        $productCategory = ProductCategory::where('slug', $category_slug)->first();
+
+        $data = [];
+        if( isset( $productCategory ) && !empty( $productCategory ) ) {
+            $attributeInfo = ProductAttributeSet::where('product_category_id', $productCategory->id)->where('is_searchable', 1)->get();
+
+            if( isset( $attributeInfo ) && !empty( $attributeInfo ) ) {
+                foreach ( $attributeInfo as $item ) {
+                    $tmp = [];
+                    $tmp['filter_title'] = $item->title;
+                    $tmp['filter_slug'] = $item->slug;
+                    $tmp['filter_id'] = $item->id;
+                    //get filter attributes
+                    $filterData = ProductWithAttributeSet::select('product_categories.name as category_name', 'product_categories.slug as category_slug', 'products.product_name', 'product_with_attribute_sets.*')
+                                    ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_with_attribute_sets.product_attribute_set_id')
+                                    ->join('product_categories', 'product_categories.id', '=', 'product_attribute_sets.product_category_id')
+                                    ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+                                    ->join('product_categories procat', function($join){
+                                        $join->on('proCat.id', '=', 'products.category_id');
+                                        $join->orOn('proCat.parent_id', '=', 'mm_products.category_id');
+                                    })
+                                    ->where('product_categories.slug', $category_slug )
+                                    ->get();
+
+                    
+                                    
+                }
+            }
+
+            
+        }
     }
 }
