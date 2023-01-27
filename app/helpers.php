@@ -139,7 +139,7 @@ if (!function_exists('getCustomerNo')) {
         $countNumber    = '000001';
         $customer_no    = 'MM' . $countNumber;
 
-        $checkCustomer  = Customer::where('customer_no', $customer_no)->orderBy('id', 'desc')->first();
+        $checkCustomer  = Customer::orderBy('id', 'desc')->first();
 
         if (isset($checkCustomer) && !empty($checkCustomer)) {
             $old_no = $checkCustomer->customer_no;
