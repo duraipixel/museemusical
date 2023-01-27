@@ -32,9 +32,13 @@ class TestMail extends Mailable
      */
     public function build()
     {
+        // return $this->view('email.testEmail', [
+        //     "data" => $this->data
+        // ])->subject($this->title)->attach( public_path('storage/invoice_order/MM-ORD-000005.pdf'));
+
         return $this->view('email.testEmail', [
             "data" => $this->data
-        ])->subject($this->title)->attach( public_path('storage/invoice_order/MM-ORD-000005.pdf'));
+        ])->subject($this->title);
         // return $this->markdown('email.testEmail');
     }
 }
