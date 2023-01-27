@@ -82,12 +82,18 @@ class FilterController extends Controller
         $filter_availability    = $request->availability;
         $filter_brand           = $request->brand;
         $filter_discount        = $request->discount;
+        $filter_attribute       = $request->attributes_category;
         $sort                   = $request->sort;
-
+        
         $filter_availability_array = [];
+        $filter_attribute_array = [];
         $filter_brand_array = [];
         $filter_discount_array = [];
         $filter_booking     = $request->booking;
+        if (isset($filter_attribute) && !empty($filter_attribute)) {
+            
+            $filter_attribute_array = explode("-", $filter_attribute);
+        }
         if (isset($filter_availability) && !empty($filter_availability)) {
             $filter_availability_array = explode("-", $filter_availability);
         }
@@ -97,6 +103,16 @@ class FilterController extends Controller
 
         if (isset($filter_discount) && !empty($filter_discount)) {
             $filter_discount_array     = explode("_", $filter_discount);
+        }
+
+        $productAttrNames = [];
+        if( isset( $filter_attribute_array ) && !empty( $filter_attribute_array ) ) {
+            $productWithData = ProductWithAttributeSet::whereIn('id', $filter_attribute_array)->get();
+            if( isset( $productWithData ) && !empty( $productWithData ) ) {
+                foreach ( $productWithData as $attr ) {
+                    $productAttrNames[] = $attr->title;
+                }
+            }
         }
 
         $limit = 6;
@@ -133,6 +149,11 @@ class FilterController extends Controller
                 $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
             })
+            ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
+                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+                return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
+            })
+            ->groupBy('products.id')
             ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
@@ -161,6 +182,10 @@ class FilterController extends Controller
                 $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
             })
+            ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
+                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+                return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
+            })
             ->when($sort == 'price_high_to_low', function ($q) {
                 $q->orderBy('products.price', 'desc');
             })
@@ -170,6 +195,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
 
@@ -451,35 +477,51 @@ class FilterController extends Controller
     public function getDynamicFilterCategory(Request $request)
     {
         $category_slug = $request->category_slug;
+        // $category_slug = 'keyboard-keyboard';
 
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
 
+        $whereIn = [];
+        $whereIn[] = $productCategory->id;
+        if( isset( $productCategory->childCategory ) && !empty( $productCategory->childCategory ) ) {
+            foreach ( $productCategory->childCategory  as $items ) {
+                $whereIn[] = $items->id; 
+            }
+        }
+        
         $data = [];
         if( isset( $productCategory ) && !empty( $productCategory ) ) {
-            $attributeInfo = ProductAttributeSet::where('product_category_id', $productCategory->id)->where('is_searchable', 1)->get();
 
-            if( isset( $attributeInfo ) && !empty( $attributeInfo ) ) {
-                foreach ( $attributeInfo as $item ) {
+            // $attributeInfo = ProductAttributeSet::whereIn('product_category_id', $whereIn)->where('is_searchable', '1')->get();
+
+            $filterData = ProductAttributeSet::select('product_attribute_sets.*')
+                            ->join('product_categories', 'product_categories.id', '=', 'product_attribute_sets.product_category_id')
+                            ->join('products', function($join){
+                                $join->on('products.category_id', '=', 'product_categories.id');
+                                $join->orOn('products.category_id', '=', 'product_categories.parent_id');
+                            })
+                            // ->join('product_with_attribute_sets', 'product_attribute_sets.id', '=', 'product_with_attribute_sets.product_attribute_set_id')
+                            ->where('product_categories.slug', $category_slug )
+                            // ->where('product_with_attribute_sets.status','published')
+                            ->groupBy('product_attribute_sets.id')
+                            ->get();
+            
+            
+            
+            if( isset( $filterData ) && !empty( $filterData ) ) {
+                foreach ( $filterData as $item ) {
+                                       
                     $tmp = [];
                     $tmp['filter_title'] = $item->title;
                     $tmp['filter_slug'] = $item->slug;
                     $tmp['filter_id'] = $item->id;
+                    $tmp['child'] = $item->attributesFieldsByTitle ?? [];
+                    $data[] = $tmp;
                     //get filter attributes
-                    $filterData = ProductWithAttributeSet::select('product_categories.name as category_name', 'product_categories.slug as category_slug', 'products.product_name', 'product_with_attribute_sets.*')
-                                    ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_with_attribute_sets.product_attribute_set_id')
-                                    ->join('product_categories', 'product_categories.id', '=', 'product_attribute_sets.product_category_id')
-                                    ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                                    ->join('product_categories procat', function($join){
-                                        $join->on('proCat.id', '=', 'products.category_id');
-                                        $join->orOn('proCat.parent_id', '=', 'mm_products.category_id');
-                                    })
-                                    ->where('product_categories.slug', $category_slug )
-                                    ->get();
-
-                    
                                     
                 }
             }
+            return $data;
 
             
         }

@@ -82,4 +82,90 @@ class OrderController extends Controller
 
         return $orders;
     }
+
+    public function getOrderByOrderNo(Request $request)
+    {
+        $customer_id        = $request->customer_id ?? 1;
+        $order_no           = $request->order_no;
+        $info           = Order::where('order_no', $order_no)->first();
+        $orders = [];
+        if( isset( $info ) && !empty( $info ) ) {
+           
+            $tmp['id'] = $info->id;
+            $tmp['order_no'] = $info->order_no;
+            $tmp['shipping_type'] = $info->shipping_type;
+            $tmp['amount'] = $info->amount;
+            $tmp['tax_percentage'] = $info->tax_percentage;
+            $tmp['tax_amount'] = $info->tax_amount;
+            $tmp['shipping_amount'] = $info->shipping_amount;
+            $tmp['discount_amount'] = $info->discount_amount;
+            $tmp['coupon_amount'] = $info->coupon_amount;
+            $tmp['coupon_code'] = $info->coupon_code;
+            $tmp['sub_total'] = $info->sub_total;
+            $tmp['billing_name'] = $info->billing_name;
+            $tmp['billing_email'] = $info->billing_email;
+            $tmp['billing_mobile_no'] = $info->billing_mobile_no;
+            $tmp['billing_address_line1'] = $info->billing_address_line1;
+            $tmp['billing_address_line2'] = $info->billing_address_line2;
+            $tmp['billing_landmark'] = $info->billing_landmark;
+            $tmp['billing_country'] = $info->billing_country;
+            $tmp['billing_post_code'] = $info->billing_post_code;
+            $tmp['billing_state'] = $info->billing_state;
+            $tmp['billing_city'] = $info->billing_city;
+            $tmp['status'] = $info->status;
+            $tmp['invoice_file'] = asset('storage/invoice_order/'.$info->order_no.'.pdf');
+            $tmp['order_date'] = date( 'd M Y H:i A', strtotime( $info->created_at ));
+            $itemArray = [];
+            if( isset( $info->orderItems ) && !empty( $info->orderItems ) ) {
+                foreach ($info->orderItems as $pro) {
+
+                    $tmp1 = [];
+                    $tmp1['product_name'] = $pro->product_name;
+                    $tmp1['hsn_code'] = $pro->hsn_code;
+                    $tmp1['sku'] = $pro->sku;
+                    $tmp1['quantity'] = $pro->quantity;
+                    $tmp1['price'] = $pro->price;
+                    $tmp1['tax_amount'] = $pro->tax_amount;
+                    $tmp1['tax_percentage'] = $pro->tax_percentage;
+                    $tmp1['quantity'] = $pro->quantity;
+                    $tmp1['sub_total'] = $pro->sub_total;
+
+                    $imagePath              = $pro->products->base_image;
+
+                    if (!Storage::exists($imagePath)) {
+                        $path               = asset('assets/logo/no-img-1.jpg');
+                    } else {
+                        $url                = Storage::url($imagePath);
+                        $path               = asset($url);
+                    }
+                    
+                    $tmp1['image']                   = $path;
+
+                    $itemArray[] = $tmp1;
+                }
+            }
+            $tmp['items'] = $itemArray;
+            #customers
+            $tmp['customer'] = $info->customer;
+            $tracking = [];
+            if( isset( $info->tracking ) && !empty( $info->tracking ) ) {
+                foreach ( $info->tracking as $track ) {
+                    $tra = [];
+                    $tra['id'] = $track->id;
+                    $tra['action'] = $track->action;
+                    $tra['description'] = $track->description;
+                    $tra['order_id'] = $track->order_id;
+                    $tra['description'] = $track->description;
+                    $tra['created_at'] = date('H:i A - d M Y', strtotime($track->created_at) );
+
+                    $tracking[] = $tra;
+                }
+            }
+            $tmp['tracking'] = $tracking;
+
+            $orders = $tmp;
+        }
+
+        return $orders;
+    }
 }
