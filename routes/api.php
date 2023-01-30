@@ -35,6 +35,9 @@ Route::post('/get/dynamic/filter/category', [App\Http\Controllers\Api\FilterCont
 
 Route::post('/register/customer', [App\Http\Controllers\Api\CustomerController::class, 'registerCustomer']);
 Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLogin']);
+Route::post('/send/password/link', [App\Http\Controllers\Api\CustomerController::class, 'sendPasswordLink']);
+Route::post('/reset/password', [App\Http\Controllers\Api\CustomerController::class, 'resetPasswordLink']);
+Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::class, 'checkValidToken']);
 
 Route::middleware(['client'])->group(function(){
     

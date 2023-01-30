@@ -122,20 +122,22 @@ class OrderController extends Controller
         if ($validator->passes()) {
 
             $info = Order::find($id);
-            $info->order_status_id;
-            $info->update();
-
+            $info->order_status_id = $request->order_status_id;
+            
             switch ($request->order_status_id) {
                 case '1':
                     $action = 'Order Initiated';
+                    $info->status = 'pending';
                     break;
 
                 case '2':
                     $action = 'Order Placed';
+                    $info->status = 'placed';
                     break;
                 
                 case '3':
                     $action = 'Order Cancelled';
+                    $info->status = 'cancelled';
                     break;
                 
                 case '4':
@@ -187,10 +189,13 @@ class OrderController extends Controller
                     );
                     sendMuseeSms('shipping', $sms_params);
 
+                    $info->status = 'shipped';
+
                     break;
                 
                 case '5':
                     $action = 'Order Delivered';
+                    $info->status = 'delivered';
                     break;
                 
                 default:
@@ -198,6 +203,9 @@ class OrderController extends Controller
                     break;
             }
             
+
+            $info->update();
+
             $ins['order_id']     = $request->id;
             $ins['action']       = $action;
             $ins['description']  = $request->description;

@@ -120,7 +120,7 @@ class CustomerController extends Controller
 
     public function addCustomerAddress(Request $request)
     {
-        if( $request->state ) {
+        if ($request->state) {
             $state_info = State::find($request->state);
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
@@ -191,7 +191,7 @@ class CustomerController extends Controller
 
     public function deleteCustomerAddress(Request $request)
     {
-        
+
         $address_id = $request->address_id;
         $addressInfo = CustomerAddress::find($address_id);
         $addressInfo->delete();
@@ -202,7 +202,7 @@ class CustomerController extends Controller
     public function updateCustomerAddress(Request $request)
     {
         $address_id = $request->address_id;
-        if( $request->stateid ) {
+        if ($request->stateid) {
             $state_info = State::find($request->stateid);
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
@@ -216,9 +216,9 @@ class CustomerController extends Controller
         $ins['address_line1'] = $request->address_line;
         $ins['country'] = 'india';
         $ins['post_code'] = $request->post_code;
-        
+
         $ins['city'] = $request->city;
-        
+
         CustomerAddress::updateOrCreate(['id' => $address_id], $ins);
 
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
@@ -241,5 +241,89 @@ class CustomerController extends Controller
         $res['state'] = $addressInfo->state ?? '';
         $res['stateid'] = $addressInfo->stateid ?? '';
         return $res;
+    }
+
+    public function sendPasswordLink(Request $request)
+    {
+        $email = $request->email;
+        $token_id = base64_encode($email);
+
+        $customer_info = Customer::where('email', $email)->first();
+
+        if (isset($customer_info) && !empty($customer_info)) {
+            $error = 0;
+            $message = '';
+            $customer_info->forgot_token = $token_id;
+            $customer_info->update();
+            /** send email for new customer */
+            $emailTemplate = EmailTemplate::select('email_templates.*')
+                ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+                ->where('sub_categories.slug', 'forgot-password')->first();
+
+            $globalInfo = GlobalSettings::first();
+            $link = 'http://192.168.0.35:3000/reset-password/' . $token_id;
+            $extract = array(
+                'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
+                'link' => '<a href="' . $link . '"> Reset Password </a>',
+                'regards' => $globalInfo->site_name,
+                'company_website' => '',
+                'company_mobile_no' => $globalInfo->site_mobile_no,
+                'company_address' => $globalInfo->address
+            );
+
+            $templateMessage = $emailTemplate->message;
+            $templateMessage = str_replace("{", "", addslashes($templateMessage));
+            $templateMessage = str_replace("}", "", $templateMessage);
+            extract($extract);
+            eval("\$templateMessage = \"$templateMessage\";");
+
+            $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
+            // return $send_mail->render();
+            Mail::to($request->email)->send($send_mail);
+        } else {
+            $error = 1;
+            $message = 'Email id is not exists';
+        }
+        return array('error' => $error, 'message' => $message);
+    }
+
+    public function resetPasswordLink(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        $password = $request->password;
+
+        $customerInfo = Customer::find($customer_id);
+
+        if (isset($customerInfo) && !empty($customerInfo)) {
+
+            $customerInfo->password = Hash::make($password);
+            $customerInfo->forgot_token = null;
+            $customerInfo->update();
+
+            $error = 0;
+            $message = 'Password has been reset successfully. Please try login';
+
+        } else {
+            $error = 1;
+            $message = 'Customer not found, Please try register';
+        }
+        return array('error' => $error, 'message' => $message );
+    }
+
+    public function checkValidToken(Request $request)
+    {
+        $token_id = $request->token_id;
+        $customerInfo = Customer::where('forgot_token', $token_id)->first();
+
+        if (isset($customerInfo) && !empty($customerInfo)) {
+            $error = 0;
+            $message = 'Token is valid';
+            $data = [$customerInfo];
+        } else {
+            $error = 1;
+            $message = 'Token is invalid';
+            $data = [];
+        }
+        return array('error' => $error, 'message' => $message, 'data' => $data);
     }
 }

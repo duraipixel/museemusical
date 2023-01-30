@@ -113,7 +113,7 @@
                                     <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
                                         style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
                                         @if ($info->profile_image ?? '')
-                                        @php 
+                                        @php
                                             $path = Storage::url($info->profile_image,'public')
                                         @endphp
                                             <div class="image-input-wrapper w-125px h-125px manual-image"

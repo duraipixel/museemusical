@@ -23,6 +23,7 @@ class Customer extends Authenticatable
         'email_verified_at',
         'password',
         'remember_token',
+        'forgot_token',
         'dob',
         'profile_image',
         'address',
