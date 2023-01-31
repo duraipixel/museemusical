@@ -62,6 +62,10 @@ class DashboardRepository
                     ->join('products', 'products.id', '=', 'order_products.product_id')
                     ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
                     ->where('orders.status', '!=', 'pending')
+                    ->when( $fromDate != '', function( $q ) use($fromDate, $toDate){
+                        $q->whereDate('orders.created_at', '>=', $fromDate);
+                        $q->whereDate('orders.created_at', '<=', $toDate);
+                    })
                     ->groupBy('product_categories.id')
                     ->orderBy('total_amount', 'desc')
                     ->get();
@@ -83,6 +87,10 @@ class DashboardRepository
                     ->join('orders', 'orders.id', '=', 'order_products.order_id')
                     ->join('products', 'products.id', '=', 'order_products.product_id')
                     ->where('orders.status', '!=', 'pending')
+                    ->when( $fromDate != '', function( $q ) use($fromDate, $toDate){
+                        $q->whereDate('orders.created_at', '>=', $fromDate);
+                        $q->whereDate('orders.created_at', '<=', $toDate);
+                    })
                     ->groupBy('products.id')
                     ->orderBy('total_amount', 'desc')
                     ->get();

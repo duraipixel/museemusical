@@ -26,13 +26,17 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                                <th> Product </th>
-                                <th> SKU </th>
-                                <th> Category </th>
-                                <th> Brand  </th>
-                                <th> Price </th>
-                                <th> Video Booking </th>
-                                <th> Status </th>
+                                <th> Order Date </th>
+                                <th> Order No</th>
+                                <th> Billing Info</th>
+                                <th> Order Amount </th>
+                                <th> Tax Amount </th>
+                                <th> Shipping Amount </th>
+                                <th> Coupon Amount </th>
+                                <th> Discount Amount </th>
+                                <th> Product SubTotal </th>
+                                <th> Order Status</th>
+                                <th> Payment Status</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -55,41 +59,57 @@
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('products') }}",
+                "url": "{{ route('reports.sale') }}",
                 "data": function(d) {
                     return $('form#search-form').serialize() + "&" + $.param(d);
                 }
             },
             columns: [
                 {
-                    data: 'product_name',
-                    name: 'product_name',
+                    data: 'created_at',
+                    name: 'created_at',
                   
                 },
                 {
-                    data: 'sku',
-                    name: 'sku'
+                    data: 'order_no',
+                    name: 'order_no'
                 },
                 {
-                    data: 'category',
-                    name: 'category'
+                    data: 'billing_info',
+                    name: 'billing_info'
                 },
                 {
-                    data: 'brand',
-                    name: 'brand'
+                    data: 'amount',
+                    name: 'amount'
                 },
                
                 {
-                    data: 'price',
-                    name: 'price'
+                    data: 'tax_amount',
+                    name: 'tax_amount'
                 },
                 {
-                    data: 'has_video_shopping',
-                    name: 'has_video_shopping'
+                    data: 'shipping_amount',
+                    name: 'shipping_amount'
                 },
                 {
-                    data: 'status',
-                    name: 'status'
+                    data: 'coupon_amount',
+                    name: 'coupon_amount'
+                },
+                {
+                    data: 'discount_amount',
+                    name: 'discount_amount'
+                },
+                {
+                    data: 'sub_total',
+                    name: 'sub_total'
+                },
+                {
+                    data: 'order_status',
+                    name: 'order_status'
+                },
+                {
+                    data: 'payment_status',
+                    name: 'payment_status'
                 }
                
             ],
@@ -100,7 +120,7 @@
                 }
             },
             "aaSorting": [],
-            "pageLength": 25
+            "pageLength": 50
         });
         $('.dataTables_wrapper').addClass('position-relative');
         $('.dataTables_info').addClass('position-absolute');
@@ -113,14 +133,9 @@
             e.preventDefault();
         });
         $('#search-form').on('reset', function(e) {
-            $('#filter_product_category').val('').trigger('change');
-            $('#filter_brand').val('').trigger('change');
-            $('#filter_label').val('').trigger('change');
-            $('#filter_tags').val('').trigger('change');
-            $('#filter_stock_status').val('').trigger('change');
-            $('#filter_product_status').val('').trigger('change');
+            $('#filter_search_data').val('').trigger('change');
+            $('#date_range').val('').trigger('change');
             $('#filter_product_name').val('');
-            $('#filter_video_booking').val('').trigger('change');
             dtTable.draw();
             e.preventDefault();
         });
@@ -139,14 +154,14 @@
                 xhrFields: {
                     responseType: 'blob',
                 },
-                url: "{{ route('products.export.excel') }}",
+                url: "{{ route('reports.export.excel') }}",
                 type: 'POST',
                 data: $('form#search-form').serialize(),
                 success: function(result, status, xhr) {
 
                     var disposition = xhr.getResponseHeader('content-disposition');
                     var matches = /"([^"]*)"/.exec(disposition);
-                    var filename = (matches != null && matches[1] ? matches[1] : 'products.xlsx');
+                    var filename = (matches != null && matches[1] ? matches[1] : 'salesreport.xlsx');
 
                     // The actual download
                     var blob = new Blob([result], {
@@ -172,12 +187,15 @@
         var input = $("#kt_ecommerce_report_views_daterangepicker");
 
         function cb(start, end) {
-            input.html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+            input.html(start.format("D MMMM, YYYY") + " - " + end.format("D MMMM, YYYY"));
         }
 
         input.daterangepicker({
             startDate: start,
             endDate: end,
+            locale: {
+                format: 'DD/MMM/YYYY'
+            },
             ranges: {
                 "Today": [moment(), moment()],
                 "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],

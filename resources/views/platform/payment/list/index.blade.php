@@ -12,7 +12,6 @@
         .paginate_button {
             padding: 5px 14px;
         }
-
         a.paginate_button.current {
             background: #009EF7;
             color: white;
@@ -26,7 +25,7 @@
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-customer-table-toolbar="base">
                         @if( access()->hasAccess('order', 'filter') )
-                            @include('platform.customer._filter')
+                            @include('platform.payment.list._filter')
                         @endif
                         @include('platform.layouts.parts.common._export_button')
                     </div>
@@ -41,7 +40,6 @@
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Payment Date  </th>
                                 <th> Order No  </th>
-                                <th> Billing Info </th>
                                 <th> Payment Amount </th>
                                 <th> Payment No </th>
                                 <th> Payment Status </th>
@@ -81,10 +79,6 @@
                 {
                     data: 'order_no',
                     name: 'order_no'
-                },
-                {
-                    data: 'billing_info',
-                    name: 'billing_info'
                 },
                 {
                     data: 'amount',
@@ -132,14 +126,13 @@
             e.preventDefault();
         });
 
-        function viewPayment(id) {
-       
+        function viewPayments(id) {
+            
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
             $.ajax({
                 url: "{{ route('payment.view') }}",
                 type: 'POST',
@@ -156,6 +149,7 @@
                     }
                 }
             });
+
         }
         
     </script>

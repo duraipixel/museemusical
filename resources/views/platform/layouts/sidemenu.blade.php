@@ -217,7 +217,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link" href="{{ route('payment') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -243,30 +243,13 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if( request()->routeIs(['reports.sale'])) active @endif" href="{{ route('reports.sale') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Order</span>
+                            <span class="menu-title">Sale Report</span>
                         </a>
                     </div>
-                    <div class="menu-item">
-                        <a class="menu-link" href="#">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title"> Customer </span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a class="menu-link @if( request()->routeIs(['reports.products.list'])) active @endif" href="{{ route('reports.products.list') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title"> Product </span>
-                        </a>
-                    </div>
-                  
                 </div>
             </div>
             @endif

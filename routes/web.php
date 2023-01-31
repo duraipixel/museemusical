@@ -11,6 +11,7 @@ Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoic
 Auth::routes();
 Route::middleware(['auth'])->group(function(){
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::post('/dynamicview', [App\Http\Controllers\HomeController::class, 'dynamicView'])->name('home.view');
     
     Route::prefix('global')->group(function(){
         Route::get('/', [App\Http\Controllers\GlobalSettingController::class, 'index'])->name('global')->middleware(['checkAccess:visible']);
@@ -137,14 +138,19 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/view', [App\Http\Controllers\OrderController::class, 'orderView'])->name('order.view');
         Route::post('/open/orderStatus/modal', [App\Http\Controllers\OrderController::class, 'openOrderStatusModal'])->name('order.status.modal');
         Route::post('/change/order/status', [App\Http\Controllers\OrderController::class, 'changeOrderStatus'])->name('order.change.status');
-
+        Route::post('/export/excel', [App\Http\Controllers\OrderController::class, 'export'])->name('order.export.excel')->middleware(['checkAccess:export']);
     });
 
     Route::prefix('reports')->middleware(['checkAccess:visible'])->group(function(){
-        Route::prefix('products')->group(function(){
-            Route::get('/list', [App\Http\Controllers\ReportProductController::class, 'index'])->name('reports.products.list');
-        });
-    });    
+        Route::get('/sale', [App\Http\Controllers\ReportProductController::class, 'index'])->name('reports.sale');
+        Route::post('/excel/export', [App\Http\Controllers\ReportProductController::class, 'exportExcel'])->name('reports.export.excel');
+    });
+    
+    Route::prefix('payment')->group(function(){
+        Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('payment');
+        Route::post('/view', [App\Http\Controllers\PaymentController::class, 'paymentView'])->name('payment.view');
+        Route::post('/export/excel', [App\Http\Controllers\PaymentController::class, 'export'])->name('payment.export.excel')->middleware(['checkAccess:export']);
+    });
    
 });
 

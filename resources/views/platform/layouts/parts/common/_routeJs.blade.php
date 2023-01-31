@@ -276,6 +276,16 @@
                    'pdf': "{{ route('charges.export.pdf') }}",
                 }
             }, 
+            'payment':{
+                'export': {
+                   'excel': "{{ route('payment.export.excel') }}",
+                }
+            },
+            'order':{
+                'export': {
+                   'excel': "{{ route('order.export.excel') }}",
+                }
+            }
                 
        }
    };

@@ -261,8 +261,8 @@ class CustomerController extends Controller
                 ->where('sub_categories.slug', 'forgot-password')->first();
 
             $globalInfo = GlobalSettings::first();
-            // $link = 'http://192.168.0.35:3000/reset-password/' . $token_id;
-            $link = 'https://museemusical.shop/reset-password/'.$token_id;
+            $link = 'http://192.168.0.35:3000/reset-password/' . $token_id;
+            // $link = 'https://museemusical.shop/reset-password/'.$token_id;
             $extract = array(
                 'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
                 'link' => '<a href="' . $link . '"> Reset Password </a>',

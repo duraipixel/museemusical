@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrderExport;
 use App\Mail\DynamicMail;
 use App\Models\GlobalSettings;
 use App\Models\Master\EmailTemplate;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 
 class OrderController extends Controller
@@ -219,6 +221,11 @@ class OrderController extends Controller
             $message    = $validator->errors()->all();
         }
         return response()->json(['error' => $error, 'message' => $message]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport, 'orders.xlsx');
     }
 
 }

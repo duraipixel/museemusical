@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportExport;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
+use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Datatables;
+use DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportProductController extends Controller
 {
@@ -18,79 +22,75 @@ class ReportProductController extends Controller
         
         if ($request->ajax()) {
             
-            $f_product_category = $request->get('filter_product_category');
-            $f_brand = $request->get('filter_brand');
-            $f_label = $request->get('filter_label');
-            $f_tags = $request->get('filter_tags');
-            $f_stock_status = $request->get('filter_stock_status');
-            $f_product_name = $request->get('filter_product_name');
-            $f_product_status = $request->get('filter_product_status');
-            $f_video_booking = $request->get('filter_video_booking');
-            $f_date_range = $request->get('date_range');
-
-            $data = Product::when($f_product_category, function($q) use($f_product_category){
-                return $q->where('category_id', $f_product_category);
-            })
-            ->when($f_brand, function($q) use($f_brand) {
-                return $q->where('brand_id', $f_brand);
-            })
-            ->when($f_tags, function($q) use($f_tags) {
-                return $q->where('tag_id', $f_tags);
-            })
-            ->when($f_stock_status, function($q) use($f_stock_status) {
-                return $q->where('stock_status', $f_stock_status);
-            })
-            ->when($f_product_status, function($q) use($f_product_status) {
-                return $q->where('status', $f_product_status);
-            })
-            ->when($f_video_booking, function($q) use($f_video_booking) {
-                return $q->where('has_video_shopping', $f_video_booking);
-            })
-            ->when($f_product_name, function($q) use($f_product_name) {
-                return $q->where(function($qr) use($f_product_name){
-                    $qr->where('product_name', 'like', "%{$f_product_name}%")
-                    ->orWhere('sku', 'like', "%{$f_product_name}%")
-                    ->orWhere('price', 'like', "%{$f_product_name}%");
-                });
-            })
-            ->when($f_label, function($q) use($f_label) {
-                return $q->where('label_id', $f_label);
-            });
-
-
-            $keywords = $request->get('search')['value'];
+            $data = Order::selectRaw('mm_payments.order_id,mm_payments.payment_no,mm_payments.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
+                            ->join('order_products', 'order_products.order_id', '=', 'orders.id')
+                            ->join('payments', 'payments.order_id', '=', 'orders.id')
+                            ->where('orders.status', '!=', 'pending')
+                            ->groupBy('orders.id')->orderBy('orders.id', 'desc');
             
-            $datatables =  Datatables::of($data)
-                ->filter(function ($query) use ($keywords) {
+            $keywords = $request->get('search')['value'];
+            $filter_search_data = $request->get('filter_search_data');
+            $date_range = $request->get('date_range');
+            $filter_product_status = $request->get('filter_product_status');
+            $start_date = $end_date = '';
+            if( isset( $date_range ) && !empty( $date_range ) ) {
+                
+                $dates = explode('-', $date_range);
+                $start_date = date('Y-m-d', strtotime( trim(str_replace('/', '-',$dates[0]))));
+                $end_date = date('Y-m-d', strtotime( trim( str_replace('/', '-', $dates[1]))));
+                
+            }
+            
+            $datatables =  DataTables::of($data)
+                ->filter(function ($query) use ($keywords,$start_date, $end_date, $filter_search_data, $filter_product_status) {
                     
+                    if( $filter_product_status ) {
+                        $query->where('orders.status', $filter_product_status);
+                    }
+                    if( $filter_search_data ) {
+                        $query->where('orders.order_no', $filter_search_data);
+                    }
+                    if( !empty( $start_date ) && !empty( $end_date ) ) {
+                        $query->where( function($q) use ($start_date, $end_date){
+                            $q->whereDate('orders.created_at', '>=', $start_date);
+                            $q->whereDate('orders.created_at', '<=', $end_date);
+                        });
+                    }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        $query->where(function($que) use($keywords, $date){
-                            $que->where('has_video_shopping', 'like', "%{$keywords}%")
-                                ->orWhere('status', 'like', "%{$keywords}%")
-                                ->orWhere('product_name', 'like', "%{$keywords}%")
-                                ->orWhere('sku', 'like', "%{$keywords}%")
-                                ->orWhere('price', 'like', "%{$keywords}%")
-                                ->orWhereDate("created_at", $date);
-                        });
-                        return $query;
+                        $query->where('orders.billing_name','like',"%{$keywords}%")
+                                ->orWhere('orders.billing_email', 'like', "%{$keywords}%")
+                                ->orWhere('orders.billing_mobile_no', 'like', "%{$keywords}%")
+                                ->orWhere('orders.billing_address_line1', 'like', "%{$keywords}%")
+                                ->orWhere('orders.billing_state', 'like', "%{$keywords}%")
+                                ->orWhere('orders.status', 'like', "%{$keywords}%")
+                                ->orWhereDate("orders.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
-                ->addColumn('status', function($row){
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'products\')">'.ucfirst($row->status).'</a>';
-                    return $status;
-                })
-                ->addColumn('category', function($row){
-                    return $row->productCategory->name ?? '';
-                })
-                ->addColumn('brand', function($row){
-                    return $row->productBrand->brand_name ?? '';
+                ->editColumn('billing_info', function ($row) {
+                    $billing_info = '';
+                    $billing_info .= '<div class="font-weight-bold">'.$row['billing_name'].'</div>';
+                    $billing_info .= '<div class="">'.$row['billing_email'].','.$row['billing_mobile_no'].'</div>';
+                    $billing_info .= '<div class="">'.$row['billing_address_line1'].'</div>';
+
+                    return $billing_info;
                 })
                
-                ->rawColumns(['status', 'category', 'brand']);
+                ->editColumn('payment_status', function ($row) {
+                    return ucwords($row->payment_status);
+                })
+                ->editColumn('order_status', function ($row) {
+                    return ucwords($row->status);
+                })
+                ->editColumn('created_at', function ($row) {
+                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
+                    return $created_at;
+                })
              
-                return $datatables->make(true);
+               
+                ->rawColumns(['billing_info', 'payment_status', 'order_status', 'created_at']);
+            return $datatables->make(true);
         }
 
         $addHref = route('products.add.edit');
@@ -112,5 +112,10 @@ class ReportProductController extends Controller
                                 );
 
         return view('platform.reports.products.list', $params);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new ReportExport, 'products.xlsx');
     }
 }
