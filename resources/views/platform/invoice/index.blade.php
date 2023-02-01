@@ -189,7 +189,7 @@
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
                     </tr>
                     <tr>
-                        <td style="text-align: right">Tax (%{{ number_format($order_info->tax_percentage) }}) </td>
+                        <td style="text-align: right">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
                     </tr>
                     @if ($order_info->coupon_amount > 0)
