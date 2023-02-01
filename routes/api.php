@@ -63,6 +63,7 @@ Route::middleware(['client'])->group(function(){
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
 
     Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);
+    Route::post('/cancel/request/orders', [App\Http\Controllers\Api\OrderController::class, 'requestCancelOrder']);
     Route::post('/get/orderByno', [App\Http\Controllers\Api\OrderController::class, 'getOrderByOrderNo']);
     Route::post('/get/recent/view', [App\Http\Controllers\Api\CollectionController::class, 'getRecentViews']);
 

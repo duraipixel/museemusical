@@ -33,6 +33,7 @@
                                 <th> Category </th>
                                 <th> Brand  </th>
                                 <th> Price </th>
+                                <th> Qty </th>
                                 <th> Video Booking </th>
                                 <th> Stock Status </th>
                                 <th> Status </th>
@@ -85,6 +86,10 @@
                 {
                     data: 'price',
                     name: 'price'
+                },
+                {
+                    data: 'quantity',
+                    name: 'quantity'
                 },
                 {
                     data: 'has_video_shopping',

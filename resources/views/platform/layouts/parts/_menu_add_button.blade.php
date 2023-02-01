@@ -24,7 +24,7 @@
     @endif
 
     @if( access()->hasAccess(['products'], 'editable') && $title != 'Product Bulk Upload' )
-    {{-- <a href="{{ $uploadHref }}" target="_blank" class="btn btn-sm btn-primary" >Bulk Upload</a> --}}
+    <a href="{{ $uploadHref }}" class="btn btn-sm btn-primary" >Bulk Upload</a>
     @endif
 </div>
 @endif

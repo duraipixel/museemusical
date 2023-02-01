@@ -122,12 +122,11 @@ class FilterController extends Controller
         $to     = $skip + $limit;
 
         $take_limit = $limit + ($page * $limit);
-        $total  = Product::where('products.status', 'published')
+        $total = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
             ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->when($filter_category != '', function ($q) use ($filter_category) {
-
                 $q->where(function ($query) use ($filter_category) {
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
@@ -153,7 +152,15 @@ class FilterController extends Controller
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
-            ->groupBy('products.id')
+            ->when($sort == 'price_high_to_low', function ($q) {
+                $q->orderBy('products.price', 'desc');
+            })
+            ->when($sort == 'price_low_to_high', function ($q) {
+                $q->orderBy('products.price', 'asc');
+            })
+            ->when($sort == 'is_featured', function ($q) {
+                $q->orderBy('products.is_featured', 'desc');
+            })
             ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
@@ -238,7 +245,7 @@ class FilterController extends Controller
                 $tmp[] = $pro;
             }
         }
-
+        
         if ($total < $limit) {
             $to = $total;
         }
@@ -480,18 +487,17 @@ class FilterController extends Controller
         // $category_slug = 'keyboard-keyboard';
 
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
-
-        $whereIn = [];
-        $whereIn[] = $productCategory->id;
-        if( isset( $productCategory->childCategory ) && !empty( $productCategory->childCategory ) ) {
-            foreach ( $productCategory->childCategory  as $items ) {
-                $whereIn[] = $items->id; 
-            }
-        }
-        
-        $data = [];
         if( isset( $productCategory ) && !empty( $productCategory ) ) {
 
+            $whereIn = [];
+            $whereIn[] = $productCategory->id;
+            if( isset( $productCategory->childCategory ) && !empty( $productCategory->childCategory ) ) {
+                foreach ( $productCategory->childCategory  as $items ) {
+                    $whereIn[] = $items->id; 
+                }
+            }
+            
+            $data = [];
             // $attributeInfo = ProductAttributeSet::whereIn('product_category_id', $whereIn)->where('is_searchable', '1')->get();
 
             $filterData = ProductAttributeSet::select('product_attribute_sets.*')

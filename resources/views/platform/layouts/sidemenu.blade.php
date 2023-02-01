@@ -159,9 +159,9 @@
                 </div>
             </div>
             @endif
-            @if( access()->hasAccess(['order-status']) )
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1">
-                <span class="menu-link">
+            @if( access()->hasAccess(['order-status', 'order']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['order-status', 'order'])) hover active show @endif">
+                <span class="menu-link ">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
                             <i class="bi-chat-left fs-3"></i>
@@ -172,7 +172,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('order') }}">
+                        <a class="menu-link @if( request()->routeIs(['order'])) active @endif" href="{{ route('order') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -181,7 +181,7 @@
                     </div>
                     @if( access()->hasAccess(['order-status']) )
                     <div class="menu-item">
-                        <a class="menu-link" href="{{ route('order-status') }}">
+                        <a class="menu-link @if( request()->routeIs(['order-status'])) active @endif" href="{{ route('order-status') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -189,14 +189,14 @@
                         </a>
                     </div>
                     @endif
-                    <div class="menu-item">
+                    {{-- <div class="menu-item">
                         <a class="menu-link" href="#">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title"> Cancelled Order </span>
                         </a>
-                    </div>
+                    </div> --}}
                    
                   
                 </div>
