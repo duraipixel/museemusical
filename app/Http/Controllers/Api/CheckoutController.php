@@ -57,10 +57,17 @@ class CheckoutController extends Controller
             }
         }
         if( !$shipping_address ) {
-            $errors[]     = 'Shipping address not selected';
-            $response['error'] = $errors;
+            $message     = 'Shipping address not selected';
+            $error = 1;
+            $response['error'] = $error;
+            $response['message'] = $message;
         }
         if (!empty($errors)) {
+
+            $error = 1;
+            $response['error'] = $error;
+            $response['message'] = implode(',', $errors);
+            
             return $response;
         }
 
