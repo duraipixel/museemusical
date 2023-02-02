@@ -76,5 +76,29 @@ class EmailTemplateSeeder extends Seeder
 
             EmailTemplate::create($ins4);
         }
+
+        $type = SubCategory::where('slug', 'forgot-password')->first();
+        if( isset( $type ) && !empty( $type ) ) {
+            
+            $ins5['type_id']    = $type->id;
+            $ins5['title']      = 'Password Reset Link';
+            $ins5['message']    = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>Hi {$name},</p><p><br></p><p>You can reset you password by clicking link: {$link}</p><p><br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
+            $ins5['params']     = 'name,link,regards,company_website,company_mobile_no,company_address';
+            $ins5['status']     = 'published';
+
+            EmailTemplate::create($ins5);
+        }
+
+        $type = SubCategory::where('slug', 'order-cancel-requested')->first();
+        if( isset( $type ) && !empty( $type ) ) {
+            
+            $ins5['type_id']    = $type->id;
+            $ins5['title']      = 'You have received Order Cancel Requested';
+            $ins5['message']    = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>You have got orders cancel request!. </p><p><br></p><p>{$dynamic_content}</p><p>{$cancel_reason}</p><p><br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
+            $ins5['params']     = 'dynamic_content,cancel_reason,regards,company_website,company_mobile_no,company_address';
+            $ins5['status']     = 'published';
+
+            EmailTemplate::create($ins5);
+        }
     }
 }

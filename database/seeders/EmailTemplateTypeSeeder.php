@@ -19,10 +19,11 @@ class EmailTemplateTypeSeeder extends Seeder
         if( isset( $subCat ) && !empty( $subCat ) ) {
             $category_id = $subCat->id;
         } else {
+            $ins = [];
             $ins['category_name'] = 'Email Template';
             $ins['slug'] = 'email-template';
             $ins['order_by'] = '0';
-            $ins['status'] = 'added_by';
+            $ins['status'] = 'published';
             $ins['added_by'] = '1';
 
             $category_id = MainCategory::create($ins);
@@ -68,6 +69,24 @@ class EmailTemplateTypeSeeder extends Seeder
         $par4['name'] = 'Order Delivered';
         $par4['slug'] = 'order-delivered';
         $par4['order_by'] = '5';
+        $par4['status'] = 'published';
+        $par4['added_by'] = '1';
+
+        SubCategory::create($par4);
+
+        $par4['parent_id'] = $category_id;
+        $par4['name'] = 'Forgot Password';
+        $par4['slug'] = 'forgot-password';
+        $par4['order_by'] = '6';
+        $par4['status'] = 'published';
+        $par4['added_by'] = '1';
+
+        SubCategory::create($par4);
+
+        $par4['parent_id'] = $category_id;
+        $par4['name'] = 'Order Cancel Requested';
+        $par4['slug'] = 'order-cancel-requested';
+        $par4['order_by'] = '7';
         $par4['status'] = 'published';
         $par4['added_by'] = '1';
 

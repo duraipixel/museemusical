@@ -47,7 +47,8 @@ class FilterController extends Controller
             ->orderBy('sub_categories.order_by', 'asc')
             ->get()->toArray();
         // dd( $tags );                       
-        $sory_by                = array_merge($tags, $labels, $sory_by);
+        // $sory_by                = array_merge($tags, $labels, $sory_by);
+        // $sory_by                = array_merge($tags, $labels, $sory_by);
 
         $discounts              = ProductCollection::select('id', 'collection_name', 'slug')
             ->where('can_map_discount', 'yes')

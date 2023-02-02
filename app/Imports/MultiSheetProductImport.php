@@ -23,12 +23,24 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
+        $bulleting = $row['4_bullet_points'] ?? '';
+        $bulleting = explode('•', $bulleting);
+        $bullet_html = '<ul class="product_bulletin">';
 
+        if( isset( $bulleting ) && !empty( $bulleting)){
+            foreach ($bulleting as $list) {
+                if( !empty( trim($list) ) ) {
+                    $bullet_html .= '<li>'.$list.'</li>';
+                }
+            }
+        }
+        $bullet_html .= '</ul>';
+        
         $ins = $cat_ins = $tax_ins = $subcat_ins = $brand_ins = $link_ins = [];
         $category           = $row['category'] ?? null;
         $sub_category       = $row['sub_category'] ?? null;
-        $tax                = $row['tax'] ?? null;
-        if( isset( $category ) && !empty( $category ) && isset( $tax ) && !empty( $tax ) ) {
+        $tax                = $row['tax'] ?? 18;
+        if( isset( $category ) && !empty( $category ) ) {
             #check taxt exits if not create 
             $taxPercentage  = $tax * 100;
             $checkTax       = Tax::where('pecentage', $taxPercentage)->first();
@@ -106,7 +118,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
 
             #check product exist or create new one
             $sku            = generateProductSku($row['brand'], $row['sku']);
-            $amount         = $row['base_price'] ?? $row['tax_inclexcl'] ?? 0;
+            $amount         = $row['base_price'] ?? $row['tax_inclexcl'] ?? 100;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 
             $ins['product_name'] = trim($row['product_name']);
@@ -127,7 +139,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['tax_id'] = $tax_id;
             $ins['description'] = $row['short_description'];
             $ins['technical_information'] = $row['technical_specifications'] ?? null;
-            $ins['feature_information'] = $row['4_bullet_points'] ?? null;
+            $ins['feature_information'] = $bullet_html ?? null;
             $ins['specification'] = $row['long_description'] ?? null;
             $ins['added_by'] = Auth::id();
 
