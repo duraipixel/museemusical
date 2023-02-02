@@ -12,8 +12,9 @@ class BrandResource extends JsonResource
     {
 
         $brandLogoPath          = 'public/brands/'.$this->id.'/default/'.$this->brand_logo;
-        if( !Storage::exists( $brandLogoPath ) ) {
-            $path               = asset('userImage/no_Image.jpg');
+        
+        if( !Storage::exists( $brandLogoPath ) || $this->brand_logo === null ) {
+            $path               = asset('assets/logo/no-img-1.jpg');
         } else {
             $url                    = Storage::url($brandLogoPath);
             $path                   = asset($url);
