@@ -60,8 +60,13 @@ class CommonController extends Controller
                     foreach ($data as $daitem ) {
                         $tmp1                    = [];
                         $brandLogoPath           = 'brands/'.$daitem->id.'/default/'.$daitem->brand_logo;
-                        $url                     = Storage::url($brandLogoPath);
-                        $path                    = asset($url);
+
+                        if ( $daitem->brand_logo === null) {
+                            $path                = asset('assets/logo/no-img-1.jpg');
+                        } else {
+                            $url                 = Storage::url($brandLogoPath);
+                            $path                = asset($url);
+                        }
 
                         $tmp1[ 'id' ]            = $daitem->id;
                         $tmp1[ 'title' ]         = $daitem->brand_name;
