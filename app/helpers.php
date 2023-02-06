@@ -116,7 +116,7 @@ if (!function_exists('generateProductSku')) {
             $old_no = explode("-", $old_no);
 
             $end = end($old_no);
-            $old_no = $end + 1;
+            $old_no = (int)$end + 1;
 
             if ((4 - strlen($old_no)) > 0) {
                 $new_no = '';

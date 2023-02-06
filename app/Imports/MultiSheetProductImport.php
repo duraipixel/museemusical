@@ -23,6 +23,8 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
+        $status = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
+        
         $bulleting = $row['4_bullet_points'] ?? '';
         $bulleting = explode('•', $bulleting);
         $bullet_html = '<ul class="product_bulletin">';
@@ -69,7 +71,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $cat_ins['added_by']        = Auth::id();                
                 $cat_ins['tag_line']        = $row['category_tagline'] ?? null;                
                 $cat_ins['tax_id']          = $tax_id;
-                $cat_ins['is_home_menu']    = 'no'; 
+                $cat_ins['is_home_menu']    = 'yes'; 
                 $cat_ins['slug']            = Str::slug($category);
                 
                 $category_id                = ProductCategory::create($cat_ins)->id;
@@ -121,6 +123,8 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $amount         = $row['base_price'] ?? $row['tax_inclexcl'] ?? 100;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 
+            
+
             $ins['product_name'] = trim($row['product_name']);
             $ins['product_url'] = Str::slug($row['product_name']);
             $ins['sku'] = $sku;
@@ -129,7 +133,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['sale_price'] = $row['discounted_price'] ?? 0;
             $ins['sale_start_date'] = ( isset($row['start_date']) && !empty( $row['start_date']) ) ? date('Y-m-d', strtotime($row['start_date'])) : null;
             $ins['sale_end_date'] = ( isset($row['end_date']) && !empty( $row['end_date']) ) ? date('Y-m-d', strtotime($row['end_date'])) : null;
-            $ins['status'] = 'published';
+            $ins['status'] = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
             $ins['quantity'] = 1;
             $ins['has_video_shopping'] = $row['video_shopping'] ?? 'no';
             $ins['stock_status'] = 'in_stock';

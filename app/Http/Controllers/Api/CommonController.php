@@ -189,6 +189,8 @@ class CommonController extends Controller
         
     }
 
-    
+    public function getAllHomeDetails() {
+
+    }
 
 }
