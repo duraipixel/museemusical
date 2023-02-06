@@ -23,6 +23,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
+
         $status = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
         
         $bulleting = $row['4_bullet_points'] ?? '';
@@ -124,6 +125,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 
             $ins['product_name'] = trim($row['product_name']);
+            $ins['hsn_code'] = $row['hsn'];
             $ins['product_url'] = Str::slug($row['product_name']);
             $ins['sku'] = $sku;
             $ins['price'] = $productPriceDetails['basePrice'] ?? 0;
@@ -145,10 +147,11 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['specification'] = $row['long_description'] ?? null;
             $ins['added_by'] = Auth::id();
 
-            $product_id     = Product::create($ins)->id;
+            // $product_id     = Product::create($ins)->id;
+            $product_info = Product::updateOrCreate(['sku' => $sku], $ins);
 
             if( isset( $row['video_link']) && !empty( $row['video_link'])) {
-                $link_ins['product_id'] = $product_id;
+                $link_ins['product_id'] = $product_info->id;
                 $link_ins['url'] = $row['video_link'];
                 $link_ins['url_type'] = 'video_link';
                 ProductLink::create($link_ins);
