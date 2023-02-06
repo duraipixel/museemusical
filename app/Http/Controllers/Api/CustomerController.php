@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\DynamicMail;
+use App\Models\Category\MainCategory;
 use App\Models\GlobalSettings;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
@@ -228,18 +229,25 @@ class CustomerController extends Controller
     public function getCustomerAddress(Request $request)
     {
         $address_id = $request->address_id;
-        $addressInfo = CustomerAddress::find($address_id);
-        $res['address_id'] = $addressInfo->id;
-        $res['address_line'] = $addressInfo->address_line1 ?? '';
-        $res['address_type_id'] = (string)$addressInfo->address_type_id;
-        $res['city'] = $addressInfo->city ?? '';
-        $res['customer_id'] = $addressInfo->customer_id;
-        $res['email'] = $addressInfo->email;
-        $res['mobile_no'] = $addressInfo->mobile_no;
-        $res['name'] = $addressInfo->name;
-        $res['post_code'] = $addressInfo->post_code ?? '';
-        $res['state'] = $addressInfo->state ?? '';
-        $res['stateid'] = $addressInfo->stateid ?? '';
+        $res = [];
+        if (isset($address_id) && !empty( $address_id) ) {
+            $addressInfo = CustomerAddress::find($address_id);
+            $res['address_id'] = $addressInfo->id;
+            $res['address_line'] = $addressInfo->address_line1 ?? '';
+            $res['address_type_id'] = (string)$addressInfo->address_type_id;
+            $res['city'] = $addressInfo->city ?? '';
+            $res['customer_id'] = $addressInfo->customer_id;
+            $res['email'] = $addressInfo->email;
+            $res['mobile_no'] = $addressInfo->mobile_no;
+            $res['name'] = $addressInfo->name;
+            $res['post_code'] = $addressInfo->post_code ?? '';
+            $res['state'] = $addressInfo->state ?? '';
+            $res['stateid'] = $addressInfo->stateid ?? '';
+        }
+
+        $address_type       = MainCategory::where('slug', 'address-type')->first();
+        $res['address_type'] = $address_type->subCategory ?? [];
+
         return $res;
     }
 
@@ -262,7 +270,7 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
             // $link = 'http://192.168.0.35:3000/#/reset-password/' . $token_id;
-            $link = 'https://museemusical.shop/#/reset-password/'.$token_id;
+            $link = 'https://museemusical.shop/#/reset-password/' . $token_id;
             $extract = array(
                 'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
                 'link' => '<a href="' . $link . '"> Reset Password </a>',
@@ -303,12 +311,11 @@ class CustomerController extends Controller
 
             $error = 0;
             $message = 'Password has been reset successfully. Please try login';
-
         } else {
             $error = 1;
             $message = 'Customer not found, Please try register';
         }
-        return array('error' => $error, 'message' => $message );
+        return array('error' => $error, 'message' => $message);
     }
 
     public function checkValidToken(Request $request)
