@@ -257,7 +257,7 @@ if (!function_exists('getProductPrice')) {
     {
 
         $strike_rate            = 0;
-        $price                  = $productsObjects->price;
+        $price                  = $productsObjects->mrp;
         $today                  = date('Y-m-d');
         /****
          * 1.check product discount is applied via product add/edit
@@ -270,7 +270,7 @@ if (!function_exists('getProductPrice')) {
         #condition 1:
         if ($today >= $productsObjects->sale_start_date && $today <= $productsObjects->sale_end_date) {
 
-            $strike_rate        = $productsObjects->price;
+            $strike_rate        = $productsObjects->mrp;
             $price              = $productsObjects->sale_price;
             $has_discount       = 'yes';
             if ($productsObjects->productDiscount->discount_type == 'percentage') {
