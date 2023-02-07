@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Offers\CouponCategory;
 use App\Models\Offers\Coupons;
 use App\Models\Settings\Tax;
+use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +25,7 @@ class Couponcontroller extends Controller
                 ->whereDate('coupons.start_date', '<=', date('Y-m-d'))
                 ->whereDate('coupons.end_date', '>=', date('Y-m-d'))
                 ->first();
-                
+            
             if (isset($coupon) && !empty($coupon)) {
                 /**
                  * 1.check quantity is available to use
@@ -110,24 +111,30 @@ class Couponcontroller extends Controller
                             # category ...
                             if( isset( $coupon->couponCategory ) && !empty( $coupon->couponCategory ) ) {
                                 foreach ($coupon->couponCategory as $item) {
-                                    $cartCount = CouponCategory::select('carts.*')->join('product_categories', 'product_categories.id', '=', 'coupon_categories.category_id')
-                                                    ->join('products', function($join) {
-                                                        $join->on('products.category_id', '=', 'product_categories.id');
-                                                        $join->orOn('products.category_id', '=', 'product_categories.parent_id');
-                                                    })->join('carts', 'carts.product_id', '=', 'products.id')
-                                                        ->where('carts.customer_id', $customer_id )->first();
-                                    if( $cartCount ) {
-                                        if( $cartCount->sub_total >= $coupon->minimum_order_value ) {
+                                    
+                                    $cartCouponInfo = Cart::selectRaw('sum(mm_carts.sub_total) as category_total,mm_carts.*,mm_products.product_name,mm_product_categories.id as cat_id, mm_product_categories.parent_id')
+                                                        ->join('products', 'products.id', '=', 'carts.product_id')
+                                                        ->join('product_categories', function($join) {
+                                                            $join->on('product_categories.id', '=', 'products.category_id');
+                                                            $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+                                                        })
+                                                        ->where('product_categories.id', $item->category_id)
+                                                        ->orWhere('product_categories.parent_id', $item->category_id)
+                                                        ->groupByRaw('mm_product_categories.id, parent_id')->first();
+                                
+                                    if( $cartCouponInfo ) {
+                                        if( $cartCouponInfo->category_total >= $coupon->minimum_order_value ) {
                                             /**
                                              * check percentage or fixed amount
                                              */
                                             switch ($coupon->calculate_type) {
 
                                                 case 'percentage':
-                                                    $product_amount += percentageAmountOnly( $cartCount->sub_total, $coupon->calculate_value );
-                                                    $tmp['discount_amount'] = percentageAmountOnly( $cartCount->sub_total, $coupon->calculate_value );
-                                                    $tmp['product_id'] = $cartCount->product_id;
-                                                    $tmp['coupon_applied_amount'] = $cartCount->sub_total;
+                                                    $product_amount += percentageAmountOnly( $cartCouponInfo->category_total, $coupon->calculate_value );
+                                                    $tmp['discount_amount'] = percentageAmountOnly( $cartCouponInfo->category_total, $coupon->calculate_value );
+                                                    $tmp['category_id'] = $item->category_id;
+                                                    $tmp['category_name'] = $item->category->name;
+                                                    $tmp['coupon_applied_amount'] = $cartCouponInfo->category_total;
                                                     $tmp['coupon_type']     = array( 'discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value  );
                                                     $overall_discount_percentage += $coupon->calculate_value;
                                                     $has_product++;
@@ -136,8 +143,9 @@ class Couponcontroller extends Controller
                                                 case 'fixed_amount':
                                                     $product_amount += $coupon->calculate_value;
                                                     $tmp['discount_amount'] = $coupon->calculate_value;
-                                                    $tmp['product_id'] = $cartCount->product_id;
-                                                    $tmp['coupon_applied_amount'] = $cartCount->sub_total;
+                                                    $tmp['category_id'] = $item->category_id;
+                                                    $tmp['category_name'] = $item->category->name;
+                                                    $tmp['coupon_applied_amount'] = $cartCouponInfo->sub_total;
                                                     $tmp['coupon_type']         = array( 'discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value  );
                                                     $has_product++;
                                                     $couponApplied[] = $tmp;
@@ -272,6 +280,10 @@ class Couponcontroller extends Controller
                 'coupon_amount' => number_format( $couponInfo['coupon_amount'], 2 ) ?? '',
                 'coupon_code' => $couponInfo['coupon_code'] ?? '',
             );
+            $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $charges        = ShippingCharge::where('status', 'published')->where('minimum_order_amount', '<', $amount )->get();
+        
+            $tmp['shipping_charges']    = $charges;
             
         }
         return $tmp;

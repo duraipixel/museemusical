@@ -90,7 +90,7 @@ if (!function_exists('getAmountExclusiveTax')) {
     function getAmountExclusiveTax($productAmount, $gstPercentage)
     {
 
-        $basePrice      = $productAmount;
+        $basePrice      = $productAmount ?? 0;
         $gstAmount      = 0;
         if ((int)$gstPercentage > 0) {
             $gstAmount = $productAmount - ($productAmount * (100 / (100 + $gstPercentage)));
@@ -145,7 +145,7 @@ if (!function_exists('getCustomerNo')) {
             $old_no = $checkCustomer->customer_no;
             $end = substr($old_no, 2);
 
-            $old_no = $end + 1;
+            $old_no = (int)$end + 1;
 
             if ((6 - strlen($old_no)) > 0) {
                 $new_no = '';

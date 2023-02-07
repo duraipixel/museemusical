@@ -134,10 +134,12 @@ class CartController extends Controller
                         $tax_info = Tax::find( $category->tax_id );
                         
                     } 
+                    // dump( $citems );
                     if( isset( $tax_info ) && !empty( $tax_info ) ) {
                         $tax = getAmountExclusiveTax( $salePrices['price_original'], $tax_info->pecentage );
-                        $tax_total =  $tax_total + $tax['gstAmount'] ?? 0;
-                        $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] ?? 0 * $citems->quantity );
+                        $tax_total =  $tax_total + ($tax['gstAmount'] * $citems->quantity ) ?? 0;
+                        $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] * $citems->quantity );
+                        // print_r( $product_tax_exclusive_total );
                         $tax_percentage         = $tax['tax_percentage'] ?? 0;
                     } else {
                         $product_tax_exclusive_total = $product_tax_exclusive_total + $citems->sub_total; 
