@@ -116,11 +116,11 @@ class FilterController extends Controller
             }
         }
 
-        $limit = 6;
+        $limit = 12;
         $skip = (isset($page) && !empty($page)) ? ($page * $limit) : 0;
 
         $from   = 1 + ($page * $limit);
-        $to     = $skip + $limit;
+        
 
         $take_limit = $limit + ($page * $limit);
         $total = Product::select('products.*')->where('products.status', 'published')
@@ -247,9 +247,10 @@ class FilterController extends Controller
             }
         }
         
-        if ($total < $limit) {
-            $to = $total;
-        }
+        // if ($total < $limit) {
+        //     $to = $total;
+        // }
+        $to = count($details);
 
         return array('products' => $tmp, 'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
     }
