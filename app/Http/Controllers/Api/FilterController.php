@@ -116,7 +116,7 @@ class FilterController extends Controller
             }
         }
 
-        $limit = 12;
+        $limit = 3;
         $skip = (isset($page) && !empty($page)) ? ($page * $limit) : 0;
 
         $from   = 1 + ($page * $limit);
@@ -371,10 +371,19 @@ class FilterController extends Controller
             
             switch ($search_type) {
                 case 'product':
+
                     $productInfo = Product::where(function($qr) use($query){
-                        $qr->where('product_name', 'like', "%{$query}%")
+                       $qr ->where('product_name', 'like', "%{$query}%")
                         ->orWhere('sku', 'like', "%{$query}%");
                     })->where('status', 'published')->get();
+
+                    if( count( $productInfo ) == 0) {
+                        $productInfo = Product::where(function($qr) use($query){
+                            $qr->whereRaw("MATCH (mm_products.product_name) AGAINST ('".$query."' IN BOOLEAN MODE)")
+                            ->orWhere('sku', 'like', "%{$query}%");
+                        })->where('status', 'published')->get();
+                    }
+
                     
                     if (isset($productInfo) && !empty($productInfo) && count( $productInfo ) > 0 ) {
                         

@@ -84,7 +84,7 @@ class CustomerController extends Controller
             $message = $validator->errors()->all();
             $status = 'error';
         }
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data );
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );
     }
 
     public function doLogin(Request $request)
