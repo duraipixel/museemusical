@@ -41,6 +41,7 @@ class CheckoutController extends Controller
         $cart_total             = $request->cart_total;
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
+        $billing_address        = $request->billing_address;
         $shipping_id            = $request->shipping_id ?? 1;
 
         #check product is out of stock
@@ -94,16 +95,27 @@ class CheckoutController extends Controller
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
-        $order_ins['billing_name'] = $shipping_address['name'];
-        $order_ins['billing_email'] = $shipping_address['email'];
-        $order_ins['billing_mobile_no'] = $shipping_address['mobile_no'];
-        $order_ins['billing_address_line1'] = $shipping_address['address_line1'];
-        $order_ins['billing_address_line2'] = $shipping_address['address_line2'];
-        $order_ins['billing_landmark'] = $shipping_address['landmark'];
-        $order_ins['billing_country'] = $shipping_address['country'];
-        $order_ins['billing_post_code'] = $shipping_address['post_code'];
-        $order_ins['billing_state'] = $shipping_address['state'];
-        $order_ins['billing_city'] = $shipping_address['city'];
+        $order_ins['billing_name'] = $billing_address['name'];
+        $order_ins['billing_email'] = $billing_address['email'];
+        $order_ins['billing_mobile_no'] = $billing_address['mobile_no'];
+        $order_ins['billing_address_line1'] = $billing_address['address_line1'];
+        $order_ins['billing_address_line2'] = $billing_address['address_line2'] ?? null;
+        $order_ins['billing_landmark'] = $billing_address['landmark'] ?? null;
+        $order_ins['billing_country'] = $billing_address['country'] ?? null;
+        $order_ins['billing_post_code'] = $billing_address['post_code'] ?? null;
+        $order_ins['billing_state'] = $billing_address['state'] ?? null;
+        $order_ins['billing_city'] = $billing_address['city'] ?? null;
+
+        $order_ins['shipping_name'] = $shipping_address['name'];
+        $order_ins['shipping_email'] = $shipping_address['email'];
+        $order_ins['shipping_mobile_no'] = $shipping_address['mobile_no'];
+        $order_ins['shipping_address_line1'] = $shipping_address['address_line1'];
+        $order_ins['shipping_address_line2'] = $shipping_address['address_line2'] ?? null;
+        $order_ins['shipping_landmark'] = $shipping_address['landmark'] ?? null;
+        $order_ins['shipping_country'] = $shipping_address['country'] ?? null;
+        $order_ins['shipping_post_code'] = $shipping_address['post_code'];
+        $order_ins['shipping_state'] = $shipping_address['state'] ?? null;
+        $order_ins['shipping_city'] = $shipping_address['city'] ?? null;
 
         $order_id = Order::create($order_ins)->id;
 

@@ -228,7 +228,7 @@ class FilterController extends Controller
                 $pro['is_best_selling'] = $items->is_best_selling;
                 $pro['is_new']          = $items->is_new;
                 $pro['sale_prices']     = $salePrices;
-                $pro['mrp_price']       = $items->price;
+                $pro['mrp_price']       = $items->mrp;
                 $pro['image']           = $items->base_image;
                 $pro['max_quantity']    = $items->quantity;
 

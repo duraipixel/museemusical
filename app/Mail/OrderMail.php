@@ -29,9 +29,7 @@ class OrderMail extends Mailable
      */
     public function build()
     {
-        return $this->view('email.testEmail', [
-            "data" => $this->data
-        ])->subject($this->title)->attach( public_path($this->filePath));
+        return $this->markdown('email.common.dynamicContent')->subject($this->title)->attach( public_path($this->filePath));
         // return $this->markdown('email.testEmail');
     }
 }

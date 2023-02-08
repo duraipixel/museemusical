@@ -35,7 +35,7 @@ class CustomerController extends Controller
             $ins['password'] = Hash::make($request->password);
             $ins['status'] = 'published';
 
-            Customer::create($ins);
+            $customer_data = Customer::create($ins);
 
             /** send email for new customer */
             $emailTemplate = EmailTemplate::select('email_templates.*')
@@ -84,7 +84,7 @@ class CustomerController extends Controller
             $message = $validator->errors()->all();
             $status = 'error';
         }
-        return array('error' => $error, 'message' => $message, 'status' => $status);
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data );
     }
 
     public function doLogin(Request $request)
@@ -137,10 +137,10 @@ class CustomerController extends Controller
         $ins['post_code'] = $request->post_code;
         $ins['city'] = $request->city;
 
-        CustomerAddress::create($ins);
+        $address_info = CustomerAddress::create($ins);
 
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address);
+        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
     }
 
     public function updateProfile(Request $request)

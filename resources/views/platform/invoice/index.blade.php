@@ -44,12 +44,19 @@
             color: #000000;
         }
 
+        .w-70 {
+            width: 70%;
+        }
         .w-50 {
             width: 50%;
         }
 
         .w-30 {
             width: 50%;
+        }
+
+        .w-35 {
+            width: 35%;
         }
 
         .w-40 {
@@ -85,7 +92,7 @@
 
         </tr>
         <tr>
-            <td>
+            <td class="w-70">
                 <table class="no-border" style="width: 100%">
                     <tr>
                         <td class="w-50">
@@ -97,23 +104,33 @@
                             <div>{{ $order_info->billing_mobile_no }}</div>
                             <div>{{ $order_info->billing_email }}</div>
                         </td>
+
+                        <td class="w-50">
+                            <h3> Shipping Details </h3>
+                            <div><b>{{ $order_info->shipping_name  }}</b></div>
+                            <div>{{ $order_info->shipping_address_line1 }}</div>
+                            <div>{{ $order_info->shipping_city }}</div>
+                            <div>{{ $order_info->shipping_state }}</div>
+                            <div>{{ $order_info->shipping_mobile_no }}</div>
+                            <div>{{ $order_info->shipping_email }}</div>
+                        </td>
                     </tr>
                 </table>
             </td>
-            <td>
+            <td class="w-30">
 
-                <table class="no-border">
+                <table class="no-border w-100" >
                     <tr>
-                        <td class="w-30"> Invoice Date </td>
-                        <td class="w-30"> {{ date('d/m/Y', strtotime($order_info->created_at)) }} </td>
+                        <td class="w-50"> Invoice Date </td>
+                        <td class="w-50"> {{ date('d/m/Y', strtotime($order_info->created_at)) }} </td>
                     </tr>
                     <tr>
-                        <td class="w-30"> Invoice No </td>
-                        <td class="w-30"> {{ $order_info->order_no }} </td>
+                        <td class="w-50"> Invoice No </td>
+                        <td class="w-50"> {{ $order_info->order_no }} </td>
                     </tr>
                     <tr>
-                        <td class="w-30"> Payment Status </td>
-                        <td class="w-30"> {{ $order_info->payments->status }} </td>
+                        <td class="w-50"> Payment Status </td>
+                        <td class="w-50"> {{ $order_info->payments->status }} </td>
                     </tr>
                 </table>
             </td>
@@ -182,8 +199,6 @@
                     <tr>
                         <td style="text-align: right">
                             <div>Sub Total </div>
-                            
-
                             <small>(Tax inclusive)</small>
                         </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>

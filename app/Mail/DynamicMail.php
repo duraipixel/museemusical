@@ -22,8 +22,6 @@ class DynamicMail extends Mailable
 
     public function build()
     {
-        return $this->view('email.testEmail', [
-            "data" => $this->data
-        ])->subject($this->title);
+        return $this->markdown('email.common.dynamicContent')->subject($this->title);
     }
 }
