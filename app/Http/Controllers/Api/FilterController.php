@@ -195,10 +195,10 @@ class FilterController extends Controller
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
             ->when($sort == 'price_high_to_low', function ($q) {
-                $q->orderBy('products.price', 'desc');
+                $q->orderBy('products.mrp', 'desc');
             })
             ->when($sort == 'price_low_to_high', function ($q) {
-                $q->orderBy('products.price', 'asc');
+                $q->orderBy('products.mrp', 'asc');
             })
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
