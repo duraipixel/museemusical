@@ -33,7 +33,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
         if( isset( $bulleting ) && !empty( $bulleting)){
             foreach ($bulleting as $list) {
                 if( !empty( trim($list) ) ) {
-                    $bullet_html .= '<li>'.$list.'</li>';
+                    $bullet_html .= '<li><img src="/assets/images/music-icn.png">'.$list.'</li>';
                 }
             }
         }
@@ -42,7 +42,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
         $ins = $cat_ins = $tax_ins = $subcat_ins = $brand_ins = $link_ins = [];
         $category           = $row['category'] ?? null;
         $sub_category       = $row['sub_category'] ?? null;
-        $tax                = $row['tax'] ?? 18;
+        $tax                = 18;
         if( isset( $category ) && !empty( $category ) ) {
             #check taxt exits if not create 
             $taxPercentage  = $tax * 100;

@@ -2,9 +2,11 @@
 
 namespace App\Models\Master;
 
+use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Brands extends Model
 {
@@ -20,4 +22,16 @@ class Brands extends Model
         'added_by',
         'status'
     ];
+
+    public function products() {
+        return $this->hasMany(Product::class, 'brand_id', 'id');
+    }
+
+    public function category() {
+        return $this->hasMany(Product::class, 'brand_id', 'id')   
+                    ->selectRaw('p.*')                 
+                    ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+                    ->join( DB::raw('mm_product_categories as p'), DB::raw('p.id'),'=','product_categories.parent_id')
+                    ->groupBy(DB::raw('p.id'));
+    }
 }

@@ -198,4 +198,11 @@ class CommonController extends Controller
         $response['banner'] = BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         return $response;
     }
+
+    public function getBrandInfo(Request $request) {
+
+        $slug = $request->slug;
+        $brand_info = Brands::where('slug', $slug)->first();
+        dd( $brand_info->category );
+    }
 }

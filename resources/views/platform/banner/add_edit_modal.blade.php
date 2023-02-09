@@ -91,6 +91,59 @@
                                         <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
                                     </span>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-12">
+
+                                        <div class="fv-row mb-7">
+                                            <label class="d-block fw-bold fs-6 mb-5">Mobile Banner Image</label>
+                                            <div class="form-text">Minimum Image Dimention 800 x 1000 </div>
+                                            <div class="form-text">Allowed file types: png, jpg,
+                                                jpeg.</div>
+                                        </div>
+                                        <input id="image_mobile_remove" type="hidden" name="image_mobile_remove" value="no">
+                                        <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                            @if ($info->mobile_banner ?? '')
+                                                @php 
+                                                $path = Storage::url('banner/'.$info->id.'/mobile_banner/'.$info->mobile_banner)
+                                                @endphp
+                                                <div class="image-input-wrapper w-125px h-125px manual-image"
+                                                    id="mobile-image"
+                                                    style="background-image: url({{ asset($path) }});">
+                                                </div>
+                                            @else
+                                                <div class="image-input-wrapper w-125px h-125px manual-image"
+                                                    id="mobile-image"
+                                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                                </div>
+                                            @endif
+                                            <label
+                                                class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                                data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                                title="Change avatar">
+                                                <i class="bi bi-pencil-fill fs-7"></i>
+                                                <input type="file" name="banner" id="banner_image"
+                                                    accept=".png, .jpg, .jpeg" />
+                                                {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
+                                                {{-- <input type="file" name="userImage" id="userImage"> --}}
+                                            </label>
+            
+                                            <span
+                                                class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                                data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                                title="Cancel avatar">
+                                                <i class="bi bi-x fs-2"></i>
+                                            </span>
+                                            <span
+                                                class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                                data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                                title="Remove avatar1">
+                                                <i class="bi bi-x fs-2" id="mobile_remove_logo"></i>
+                                            </span>
+                                        </div>                                  
+                                        
+                                    </div>
+                                </div>
                                 
                             </div>
                             <div class="col-md-8 mb-7">
@@ -102,6 +155,10 @@
                                     <label class="fw-bold fs-6 mb-2">Tag Line</label>
                                     <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tag Line" name="tag_line" id="tag_line" value="{{ $info->tag_line ?? '' }}" >
                                 </div>
+                                <div class="fv-row mt-2 mb-7">
+                                    <label class="required fw-bold fs-6 mb-2">Links</label>
+                                    <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Url " name="links" id="links" value="{{ $info->links ?? '' }}" >
+                                </div>
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
                                     <input type="text" name="order_by" class="form-control mobile_num form-control-solid mb-3 mb-lg-0"
@@ -109,11 +166,15 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="fv-row mt-10 mb-7">
-                                    <label class="fw-bold fs-6 mb-2"> Status </label>
-                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
-                                    
+                                
+                                <div class="col-sm-4">
+
+                                    <div class="fv-row mt-10 mb-7">
+                                        <label class="fw-bold fs-6 mb-2"> Status </label>
+                                        <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                            <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                                        
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,6 +204,22 @@
     }
 </style>
 <script>
+
+     //image image script
+     document.getElementById('banner_image').addEventListener('change', function() {
+        
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#mobile-image').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
+        }
+    });
     //image image script
      document.getElementById('readUrl').addEventListener('change', function() {
         
@@ -175,6 +252,13 @@
             'background-image': ''
         });
     });
+
+    document.getElementById('mobile_remove_logo').addEventListener('click', function() {
+        $('#image_mobile_remove').val("yes");
+        $('#mobile-image').css({
+            'background-image': ''
+        });
+    });
    
 </script>
 
@@ -204,6 +288,13 @@
                             validators: {
                                 notEmpty: {
                                     message: 'Title is required'
+                                }
+                            }
+                        },
+                        'links': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Link is required'
                                 }
                             }
                         },

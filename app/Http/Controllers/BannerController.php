@@ -109,6 +109,7 @@ class BannerController extends Controller
             $ins['title']               = $request->title;
             $ins['description']         = $request->description;
             $ins['tag_line']            = $request->tag_line;
+            $ins['links']               = $request->links;
             $ins['order_by']            = $request->order_by ?? 0;
             $ins['added_by']            = auth()->user()->id;
 
@@ -127,7 +128,7 @@ class BannerController extends Controller
                 $directory = 'banner/'.$banner_id;
                 Storage::deleteDirectory('public/'.$directory); 
             }
-
+            
             if ($request->hasFile('avatar')) {
                 
                 $directory = 'banner/'.$banner_id;
@@ -145,15 +146,31 @@ class BannerController extends Controller
                     mkdir(storage_path("app/public/banner/".$banner_id."/mobile_banner"), 0775, true);
                 }
                 $mainBanner            = 'public/banner/'.$banner_id .'/main_banner/' .$imageName;
-                Image::make($file)->resize(1600,475)->save(storage_path('app/' . $mainBanner));
+                Image::make($file)->save(storage_path('app/' . $mainBanner));
 
                 $otherBanner            = 'public/banner/'.$banner_id ."/other_banner/". $imageName;
                 Image::make($file)->resize(1600,420)->save(storage_path('app/' . $otherBanner));
 
-                $mobileBanner            = 'public/banner/'.$banner_id ."/mobile_banner/". $imageName;
-                Image::make($file)->resize(800,1000)->save(storage_path('app/' . $mobileBanner));
-
                 $info->banner_image       = $imageName;
+                $info->update();
+            }
+
+            if ($request->hasFile('banner')) {
+                
+                $directory = 'banner/'.$banner_id;
+                Storage::deleteDirectory('public/'.$directory);
+
+                $file1                   = $request->file('banner');
+                $imageName1              = uniqid().$file1->getClientOriginalName();
+               
+                if (!is_dir(storage_path("app/public/banner/".$banner_id."/mobile_banner"))) {
+                    mkdir(storage_path("app/public/banner/".$banner_id."/mobile_banner"), 0775, true);
+                }
+               
+                $mobileBanner            = 'public/banner/'.$banner_id ."/mobile_banner/". $imageName1;
+                Image::make($file)->save(storage_path('app/' . $mobileBanner));
+
+                $info->mobile_banner       = $imageName;
                 $info->update();
             }
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';

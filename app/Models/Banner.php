@@ -13,6 +13,8 @@ class Banner extends Model
         'title',
         'description',
         'banner_image',
+        'mobile_banner',
+        'links',
         'tag_line',
         'order_by',
         'status',
