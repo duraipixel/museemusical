@@ -8,6 +8,7 @@ use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductLink;
 use App\Models\Settings\Tax;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Str;
@@ -33,7 +34,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
         if( isset( $bulleting ) && !empty( $bulleting)){
             foreach ($bulleting as $list) {
                 if( !empty( trim($list) ) ) {
-                    $bullet_html .= '<li><img src="/assets/images/music-icn.png">'.$list.'</li>';
+                    $bullet_html .= '<li>'.$list.'</li>';
                 }
             }
         }
@@ -124,6 +125,8 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $sku            = generateProductSku(trim($row['brand']), trim($row['sku']));
             $amount         = $row['mrp'] ?? $row['tax_inclexcl'] ?? 100;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
+			
+            $productInfo = Product::where('sku', $sku)->first();
 
             $ins['product_name'] = trim($row['product_name']);
             $ins['hsn_code'] = $row['hsn'];
@@ -147,12 +150,17 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['feature_information'] = $bullet_html ?? null;
             $ins['specification'] = $row['long_description'] ?? null;
             $ins['added_by'] = Auth::id();
-
-            // $product_id     = Product::create($ins)->id;
-            $product_info = Product::updateOrCreate(['sku' => $sku], $ins);
-
+			if( isset( $productInfo ) && !empty( $productInfo ) ) {
+                
+            	DB::table('products')->where('id', $productInfo->id)->update($ins);
+            	$product_id = $productInfo->id;
+            
+            } else {
+            	$product_id     = Product::create($ins)->id;
+            }
+            
             if( isset( $row['video_link']) && !empty( $row['video_link'])) {
-                $link_ins['product_id'] = $product_info->id;
+                $link_ins['product_id'] = $product_id;
                 $link_ins['url'] = $row['video_link'];
                 $link_ins['url_type'] = 'video_link';
                 ProductLink::create($link_ins);
