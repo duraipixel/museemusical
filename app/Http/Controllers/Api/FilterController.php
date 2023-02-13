@@ -510,8 +510,6 @@ class FilterController extends Controller
                             ->groupBy('product_attribute_sets.id')
                             ->get();
             
-            
-            
             if( isset( $filterData ) && !empty( $filterData ) ) {
                 foreach ( $filterData as $item ) {
                                        
@@ -522,7 +520,6 @@ class FilterController extends Controller
                     $tmp['child'] = $item->attributesFieldsByTitle ?? [];
                     $data[] = $tmp;
                     //get filter attributes
-                                    
                 }
             }
             return $data;

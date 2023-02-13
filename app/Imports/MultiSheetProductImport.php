@@ -45,7 +45,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
         $tax                = 18;
         if( isset( $category ) && !empty( $category ) ) {
             #check taxt exits if not create 
-            $taxPercentage  = $tax * 100;
+            $taxPercentage  = $tax;
             $checkTax       = Tax::where('pecentage', $taxPercentage)->first();
             if( isset($checkTax) && !empty( $checkTax ) ) {
                 $tax_id     = $checkTax->id;
@@ -120,7 +120,8 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             }
 
             #check product exist or create new one
-            $sku            = generateProductSku($row['brand'], $row['sku']);
+           
+            $sku            = generateProductSku(trim($row['brand']), trim($row['sku']));
             $amount         = $row['mrp'] ?? $row['tax_inclexcl'] ?? 100;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 

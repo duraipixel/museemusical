@@ -48,5 +48,12 @@ class OrderStatusSeeder extends Seeder
         $ins4['added_by'] = '1';
         $ins4['status'] = 'published';
         OrderStatus::create($ins4);
+
+        $ins5['status_name'] = 'Order Cancel Requested';
+        $ins5['description'] = 'Order Cancel Request has been received';
+        $ins5['order'] = '6';
+        $ins5['added_by'] = '1';
+        $ins5['status'] = 'published';
+        OrderStatus::create($ins5);
     }
 }

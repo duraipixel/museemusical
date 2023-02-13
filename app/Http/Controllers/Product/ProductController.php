@@ -205,7 +205,7 @@ class ProductController extends Controller
     {
         $id                 = $request->id;
         $product_page_type  = $request->product_page_type;
-
+        $isUpdate           = false;
         $validate_array     = [
                                 'product_page_type' => 'required',
                                 'category_id' => 'required',
@@ -270,9 +270,10 @@ class ProductController extends Controller
             $productInfo                    = Product::updateOrCreate(['id' => $id], $ins);
             if(!empty($id))
             {
-                $message = "Thank you! You've updated Products";
+                $message                    = "Thank you! You've updated Products";
+                $isUpdate                   = true;
             }else{
-                $message = "Thank you! You've add Products";
+                $message                    = "Thank you! You've add Products";
             }
             $product_id                     = $productInfo->id;
             if( $request->hasFile('avatar') ) {        
@@ -390,7 +391,7 @@ class ProductController extends Controller
             $product_id                     = '';
 
         } 
-        return response()->json(['error' => $error, 'message' => $message, 'product_id' => $product_id]);
+        return response()->json(['error' => $error, 'isUpdate' => $isUpdate, 'message' => $message, 'product_id' => $product_id]);
     }
 
     public function uploadGallery(Request $request)

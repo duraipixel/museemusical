@@ -18,21 +18,21 @@ class TestController extends Controller
 {
     public function index(Request $request) {
 
-        // $number = ['919551706025'];
-        // $name   = 'Durairaj';
-        // $orderId = 'IOP9090909P';
-        // $companyName = 'Musee Musical';
-        // $credentials = 'durairamyb@mail.com/09876543456';
-        // $message = "Dear $name, Ref.Id $orderId, Thank you for register with $companyName. Your credentials are $credentials. -MUSEE MUSICAL";
-        // sendSMS($number, $message, []);
+        $number = ['919551706025'];
+        $name   = 'Durairaj';
+        $orderId = 'IOP9090909P';
+        $companyName = 'Musee Musical';
+        $credentials = 'durairamyb@mail.com/09876543456';
+        $message = "Dear $name, Ref.Id $orderId, Thank you for register with $companyName. Your credentials are $credentials. -MUSEE MUSICAL";
+        sendSMS($number, $message, []);
         
-        $response = Http::post('https://apiv2.shiprocket.in/v1/external/auth/login',[
-            'header' => 'Content-Type: application/json',
-            'email' => 'duraibytes@gmail.com',
-            'password' => 'Pixel@2022'
-        ]);
+        // $response = Http::post('https://apiv2.shiprocket.in/v1/external/auth/login',[
+        //     'header' => 'Content-Type: application/json',
+        //     'email' => 'duraibytes@gmail.com',
+        //     'password' => 'Pixel@2022'
+        // ]);
 
-        dd( $response );
+        // dd( $response );
         
     }
 

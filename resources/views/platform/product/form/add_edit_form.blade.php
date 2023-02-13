@@ -438,7 +438,13 @@ $(document).ready(function() {
                             submitButton.removeAttribute('data-kt-indicator');
                              // Enable button
                             submitButton.disabled = false;
-
+                            setTimeout(() => {
+                                if( res.isUpdate ) {
+                                    location.reload();
+                                } else {
+                                    window.location.href = product_url;
+                                }
+                            }, 500);
                             Swal.fire({
                                 // text: "Thank you! You've updated Products",
                                 text: res.message,
@@ -451,7 +457,8 @@ $(document).ready(function() {
                             }).then(function (result) {
                                 if (result.isConfirmed) {
                                    
-                                    window.location.href=product_url
+                                    // window.location.href=product_url;
+                                    
                                 }
                             });
                         }

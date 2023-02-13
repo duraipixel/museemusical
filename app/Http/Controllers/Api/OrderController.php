@@ -201,7 +201,7 @@ class OrderController extends Controller
 
                 /**** order history */
                 $his['order_id'] = $orderInfo->id;
-                $his['action'] = 'Order Camcel Requested';
+                $his['action'] = 'Order Cancel Requested';
                 $his['description'] = $cancel_reason;
                 OrderHistory::create($his);
 
