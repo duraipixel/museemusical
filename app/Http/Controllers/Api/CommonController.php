@@ -199,10 +199,27 @@ class CommonController extends Controller
         return $response;
     }
 
-    public function getBrandInfo(Request $request) {
+    public function getBrandInfo(Request $request)
+    {
 
         $slug = $request->slug;
         $brand_info = Brands::where('slug', $slug)->first();
-        dd( $brand_info->category );
+
+        $response['brand_info'] = $brand_info;
+        $parent['id'] = $brand_info->id;
+        $parent['name'] = $brand_info->name;
+        $parent['slug'] = $brand_info->slug;
+        $parent['image'] = $brand_info->image;
+        if ($brand_info->category) {
+            foreach ($brand_info->category as $items) {
+                $tmp = [];
+                $tmp['id'] = $items->id;
+                $tmp['name'] = $items->name;
+                $tmp['slug'] = $items->slug;
+                $tmp['image'] = $items->image;
+                $parent['category'][] = $tmp;
+            }
+        }
+        return $parent;
     }
 }
