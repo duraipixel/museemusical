@@ -9,12 +9,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Mail;
 
 class RegisterEmail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $templateMessage;
     public $email_title;
@@ -34,7 +33,7 @@ class RegisterEmail implements ShouldQueue
      */
     public function handle()
     {
-        log('duirarkererj');
+        // log('duirarkererj');
         $send_mail = new DynamicMail($this->templateMessage, $this->email_title);
         Mail::to($this->email)->send($send_mail);
     }

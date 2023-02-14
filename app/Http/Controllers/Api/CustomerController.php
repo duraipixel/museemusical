@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\RegisterEmail;
 use App\Mail\DynamicMail;
 use App\Models\Category\MainCategory;
 use App\Models\GlobalSettings;
@@ -59,8 +58,10 @@ class CustomerController extends Controller
             extract($extract);
             eval("\$templateMessage = \"$templateMessage\";");
 
-            $emailJobs = new RegisterEmail($templateMessage, $emailTemplate->title, $request->email);
-            $this->dispatch($emailJobs);
+            $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
+            // return $send_mail->render();
+            Mail::to($request->email)->send($send_mail);
+
             /** send sms for new customer */
             if ($request->mobile_no) {
 
@@ -288,7 +289,7 @@ class CustomerController extends Controller
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
             Mail::to($request->email)->send($send_mail);
-
+            
         } else {
             $error = 1;
             $message = 'Email id is not exists';
