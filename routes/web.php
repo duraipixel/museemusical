@@ -4,6 +4,10 @@ use App\Http\Controllers\RazorpayPaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('jobs')->group(function () {
+    Route::queueMonitor();
+});
+
 // Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
