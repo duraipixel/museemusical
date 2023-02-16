@@ -50,7 +50,7 @@ class Couponcontroller extends Controller
                                     if( $cartCount ) {
                                         if( $cartCount->sub_total >= $coupon->minimum_order_value ) {
                                             /**
-                                             * check percentage or fixed amount
+                                             * Check percentage or fixed amount
                                              */
                                             switch ($coupon->calculate_type) {
 

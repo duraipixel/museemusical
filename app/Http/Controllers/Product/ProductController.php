@@ -572,4 +572,17 @@ class ProductController extends Controller
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 
+    public function setImageOrder(Request $request)
+    {
+
+        $image_id = $request->image_id;
+        $order_by = $request->order_by;
+        $image_info = ProductImage::find($image_id);
+        $image_info->order_by = $order_by;
+        $image_info->update();
+
+        return response()->json(['message'=>"Successfully updated!",'status' => 1 ] );
+
+    }
+
 }

@@ -16,6 +16,7 @@ class ProductRepository
                 $tmp['size'] = $value->file_size;
                 $tmp['url'] = asset( Storage::url($value->image_path));
                 $tmp['id'] = $value->id;
+                $tmp['order_by'] = $value->order_by;
 
                 $imgArray[] = $tmp;
             }

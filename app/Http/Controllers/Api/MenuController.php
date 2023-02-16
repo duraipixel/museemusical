@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuAllResource;
 use App\Http\Resources\MenuResource;
 use App\Models\Product\ProductCategory;
+use App\Services\ShipRocketService;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -28,9 +29,13 @@ class MenuController extends Controller
         
     }
 
-    public function getAllMenu()
+    public function getAllMenu(ShipRocketService $shipService)
     {
+        // $token_response = $shipService->getToken();
+        // $token_decode_response = json_decode($token_response );
 
+        // dd( $token_decode_response->token );
+        // dd( $ShipRocketService->getToken() );
         $menus   = ProductCategory::select('id', 'name', 'slug')->where(['status' => 'published', 'parent_id' => 0])->orderBy('order_by', 'asc')->get();
         return MenuAllResource::collection($menus);
 
