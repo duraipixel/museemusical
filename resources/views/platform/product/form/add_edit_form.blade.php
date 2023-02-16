@@ -1,8 +1,8 @@
 @extends('platform.layouts.template')
 @section('toolbar')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
-      
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
     <div class="toolbar" id="kt_toolbar">
         <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
             @include('platform.layouts.parts._breadcrum')
@@ -30,8 +30,9 @@
             float: right;
             left: 35px;
             width: 83px;
-            background: aquamarine;
-            border: 1px solid aquamarine;
+            background: #489fd1;
+            border: 1px solid #489fd1;
+            color: white;
         }
 
         .bulk_input:hover {
@@ -40,9 +41,9 @@
 
         .bulk_btn:hover {
             background: white;
-            color: #0d7c57;
+            color: #489fd1;
             font-weight: 8000;
-            border: 1px solid #0d7c57;
+            border: 1px solid #489fd1;
         }
     </style>
 @endsection
@@ -146,7 +147,7 @@
             }
 
         });
-        
+
         var isImage = false;
         var product_url = "{{ route('products') }}";
         var product_add_url = "{{ route('products.save') }}";
@@ -182,7 +183,7 @@
                 let jsonData = '{!! $images !!}';
                 // jsonData = JSON.stringify(jsonData);
                 jsonData = JSON.parse(jsonData);
-                
+
                 if (jsonData.length > 0) {
                     for (let index = 0; index < jsonData.length; index++) {
                         let formIns = jsonData[index];
@@ -558,11 +559,14 @@
 
         function changeOrder(image_id) {
             console.log(image_id, 'iamge_id');
-            var img_value = $('#image_order_'+image_id).val();
+            var img_value = $('#image_order_' + image_id).val();
             $.ajax({
-                url:"{{ route('products.image.order') }}",
+                url: "{{ route('products.image.order') }}",
                 type: 'POST',
-                data: {image_id:image_id, order_by:img_value},
+                data: {
+                    image_id: image_id,
+                    order_by: img_value
+                },
                 success: function(res) {
                     toastr.success('Image order has been set successfully');
                 }

@@ -23,6 +23,9 @@
                                 <form id="importform" method="POST" action="{{ route('products.bulk.upload')}}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
+                                        <div>
+                                            <h3> Product Upload Section</h3>
+                                        </div>
                                         <div class="col-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Select Import File</label>
@@ -39,6 +42,38 @@
                                 <label for=""> Sample Excel file </label>
                                 <div class="mt-2">
                                     <a href="{{ asset('assets/data/productSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col-sm-12 text-start">
+                        <div class="row">
+                            <div class="col-8">
+                                <form id="importform" method="POST" action="{{ route('products.bulk.attributes.upload')}}" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row">
+                                        <div>
+                                            <h3> Product Attribute Upload Section </h3>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Select Import File</label>
+                                                <input type="file" name="file" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 mt-3 pt-5">
+                                            <button type="submit"  class="btn btn-primary mb-2">Import</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-4">
+                                <label for=""> Sample Excel file </label>
+                                <div class="mt-2">
+                                    <a href="{{ asset('assets/data/ProductAttributeSamplefile.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
                             </div>
                         </div>

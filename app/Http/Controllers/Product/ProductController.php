@@ -6,6 +6,7 @@ use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
 use App\Imports\MultiSheetProductImport;
 use App\Imports\TestImport;
+use App\Imports\UploadAttributes;
 use Illuminate\Http\Request;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
@@ -278,7 +279,7 @@ class ProductController extends Controller
             $product_id                     = $productInfo->id;
             if( $request->hasFile('avatar') ) {        
               
-                $imageName                  = uniqid().$request->avatar->getClientOriginalName();
+                $imageName                  = uniqid().Str::slug($request->avatar->getClientOriginalName());
                 $directory                  = 'products/'.$product_id.'/default';
                 Storage::deleteDirectory('public/'.$directory);
 
@@ -403,7 +404,7 @@ class ProductController extends Controller
             $imageIns = [];
             $iteration = 1;
             foreach ($files as $file) {
-                $imageName = uniqid().$file->getClientOriginalName();
+                $imageName = uniqid().Str::slug($file->getClientOriginalName());
                 if (!is_dir(storage_path("app/public/products/".$product_id."/thumbnail"))) {
                     mkdir(storage_path("app/public/products/".$product_id."/thumbnail"), 0775, true);
                 }
@@ -569,6 +570,12 @@ class ProductController extends Controller
     public function doBulkUpload(Request $request)
     {
         Excel::import( new MultiSheetProductImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
+    }
+
+    public function doAttributesBulkUpload(Request $request)
+    {
+        Excel::import( new UploadAttributes, request()->file('file') );
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 

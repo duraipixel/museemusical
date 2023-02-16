@@ -24,7 +24,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
-
+ 
         $status = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
         
         $bulleting = $row['4_bullet_points'] ?? '';

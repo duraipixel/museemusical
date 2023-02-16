@@ -5,11 +5,13 @@
 </div>
 
 <div class="card-body text-center pt-0">
+    @php
+    @endphp
     <!--begin::Image input-->
     @if( isset($info->base_image) && !empty( $info->base_image ) )
     @php
         $url = Storage::url($info->base_image);
-        // print_r( $url );
+        // print_r( asset($url) );
     @endphp
     @endif
     <div class="image-input image-input-empty image-input-outline mb-3" data-kt-image-input="true"

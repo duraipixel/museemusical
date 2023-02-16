@@ -42771,7 +42771,7 @@ var defaultOptions = {
         file._removeLink = Dropzone.createElement("<a class=\"dz-remove\" href=\"javascript:undefined;\" data-dz-remove>".concat(this.options.dictRemoveFile, "</a>"));
         file.previewElement.appendChild(file._removeLink);
 
-		var inputLink = Dropzone.createElement("<div class='bulk_btn_pane'><input type=\"text\" class=\"bulk_input\" id='image_order_"+file.id+"' value="+file.order_by+" /><button type=\"button\" onclick='return changeOrder("+file.id+")' class='bulk_btn'> SetOrder</button></div>");
+		var inputLink = Dropzone.createElement("<div class='bulk_btn_pane'><input type=\"text\" class=\"bulk_input\" id='image_order_"+file.id+"' value="+file.order_by || 0 +" /><button type=\"button\" onclick='return changeOrder("+file.id+")' class='bulk_btn'> SetOrder</button></div>");
 		
 		file.previewElement.appendChild(inputLink);
       }
