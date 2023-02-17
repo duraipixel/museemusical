@@ -7,19 +7,20 @@ use App\Models\Cart;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
+use App\Services\ShipRocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request)
+    public function addToCart(Request $request, ShipRocketService $service)
     {
         
         $customer_id = $request->customer_id;
         $guest_token = $request->guest_token;
         $product_id = $request->id;
         $quantity = $request->quantity ?? 1;
-        $type       = $request->type;
+        $type = $request->type;
         
         /**
          *1.check customer id and product exist if not insert
@@ -29,7 +30,7 @@ class CartController extends Controller
         
         $product_info = Product::find($product_id);
         $checkCart = Cart::where('customer_id', $customer_id)->where('product_id', $product_id)->first();
-       
+        $getCartToken = Cart::where('customer_id', $customer_id)->first();
         $salePrices = $request->sale_prices;        
         
         if (isset($checkCart) && !empty($checkCart)) {
@@ -55,6 +56,7 @@ class CartController extends Controller
             }
             $ins['customer_id']     = $request->customer_id;
             $ins['product_id']      = $product_id;
+            $ins['guest_token']     = $getCartToken->guest_token ?? 'ORD'.date('ymdhis');
             $ins['quantity']        = $quantity ?? 1;
             $ins['price']           = $salePrices['price_original'];
             $ins['sub_total']       = $salePrices['price_original'] * $quantity ?? 1;
@@ -66,12 +68,14 @@ class CartController extends Controller
         return $this->getCartListAll($customer_id);
     }
 
-    public function updateCart(Request $request)
+    public function updateCart(Request $request, ShipRocketService $service)
     {
 
         $cart_id        = $request->cart_id;        
         $quantity       = $request->quantity ?? 1;        
         $checkCart      = Cart::where('id', $cart_id)->first();
+        // $service->getShippingRocketOrderDimensions($checkCart->customer_id);
+        // dd( 'service');
 
         $checkCart->quantity = $quantity;
         $checkCart->sub_total = $checkCart->price * $quantity;
@@ -124,6 +128,7 @@ class CartController extends Controller
                 foreach ($citems->products as $items ) {
                     $tax = [];
                     $tax_percentage = 0;
+                    
                     $category               = $items->productCategory;
                     $salePrices             = getProductPrice($items);
                     
@@ -180,6 +185,7 @@ class CartController extends Controller
                     $pro['price']           = $citems->price;
                     $pro['quantity']        = $citems->quantity;
                     $pro['sub_total']       = $citems->sub_total;
+                    $pro['shiprocket_order_id'] = $citems->guest_token;
                     $grand_total            += $citems->sub_total;
                     $tmp['carts'][] = $pro;
                 }

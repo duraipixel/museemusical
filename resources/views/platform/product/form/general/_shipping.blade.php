@@ -11,7 +11,7 @@
     <div class="fv-row">
         <!--begin::Input-->
         <div class="form-check form-check-custom form-check-solid mb-2">
-            <input class="form-check-input" name="isShipping" type="checkbox" id="kt_ecommerce_add_product_shipping_checkbox" value="1" />
+            <input class="form-check-input" name="isShipping" @if(isset($info->productMeasurement) && !empty( $info->productMeasurement )) checked @endif type="checkbox" id="kt_ecommerce_add_product_shipping_checkbox" value="1" />
             <label class="form-check-label" for="kt_ecommerce_add_product_shipping_checkbox">This is a physical product</label>
         </div>
         <!--end::Input-->

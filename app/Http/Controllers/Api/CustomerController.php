@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\DynamicMail;
+use App\Models\Cart;
+use App\Models\CartAddress;
 use App\Models\Category\MainCategory;
 use App\Models\GlobalSettings;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\State;
+use App\Services\ShipRocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -119,13 +122,19 @@ class CustomerController extends Controller
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address);
     }
 
-    public function addCustomerAddress(Request $request)
+    public function addCustomerAddress(Request $request, ShipRocketService $service)
     {
+
         if ($request->state) {
             $state_info = State::find($request->state);
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
+        // echo 'tstet';die;
+        $details = $service->getShippingRocketOrderDimensions($request->customer_id);
+        echo 'duraira';die;
+        $from_address_type = $request->from_address_type;
+        $cart_info = Cart::where('customer_id', $request->customer_id)->first();
 
         $ins['customer_id'] = $request->customer_id;
         $ins['address_type_id'] = $request->address_type;
@@ -140,7 +149,29 @@ class CustomerController extends Controller
         $address_info = CustomerAddress::create($ins);
 
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
+        if( isset( $cart_info ) && !empty( $cart_info ) ) {
+            CartAddress::where('customer_id', $request->customer_id)
+                            ->where('address_type', $from_address_type )->delete();
+            $ins_cart = [];
+            $ins_cart['cart_token'] = $cart_info->guest_token;
+            $ins_cart['customer_id'] = $request->customer_id;
+            $ins_cart['address_type'] = $from_address_type;
+            $ins_cart['name'] = $request->contact_name;
+            $ins_cart['email'] = $request->email;
+            $ins_cart['mobile_no'] = $request->mobile_no;
+            $ins_cart['address_line1'] = $request->address;          
+            $ins_cart['country'] = 'india';
+            $ins_cart['post_code'] = $request->post_code;
+            $ins_cart['state'] = $ins['state'];
+            $ins_cart['city'] = $request->city;
+
+            CartAddress::create($ins_cart);
+        }
+        $shipRocketDetails = [];
+        if( $from_address_type == 'shipping') {
+            $details = $service->getShippingRocketOrderDimensions($request->customer_id);
+        }
+        return array('error' => 0, 'shipRocketDetails' => $shipRocketDetails, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
     }
 
     public function updateProfile(Request $request)

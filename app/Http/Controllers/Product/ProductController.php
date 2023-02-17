@@ -418,7 +418,6 @@ class ProductController extends Controller
 
                 $fileNameThumb =  'public/products/'.$product_id.'/thumbnail/100_100_px_' . time() . '-' . $imageName;
                 Image::make($file)->resize(120,120)->save(storage_path('app/' . $fileNameThumb));
-
                 
                 $fileSize = $file->getSize();
 
