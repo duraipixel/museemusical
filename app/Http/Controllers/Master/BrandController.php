@@ -102,8 +102,8 @@ class BrandController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'brand_name' => 'required|string|unique:brands,brand_name,' . $id . ',id,deleted_at,NULL',
-                                'avatar_logo' => 'mimes:jpeg,png,jpg',
-                                'avatar_banner' => 'mimes:jpeg,png,jpg',
+                                'brand_logo' => 'mimes:jpeg,png,jpg',
+                                'brand_banner' => 'mimes:jpeg,png,jpg',
                                 'order_by' => 'required|unique:brands,order_by,' . $id . ',id,deleted_at,NULL',
 
                             ]);
@@ -112,7 +112,10 @@ class BrandController extends Controller
         if ($validator->passes()) {
                                  
             if ($request->image_remove_logo == "yes") {
-                $ins['brand_logo'] = '';
+                $ins['brand_logo']      = '';
+            }
+            if ($request->banner_remove_image == "yes") {
+                $ins['brand_banner']    = '';
             }
  
             $ins['brand_name']          = $request->brand_name;
@@ -130,15 +133,20 @@ class BrandController extends Controller
             $error                  = 0;
             $info                   = Brands::updateOrCreate(['id' => $id], $ins);
             $brand_id               = $info->id;
-
+            $info->order_by         = $request->order_by ?? 0;
         
             if ($request->hasFile('brand_logo')) {
                 
                 $directory = 'brands/'.$brand_id;
-                Storage::deleteDirectory('public/'.$directory);
+                Storage::deleteDirectory('public/'.$directory.'/option1');
+                Storage::deleteDirectory('public/'.$directory.'/option2');
+                Storage::deleteDirectory('public/'.$directory.'/option3');
+                Storage::deleteDirectory('public/'.$directory.'/option4');
+                Storage::deleteDirectory('public/'.$directory.'/thumb');
+                Storage::deleteDirectory('public/'.$directory.'/default');
 
                 $file                   = $request->file('brand_logo');
-                $imageName              = uniqid().$file->getClientOriginalName();
+                $imageName              = uniqid().Str::replace(' ', "-",$file->getClientOriginalName());
                 if (!is_dir(storage_path("app/public/brands/".$brand_id."/option1"))) {
                     mkdir(storage_path("app/public/brands/".$brand_id."/option1"), 0775, true);
                 }
@@ -179,10 +187,27 @@ class BrandController extends Controller
                 Image::make($file)->save(storage_path('app/' . $option6Path)); 
 
                 $info->brand_logo       = $imageName;
-                $info->update();
-
             }
 
+            if ($request->hasFile('brand_banner')) {
+                
+                $directory = 'brands/'.$brand_id.'/banner';
+                Storage::deleteDirectory('public/'.$directory);
+
+                $file                   = $request->file('brand_banner');
+                $imageName              = uniqid().Str::replace(' ', "-",$file->getClientOriginalName());
+
+                if (!is_dir(storage_path("app/public/brands/".$brand_id."/banner"))) {
+                    mkdir(storage_path("app/public/brands/".$brand_id."/banner"), 0775, true);
+                }
+
+                $option7Path            = 'public/brands/'.$brand_id.'/banner/' . $imageName;
+                Image::make($file)->save(storage_path('app/' . $option7Path)); 
+
+                $info->brand_banner      = $imageName;
+            }
+
+            $info->update();
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
 
         } else {
@@ -193,6 +218,7 @@ class BrandController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message, 'brand_id' => $brand_id]);
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
@@ -200,6 +226,7 @@ class BrandController extends Controller
         $info->delete();
         return response()->json(['message'=>"Successfully deleted brand!",'status'=>1]);
     }
+
     public function changeStatus(Request $request)
     {
         $id             = $request->id;

@@ -12,6 +12,7 @@ use Excel;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use Image;
+use Illuminate\Support\Str;
 
 class BannerController extends Controller
 {
@@ -137,7 +138,7 @@ class BannerController extends Controller
                 Storage::deleteDirectory('public/'.$directory);
 
                 $file                   = $request->file('avatar');
-                $imageName              = uniqid().$file->getClientOriginalName();
+                $imageName              = uniqid().Str::replace(' ', '-', $file->getClientOriginalName());
                 if (!is_dir(storage_path("app/public/banner/".$banner_id."/main_banner"))) {
                     mkdir(storage_path("app/public/banner/".$banner_id."/main_banner"), 0775, true);
                 }
@@ -161,17 +162,18 @@ class BannerController extends Controller
                 Storage::deleteDirectory('public/'.$directory);
 
                 $file1                   = $request->file('banner');
-                $imageName1              = uniqid().$file1->getClientOriginalName();
-               
+                
+                $imageName1              = uniqid().Str::replace(' ', "-",$file1->getClientOriginalName());
+                
                 if (!is_dir(storage_path("app/public/banner/".$banner_id."/mobile_banner"))) {
                     mkdir(storage_path("app/public/banner/".$banner_id."/mobile_banner"), 0775, true);
                 }
                
                 $mobileBanner            = 'public/banner/'.$banner_id ."/mobile_banner/". $imageName1;
                 Image::make($file1)->save(storage_path('app/' . $mobileBanner));
-
-                $banner_info->mobile_banner       = $imageName1;
+                $banner_info->mobile_banner = $imageName1;
                 $banner_info->update();
+                
             }
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } else {

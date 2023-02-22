@@ -34,4 +34,12 @@ class Brands extends Model
                     ->join( DB::raw('mm_product_categories as p'), DB::raw('p.id'),'=','product_categories.parent_id')
                     ->groupBy(DB::raw('p.id'));
     }
+
+    public function scopeSubCategory($category_id) {
+        return $this->hasMany(Product::class, 'brand_id', 'id')   
+                    ->selectRaw('product_categories.*')                 
+                    ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+                    ->where('product_categories.parent_id', $category_id )
+                    ->groupBy(DB::raw('p.id'));
+    }
 }

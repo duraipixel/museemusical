@@ -76,16 +76,16 @@ class ShipRocketService
         //     "billing_address_2" =>  "Near Hokage House",
         //     "billing_city" =>  "New Delhi",
         //     "billing_pincode" =>  "110002",
-        //     "billing_state" =>  "Delhi",
-        //     "billing_country" =>  "India",
-        //     "billing_email" =>  "naruto@uzumaki.com",
-        //     "billing_phone" =>  "9876543210",
-        //     "shipping_is_billing" =>  true,
-        //     "shipping_customer_name" =>  "",
-        //     "shipping_last_name" =>  "",
-        //     "shipping_address" =>  "",
-        //     "shipping_address_2" =>  "",
-        //     "shipping_city" =>  "",
+        //     "billing_state" => "Delhi",
+        //     "billing_country" => "India",
+        //     "billing_email" => "naruto@uzumaki.com",
+        //     "billing_phone" => "9876543210",
+        //     "shipping_is_billing" => true,
+        //     "shipping_customer_name" => "",
+        //     "shipping_last_name" => "",
+        //     "shipping_address" => "",
+        //     "shipping_address_2" => "",
+        //     "shipping_city" => "",
         //     "shipping_pincode" =>  "",
         //     "shipping_country" =>  "",
         //     "shipping_state" =>  "",
@@ -97,7 +97,7 @@ class ShipRocketService
         //             "sku" =>  "chakra123",
         //             "units" =>  10,
         //             "selling_price" =>  "900",
-        //             "discount" =>  "",
+        //             "discount" => "",
         //             "tax" =>  "",
         //             "hsn" =>  441122
         //         ]
@@ -134,10 +134,12 @@ class ShipRocketService
 
         curl_close($curl);
 
+        CartShiprocketResponse::where('cart_token', $params['order_id'])->delete();
+
         $ins_params['cart_token'] = $params['order_id'];
         $ins_params['rocket_token'] = $token;
         $ins_params['request_type'] = 'create_order';
-        $ins_params['rocket_order_request_data'] = serialize($params);
+        $ins_params['rocket_order_request_data'] = json_encode($params);
         $ins_params['rocket_order_response_data'] = $response;
 
         CartShiprocketResponse::create($ins_params);

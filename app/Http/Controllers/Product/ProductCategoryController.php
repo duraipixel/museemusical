@@ -172,34 +172,62 @@ class ProductCategoryController extends Controller
             $error                      = 0;
             $categeryInfo               = ProductCategory::updateOrCreate(['id' => $id], $ins);
             $categoryId                 = $categeryInfo->id;
+            $categeryInfo->order_by = $request->order_by ?? 0;
 
             if ($request->hasFile('categoryImage')) {
                
-                $imagName               = time() . '_' . $request->categoryImage->getClientOriginalName();
-                $directory              = 'productCategory/'.$categoryId;
+                $imagName               = time() . '_' . Str::replace(' ', "-",$request->categoryImage->getClientOriginalName());
+                $directory              = 'productCategory/'.$categoryId.'/default';
                 $filename               = $directory.'/'.$imagName.'/';
                 Storage::deleteDirectory('public/'.$directory);
                 Storage::disk('public')->put($filename, File::get($request->categoryImage));
+             
+                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/default"))) {
+                    mkdir(storage_path("app/public/productCategory/".$categoryId."/default"), 0775, true);
+                }
+
+                $carouselPath1          = 'public/productCategory/'.$categoryId.'/default/' . $imagName;
+                Image::make($request->file('categoryImage'))->save(storage_path('app/' . $carouselPath1));
                 
-                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/productCategory/".$categoryId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/carousel"))) {
-                    mkdir(storage_path("app/public/productCategory/".$categoryId."/carousel"), 0775, true);
-                }
-
-                $thumbnailPath          = 'public/productCategory/'.$categoryId.'/thumbnail/' . $imagName;
-                Image::make($request->file('categoryImage'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
-
-                $carouselPath          = 'public/productCategory/'.$categoryId.'/carousel/' . $imagName;
-                Image::make($request->file('categoryImage'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $categeryInfo->image    = $filename;
-                $categeryInfo->save();
+                $categeryInfo->image    = $imagName;
             }
+
+            if ($request->hasFile('categoryImageMedium')) {
+               
+                $imagName1               = time() . '_' . Str::replace(' ', "-",$request->categoryImageMedium->getClientOriginalName());
+                $directory              = 'productCategory/'.$categoryId.'/medium';
+                $filename               = $directory.'/'.$imagName1.'/';
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->categoryImageMedium));
+             
+                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/medium"))) {
+                    mkdir(storage_path("app/public/productCategory/".$categoryId."/medium"), 0775, true);
+                }
+
+                $imgpath1          = 'public/productCategory/'.$categoryId.'/medium/' . $imagName1;
+                Image::make($request->file('categoryImageMedium'))->save(storage_path('app/' . $imgpath1));
+                
+                $categeryInfo->image_md    = $imagName1;
+            }
+
+            if ($request->hasFile('categoryImageSmall')) {
+               
+                $imagName2              = time() . '_' . Str::replace(' ', "-",$request->categoryImageSmall->getClientOriginalName());
+                $directory              = 'productCategory/'.$categoryId.'/small';
+                $filename               = $directory.'/'.$imagName2.'/';
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->categoryImageSmall));
+             
+                if (!is_dir(storage_path("app/public/productCategory/".$categoryId."/small"))) {
+                    mkdir(storage_path("app/public/productCategory/".$categoryId."/small"), 0775, true);
+                }
+
+                $path2          = 'public/productCategory/'.$categoryId.'/small/' . $imagName2;
+                Image::make($request->file('categoryImageSmall'))->save(storage_path('app/' . $path2));
+                
+                $categeryInfo->image_sm    = $imagName2;
+            }
+            $categeryInfo->save();
 
             $meta_title = $request->meta_title;
             $meta_keywords = $request->meta_keywords;

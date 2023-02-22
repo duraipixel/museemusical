@@ -18,6 +18,8 @@ class ProductCategory extends Model
         'slug',
         'description',
         'image',
+        'image_sm',
+        'image_md',
         'is_featured',
         'status',
         'order_by',

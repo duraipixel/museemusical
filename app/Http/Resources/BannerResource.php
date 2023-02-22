@@ -10,12 +10,12 @@ class BannerResource extends JsonResource
     
     public function toArray($request)
     {
-
+        
         $bannerImagePath        = 'banner/'.$this->id.'/main_banner/'.$this->banner_image;
         $url                    = Storage::url($bannerImagePath);
         $path                   = asset($url);
 
-        $mobileBanner           = 'banner/'.$this->id.'/mobile_banner/'.$this->banner_image;
+        $mobileBanner           = 'banner/'.$this->id.'/mobile_banner/'.$this->mobile_banner;
         $mobUrl                 = Storage::url($mobileBanner);
         $pathBanner             = asset($mobUrl);
 

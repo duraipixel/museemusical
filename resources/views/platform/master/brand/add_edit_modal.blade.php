@@ -43,7 +43,7 @@
                             <div class="col-md-6">
 
                                 <div class="mb-7">
-                                    <label class="d-block fw-bold fs-6 mb-5">Brand Log</label>
+                                    <label class="d-block fw-bold fs-6 mb-5">Brand Logo</label>
                                     <div class="form-text">
                                         Allowed file types: png, jpg,
                                         jpeg.
@@ -93,7 +93,60 @@
                                     </span>
                                 </div>
                             </div>
-                        
+                            
+                            <div class="col-md-6">
+
+                                <div class="mb-7">
+                                    <label class="d-block fw-bold fs-6 mb-5">Brand Banner Image</label>
+                                    <div class="form-text">
+                                        Allowed file types: png, jpg,
+                                        jpeg. ( 1600px x 420px )
+                                    </div>
+                                </div>
+                                <input id="banner_remove_image" type="hidden" name="banner_remove_image" value="no">
+                                <div class="image-input image-input-outline manual-image-banner" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                    @if ($info->brand_banner ?? '')
+                                    @php
+                                        $brandLogoPath = 'brands/'.$info->id.'/banner/'.$info->brand_banner;
+                                        $url = Storage::url($brandLogoPath);
+                                        $path = asset($url);
+                                    @endphp     
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
+                                            id="manual-image-banner"
+                                            style="background-image: url({{ asset($path) }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px manual-image-banner"
+                                            id="manual-image-banner"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                        </div>
+                                    @endif
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="brand_banner" id="brand_banner"
+                                            accept=".png, .jpg, .jpeg" />
+                                        {{-- <input type="hidden" name="avatar_remove_logo" /> --}}
+                                        {{-- <input type="file" name="userImage" id="userImage"> --}}
+                                    </label>
+
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        title="Remove avatar1">
+                                        <i class="bi bi-x fs-2" id="avatar_remove_banner"></i>
+                                    </span>
+                                </div>
+                            </div>
                            
                         </div>
                         <div class="fv-row mb-7">
@@ -153,7 +206,31 @@
             }
         }
     );
-     document.getElementById('readUrllogo').addEventListener('change', function() {
+
+    document.getElementById('brand_banner').addEventListener('change', function() {
+        
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#manual-image-banner').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
+        }
+    });
+
+    document.getElementById('avatar_remove_banner').addEventListener('click', function() {
+        $('#banner_remove_image').val("yes");
+        $('#manual-image-banner').css({
+            'background-image': ''
+        });
+    });
+
+
+    document.getElementById('readUrllogo').addEventListener('change', function() {
         
         if (this.files[0]) {
             var picture = new FileReader();
@@ -173,27 +250,7 @@
             'background-image': ''
         });
     });
-    //banner image script
-    document.getElementById('readUrlbanner').addEventListener('change', function() {
-        
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#manual-image-banner').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('avatar_remove_banner').addEventListener('click', function() {
-        $('#image_remove_banner').val("yes");
-        $('#manual-image-banner').css({
-            'background-image': ''
-        });
-    });
+    
 </script>
 
 <script>

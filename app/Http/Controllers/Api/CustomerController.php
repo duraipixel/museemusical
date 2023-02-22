@@ -130,9 +130,9 @@ class CustomerController extends Controller
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
-        // echo 'tstet';die;
-        $details = $service->getShippingRocketOrderDimensions($request->customer_id);
-        echo 'duraira';die;
+        
+        // $details = $service->getShippingRocketOrderDimensions($request->customer_id);
+        // echo 'duraira';die;
         $from_address_type = $request->from_address_type;
         $cart_info = Cart::where('customer_id', $request->customer_id)->first();
 
@@ -169,7 +169,7 @@ class CustomerController extends Controller
         }
         $shipRocketDetails = [];
         if( $from_address_type == 'shipping') {
-            $details = $service->getShippingRocketOrderDimensions($request->customer_id);
+            // $details = $service->getShippingRocketOrderDimensions($request->customer_id);
         }
         return array('error' => 0, 'shipRocketDetails' => $shipRocketDetails, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
     }

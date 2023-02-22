@@ -116,6 +116,50 @@
             'background-image': ''
         });
     });
+
+    //medium image
+    document.getElementById('mediumFile').addEventListener('change', function() {
+        // console.log("111");
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#medium-image').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
+        }
+    });
+    document.getElementById('medium_remove_logo').addEventListener('click', function() {
+        $('#image_remove_medium').val("yes");
+        $('#medium-image').css({
+            'background-image': ''
+        });
+    });
+
+    //small image
+    document.getElementById('smallImage').addEventListener('change', function() {
+        // console.log("111");
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#small-image').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
+        }
+    });
+    document.getElementById('medium_remove_logo').addEventListener('click', function() {
+        $('#image_remove_small').val("yes");
+        $('#small-image').css({
+            'background-image': ''
+        });
+    });
    
     $('#parent_category').select2();
     var add_url = "{{ route('product-category.save') }}";

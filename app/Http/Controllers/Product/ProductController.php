@@ -279,7 +279,7 @@ class ProductController extends Controller
             $product_id                     = $productInfo->id;
             if( $request->hasFile('avatar') ) {        
               
-                $imageName                  = uniqid().Str::slug($request->avatar->getClientOriginalName());
+                $imageName                  = uniqid().Str::replace(' ', "-",$request->avatar->getClientOriginalName());
                 $directory                  = 'products/'.$product_id.'/default';
                 Storage::deleteDirectory('public/'.$directory);
 
@@ -404,7 +404,7 @@ class ProductController extends Controller
             $imageIns = [];
             $iteration = 1;
             foreach ($files as $file) {
-                $imageName = uniqid().Str::slug($file->getClientOriginalName());
+                $imageName = uniqid().Str::replace(' ', "-",$file->getClientOriginalName());
                 if (!is_dir(storage_path("app/public/products/".$product_id."/thumbnail"))) {
                     mkdir(storage_path("app/public/products/".$product_id."/thumbnail"), 0775, true);
                 }
@@ -480,7 +480,7 @@ class ProductController extends Controller
         $product_id = $request->session()->pull('brochure_product_id');
         if( $request->hasFile('file') && isset( $product_id ) ) {
             
-            $filename       = time() . '_' . $request->file->getClientOriginalName();
+            $filename       = time() . '_' . Str::replace(' ', "-",$request->file->getClientOriginalName());
             $directory      = 'products/'.$product_id.'/brochure';
             $filename       = $directory.'/'.$filename;
             Storage::deleteDirectory('public/'.$directory);

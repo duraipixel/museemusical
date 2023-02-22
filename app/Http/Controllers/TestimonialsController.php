@@ -98,7 +98,7 @@ class TestimonialsController extends Controller
             
             if ($request->file('avatar')) {
 
-                $filename           = time() . '_' . $request->avatar->getClientOriginalName();
+                $filename           = time() . '_' . str_replace( ' ', '-', $request->avatar->getClientOriginalName() );
                 $folder_name        = 'testimonial/' . str_replace(' ', '', $request->title) . '/';
                 $existID            = '';
                 if($id)
