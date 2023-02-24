@@ -17,8 +17,8 @@ class ShipRocketService
 
     public function __construct()
     {
-        $this->email = 'onlinemuseemusical@gmail.com';
-        $this->password = 'password123';
+        $this->email = 'abhinav@museemusical.in';
+        $this->password = 'Test@2023';
     }
 
     public function getToken()
@@ -56,63 +56,13 @@ class ShipRocketService
     public function rocketToken($order_id)
     {
         $CartShiprocketResponse = CartShiprocketResponse::where('cart_token', $order_id)->first();
-        return  $CartShiprocketResponse->rocket_token ?? $this->getToken();
+        return $this->getToken();
     }
 
     public function createOrder($params)
     {
         $token = $this->rocketToken($params['order_id']);
         $curl = curl_init();
-
-        // $params = array(
-        //     "order_id" =>  "224-4779",
-        //     "order_date" =>  "2023-02-14 15:11",
-        //     "pickup_location" =>  "Primary",
-        //     "channel_id" =>  "",
-        //     "comment" =>  "Reseller =>  M/s Goku",
-        //     "billing_customer_name" =>  "Naruto",
-        //     "billing_last_name" =>  "Uzumaki",
-        //     "billing_address" =>  "House 221B, Leaf Village",
-        //     "billing_address_2" =>  "Near Hokage House",
-        //     "billing_city" =>  "New Delhi",
-        //     "billing_pincode" =>  "110002",
-        //     "billing_state" => "Delhi",
-        //     "billing_country" => "India",
-        //     "billing_email" => "naruto@uzumaki.com",
-        //     "billing_phone" => "9876543210",
-        //     "shipping_is_billing" => true,
-        //     "shipping_customer_name" => "",
-        //     "shipping_last_name" => "",
-        //     "shipping_address" => "",
-        //     "shipping_address_2" => "",
-        //     "shipping_city" => "",
-        //     "shipping_pincode" =>  "",
-        //     "shipping_country" =>  "",
-        //     "shipping_state" =>  "",
-        //     "shipping_email" =>  "",
-        //     "shipping_phone" =>  "",
-        //     "order_items" =>  [
-        //         [
-        //             "name" =>  "Kunai",
-        //             "sku" =>  "chakra123",
-        //             "units" =>  10,
-        //             "selling_price" =>  "900",
-        //             "discount" => "",
-        //             "tax" =>  "",
-        //             "hsn" =>  441122
-        //         ]
-        //     ],
-        //     "payment_method" => "Prepaid",
-        //     "shipping_charges" => 0,
-        //     "giftwrap_charges" => 0,
-        //     "transaction_charges" => 0,
-        //     "total_discount" => 0,
-        //     "sub_total" =>  9000,
-        //     "length" => 10,
-        //     "breadth" => 15,
-        //     "height" => 20,
-        //     "weight" => 2.5
-        // );
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
@@ -134,29 +84,69 @@ class ShipRocketService
 
         curl_close($curl);
 
-        CartShiprocketResponse::where('cart_token', $params['order_id'])->delete();
+        $success_response = json_decode($response);
+        
+        if( $success_response->status_code == 1) {
 
-        $ins_params['cart_token'] = $params['order_id'];
-        $ins_params['rocket_token'] = $token;
-        $ins_params['request_type'] = 'create_order';
-        $ins_params['rocket_order_request_data'] = json_encode($params);
-        $ins_params['rocket_order_response_data'] = $response;
+            CartShiprocketResponse::where('cart_token', $params['order_id'])->delete();
+            $ins_params['cart_token'] = $params['order_id'];
+            $ins_params['rocket_token'] = $token;
+            $ins_params['request_type'] = 'create_order';
+            $ins_params['rocket_order_request_data'] = json_encode($params);
+            $ins_params['rocket_order_response_data'] = $response;
+            $ins_params['order_id'] = $success_response->order_id;
+    
+            CartShiprocketResponse::create($ins_params);
+        } 
 
-        CartShiprocketResponse::create($ins_params);
+        return $response;
     }
 
-    public function getShippingRocketOrderDimensions($customer_id)
+    public function updateOrder($params)
+    {
+        $token = $this->rocketToken($params['order_id']);
+        $curl = curl_init();
+        
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/orders/update/adhoc',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($params),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $token
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);       
+
+        return $response;
+    }
+
+    public function getShippingRocketOrderDimensions($customer_id, $cart_token )
     {
         $checkCart = Cart::where('customer_id', $customer_id)->get();
         $customer = Customer::find($customer_id);
-        $cartBillAddress = CartAddress::where('customer_id', $customer_id)->where('address_type', 'billing')->first();
-        $cartShipAddress = CartAddress::where('customer_id', $customer_id)->where('address_type', 'shipping')->first();
+        $cartBillAddress = CartAddress::where('customer_id', $customer_id)  
+                            ->where('cart_token', $cart_token)
+                            ->where('address_type', 'billing')->first();
+        $cartShipAddress = CartAddress::where('customer_id', $customer_id)
+                            ->where('cart_token', $cart_token)
+                            ->where('address_type', 'shipping')->first();
 
         if ($cartBillAddress && $cartShipAddress) {
 
             $product_id = [];
             $cartItemsarr = [];
             $cartTotal = 0;
+            $total_weight = 0;
             if (isset($checkCart) && !empty($checkCart)) {
                 foreach ($checkCart as $citems) {
 
@@ -164,6 +154,13 @@ class ShipRocketService
                         $pro = $citems->products;
 
                         $product_id[] = $pro->id;
+
+                        $pro_measure = DB::table('product_measurements')
+                                        ->selectRaw("sum(weight) as weight")
+                                        ->where('product_id', $product_id)->first();
+
+                        $total_weight += $pro_measure->weight * $citems->quantity;
+                        
                         $tax_total  = 0;
                         $tax = [];
                         $category               = $pro->productCategory;
@@ -234,41 +231,67 @@ class ShipRocketService
                 "length" => $measure->length,
                 "breadth" => $measure->width,
                 "height" => $measure->height,
-                "weight" => $measure->weight
+                "weight" => $total_weight
             );
 
-            $this->createOrder($params);
+            $measure_ment = array(
+                "sub_total" => $cartTotal,
+                "length" => $measure->length,
+                "breadth" => $measure->width,
+                "height" => $measure->height,
+                "weight" => $total_weight
+            );
+
+            $shipResponse = CartShiprocketResponse::where('cart_token', $params['order_id'])->first();
+
+            if( isset($shipResponse) && !empty( $shipResponse->order_id ) ) {
+                /**
+                 * update address in order ship rocket
+                 */
+                return $this->getShippingCharges($shipResponse->order_id, $measure_ment);
+            } else {
+                /**
+                 * create new order in ship rocket
+                 */
+                $createResponse = $this->createOrder($params);
+                $createResponse = json_decode($createResponse);
+            }
 
             /**
              * get Shipping Charges
              */
-
-            $charge_array = array(
-                "pickup_postcode" => $cartBillAddress->post_code,
-                "delivery_postcode" => $cartShipAddress->post_code,
-                "order_id" => $params['order_id'],
-                "cod" =>  false,
-                "weight" => $measure->weight,
-                "length" => $measure->length,
-                "breadth" => $measure->width,
-                "height" => $measure->height,
-                "declared_value" => $cartTotal,
-                "mode" => "Surface",
-                "is_return" => 0,
-                "couriers_type" => 0,
-                "only_local" => 0
-            );
-
-            $this->getShippingCharges($charge_array);
+            if( isset( $createResponse ) && !empty( $createResponse->order_id )) {
+                return $this->getShippingCharges($createResponse->order_id, $measure_ment);
+            }
                                     
         }
     }
 
-    public function getShippingCharges($data)
+    public function getShippingCharges($order_id, $measure_ment)
     {
-        $token = $this->rocketToken($data['order_id']);
-        $curl = curl_init();
 
+        $cart_ship_response = CartShiprocketResponse::where('order_id', $order_id )->first();
+                    
+
+        $charge_array = array(
+            "pickup_postcode" => $cart_ship_response->billingAddress->post_code,
+            "delivery_postcode" => $cart_ship_response->deliveryAddress->post_code,
+            "order_id" => $order_id,
+            "cod" =>  false,
+            "weight" => $measure_ment['weight'],
+            "length" => $measure_ment['length'],
+            "breadth" => $measure_ment['breadth'],
+            "height" => $measure_ment['height'],
+            "declared_value" => $measure_ment['sub_total'],
+            "mode" => "Surface",
+            "is_return" => 0,
+            "couriers_type" => 0,
+            "only_local" => 0
+        );
+        
+        $token = $this->getToken();
+        $curl = curl_init();
+        
         curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
                     CURLOPT_RETURNTRANSFER => true,
@@ -278,7 +301,7 @@ class ShipRocketService
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'GET',
-                    CURLOPT_POSTFIELDS => json_encode($data),
+                    CURLOPT_POSTFIELDS => json_encode($charge_array),
                     CURLOPT_HTTPHEADER => array(
                         'Content-Type: application/json',
                         'Authorization: Bearer '.$token
@@ -288,6 +311,31 @@ class ShipRocketService
         $response = curl_exec($curl);
         curl_close($curl);
 
-        echo $response;die;
+        $updata = array(
+            'shipping_charge_request_data' => json_encode( $charge_array ),
+            'shipping_charge_response_data' => $response
+        );
+        CartShiprocketResponse::where('order_id', $order_id)->update($updata);
+
+        $response = json_decode($response);
+        $json_data = [];
+        if( isset( $response->data->available_courier_companies ) && !empty( $response->data->available_courier_companies ) ) {
+            foreach ($response->data->available_courier_companies as $item ) {
+                $tmp = [];
+                $tmp['courier_name'] = $item->courier_name;
+                $tmp['id'] = $item->id;
+                $tmp['amount'] = array( 
+                                    (float)$item->coverage_charges,
+                                    (float)$item->freight_charge,
+                                    (float)$item->rate,
+                                    (float)$item->rto_charges
+                                );
+                
+                $tmp['measurement'] = $measure_ment;
+                $json_data[] = $tmp;
+            }
+        }
+        
+        return $json_data;
     }
 }

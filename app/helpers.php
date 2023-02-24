@@ -427,3 +427,8 @@ function getIndianCurrency(float $number)
     $paise = ($decimal > 0) ? "." . ($words[$decimal / 10] . " " . $words[$decimal % 10]) . ' Paise' : '';
     return ($Rupees ? $Rupees . 'Rupees ' : '') . $paise;
 }
+
+function getSecondLevelCharges( $array ) {
+    sort($array);
+    return $array[1];
+}

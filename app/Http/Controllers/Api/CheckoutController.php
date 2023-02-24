@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderMail;
 use App\Models\Cart;
+use App\Models\CartShiprocketResponse;
 use App\Models\GlobalSettings;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
@@ -28,15 +29,13 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
-       
+        
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
-         * 2.INSERT IN Order Products
-         * 
+         * 2.INSERT IN Order Products          
          */
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
-
         $customer_id            = $request->customer_id;
         $cart_total             = $request->cart_total;
         $cart_items             = $request->cart_items;
@@ -46,10 +45,12 @@ class CheckoutController extends Controller
 
         #check product is out of stock
         $errors                 = [];
+        
         if (isset($cart_items) && !empty($cart_items)) {
             foreach ($cart_items as $item) {
-                $product_id = $item['id'];
-                $product_info = Product::find($product_id);
+                $product_id     = $item['id'];
+                $cart_id        = $item['cart_id'];
+                $product_info   = Product::find($product_id);
                 if ($product_info->quantity < $item['quantity']) {
 
                     $errors[]     = $item['product_name'] . ' is out of stock, Product will be removed from cart.Please choose another';
@@ -57,6 +58,22 @@ class CheckoutController extends Controller
                 }
             }
         }
+        $shippingCharges = [];
+        if( isset( $cart_id ) ) {
+            $cartInfo = Cart::find($cart_id);
+            $cart_token = $cartInfo->guest_token;
+            $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
+            if( isset( $shipmentResponse->shipping_charge_response_data ) && !empty( $shipmentResponse->shipping_charge_response_data)) {
+                $shipChargeResponse = json_decode($shipmentResponse->shipping_charge_response_data);
+                foreach ( $shipChargeResponse->data->available_courier_companies as $items ) {
+                    if( $items->id == $shipping_id ) {
+                        $shippingCharges = $items;
+                    }
+                }
+            }
+        }
+        
+
         if( !$shipping_address ) {
             $message     = 'Shipping address not selected';
             $error = 1;
@@ -79,11 +96,19 @@ class CheckoutController extends Controller
 
         $shipping_type_info = ShippingCharge::find($shipping_id);
 
+        if( !$shipping_type_info ) {
+            /**
+             * check shiprocket data is available
+             */
+
+            $shipping_amount = $cart_total['shipping_charge'];
+        }
+        
         $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
         $order_ins['shipping_options'] = $shipping_id;
-        $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+        $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $cart_total['tax_total'];
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
@@ -116,6 +141,8 @@ class CheckoutController extends Controller
         $order_ins['shipping_post_code'] = $shipping_address['post_code'];
         $order_ins['shipping_state'] = $shipping_address['state'] ?? null;
         $order_ins['shipping_city'] = $shipping_address['city'] ?? null;
+        $order_ins['rocket_charge_response'] = json_encode($shippingCharges);
+        $order_ins['rocket_charge_name'] = $shippingCharges->courier_name ?? null;
 
         $order_id = Order::create($order_ins)->id;
 

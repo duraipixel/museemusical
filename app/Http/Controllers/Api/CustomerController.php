@@ -24,7 +24,7 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'firstName' => 'required|string',
-            'email' => 'required|email|unique:customers,email',
+            'email' => 'required|email|unique:customers,email,id,deleted_at,NULL', 
             'password' => 'required|string',
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);

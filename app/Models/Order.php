@@ -47,6 +47,8 @@ class Order extends Model
         'description',
         'order_status_id',
         'status',
+        'rocket_charge_name',
+        'rocket_charge_response',
         'payment_id',
         'payment_response_id'        
     ];

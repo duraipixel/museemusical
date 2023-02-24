@@ -19,4 +19,14 @@ class CartShiprocketResponse extends Model
         'shipping_charge_request_data',
         'shipping_charge_response_data'
     ];
+
+    public function billingAddress()
+    {
+        return $this->belongsTo(CartAddress::class, 'cart_token', 'cart_token')->where('address_type', 'billing');
+    }
+
+    public function deliveryAddress()
+    {
+        return $this->belongsTo(CartAddress::class, 'cart_token', 'cart_token')->where('address_type', 'shipping');
+    }
 }

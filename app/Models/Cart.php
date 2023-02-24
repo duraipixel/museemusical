@@ -19,5 +19,9 @@ class Cart extends Model
         return $this->hasOne( Product::class, 'id', 'product_id' );
     }
 
+    public function rocketResponse() {
+        return $this->hasOne(CartShiprocketResponse::class, 'cart_token', 'guest_token');
+    }
+
     
 }

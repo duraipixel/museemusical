@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartAddress;
+use App\Models\CartShiprocketResponse;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
@@ -70,6 +71,7 @@ class CartController extends Controller
     {
 
         $cart_id        = $request->cart_id;
+        $customer_id  = $request->customer_id;
         $quantity       = $request->quantity ?? 1;
         $checkCart      = Cart::where('id', $cart_id)->first();
         // $service->getShippingRocketOrderDimensions($checkCart->customer_id);
@@ -78,14 +80,15 @@ class CartController extends Controller
         $checkCart->quantity = $quantity;
         $checkCart->sub_total = $checkCart->price * $quantity;
         $checkCart->update();
+
+        $shiprocket_charges = $service->getShippingRocketOrderDimensions( $customer_id, $service->getToken() );       
+
         return $this->getCartListAll($checkCart->customer_id);
     }
 
     public function deleteCart(Request $request)
     {
-
         $cart_id        = $request->cart_id;
-
         $checkCart      = Cart::find($cart_id);
         $customer_id    = $checkCart->customer_id;
         $checkCart->delete();
@@ -98,6 +101,8 @@ class CartController extends Controller
         $customer_id        = $request->customer_id;
 
         Cart::where('customer_id', $customer_id)->delete();
+        CartAddress::where('customer_id', $customer_id)->delete();
+        // CartShiprocketResponse::where('cart_token')
         return $this->getCartListAll($customer_id);
     }
 
@@ -186,6 +191,7 @@ class CartController extends Controller
 
             if (isset($shipping_info) && !empty($shipping_info)) {
                 $tmp['shipping_id']         = $shipping_info->id;
+                $tmp['shipping_charge_order']= $shipping_info->charges;
                 $grand_total                = $grand_total + $shipping_info->charges ?? 0;
             }
 
@@ -198,9 +204,11 @@ class CartController extends Controller
                 'product_tax_exclusive_total' => number_format(round($product_tax_exclusive_total), 2),
                 'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
                 'tax_total' => number_format(round($tax_total), 2),
-                'tax_percentage' => number_format(round($tax_percentage), 2)
+                'tax_percentage' => number_format(round($tax_percentage), 2),
+                'shipping_charge' => $shipping_info->charges ?? 0
             );
         }
+        // dd( $tmp );die;
         return $tmp;
     }
 
@@ -218,9 +226,43 @@ class CartController extends Controller
 
         $customer_id    = $request->customer_id;
         $shipping_id    = $request->shipping_id;
+        $type    = $request->type;
 
-        $shipping_info  = ShippingCharge::find($shipping_id);
+        if( isset( $type ) && !empty( $type ) && $type == 'rocket' ) {
+            $cartInfo = Cart::where('customer_id', $customer_id)->first();
+            if( isset($cartInfo->rocketResponse->shipping_charge_response_data ) && !empty( $cartInfo->rocketResponse->shipping_charge_response_data ) ) {
+                $response = json_decode($cartInfo->rocketResponse->shipping_charge_response_data);
+                
+                $tmp = [];
+                if( isset( $response->data->available_courier_companies ) && !empty( $response->data->available_courier_companies ) ) {
+                    foreach ($response->data->available_courier_companies as $tiem) {
+                        
+                        if( $tiem->id == $shipping_id ) {
+                            $tmp = $tiem;
+                            break;
+                        }
+                    }
+                }
+                
+                if( $tmp ) {
 
+                    $amount = array( 
+                        (float)$tmp->coverage_charges,
+                        (float)$tmp->freight_charge,
+                        (float)$tmp->rate,
+                        (float)$tmp->rto_charges
+                    );
+                    $shipping_info['charges'] = getSecondLevelCharges( $amount );
+                    $shipping_info['id'] = $shipping_id;
+                    $shipping_info = (object)$shipping_info;
+                }
+            }
+        } else {
+
+            $shipping_info  = ShippingCharge::find($shipping_id);
+        }
+
+        
         return $this->getCartListAll($customer_id, $shipping_info);
     }
 
@@ -231,24 +273,26 @@ class CartController extends Controller
         $customer_id = $request->customer_id;
         
         $cart_info = Cart::where('customer_id', $customer_id)->first();
+        if( isset( $from_type ) && !empty( $from_type ) ) {
 
-        CartAddress::where('customer_id', $request->customer_id)
-            ->where('address_type', $from_type)->delete();
-        $ins_cart = [];
-        $ins_cart['cart_token'] = $cart_info->guest_token;
-        $ins_cart['customer_id'] = $customer_id;
-        $ins_cart['address_type'] = $from_type;
-        $ins_cart['name'] = $address['name'];
-        $ins_cart['email'] = $address['email'];
-        $ins_cart['mobile_no'] = $address['mobile_no'];
-        $ins_cart['address_line1'] = $address['address_line1'];
-        $ins_cart['country'] = 'india';
-        $ins_cart['post_code'] = $address['post_code'];
-        $ins_cart['state'] = $address['state'];
-        $ins_cart['city'] = $address['city'];
-        CartAddress::create($ins_cart);
+            CartAddress::where('customer_id', $request->customer_id)
+                ->where('address_type', $from_type)->delete();
+            $ins_cart = [];
+            $ins_cart['cart_token'] = $cart_info->guest_token;
+            $ins_cart['customer_id'] = $customer_id;
+            $ins_cart['address_type'] = $from_type;
+            $ins_cart['name'] = $address['name'];
+            $ins_cart['email'] = $address['email'];
+            $ins_cart['mobile_no'] = $address['mobile_no'];
+            $ins_cart['address_line1'] = $address['address_line1'];
+            $ins_cart['country'] = 'india';
+            $ins_cart['post_code'] = $address['post_code'];
+            $ins_cart['state'] = $address['state'];
+            $ins_cart['city'] = $address['city'];
+            CartAddress::create($ins_cart);
+        }
 
-        // $details = $service->getShippingRocketOrderDimensions($customer_id);
+        return array( 'shiprocket_charges' => $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token) );
 
     }
 }

@@ -422,7 +422,8 @@ class ProductController extends Controller
                 $fileSize = $file->getSize();
 
                 $fileName =  'public/products/'.$product_id.'/gallery/1000_700_px_' . time() . '-' . $imageName;
-                Image::make($file)->resize(1000,700)->save(storage_path('app/' . $fileName));
+                Image::make($file)->save(storage_path('app/' . $fileName));
+                // Image::make($file)->resize(1000,700)->save(storage_path('app/' . $fileName));
 
                 $fileNamePreview = 'public/products/'.$product_id.'/detailPreview/615_450_px_' . time() . '-' . $imageName;
                 Image::make($file)->resize(615,450)->save(storage_path('app/' . $fileNamePreview));
