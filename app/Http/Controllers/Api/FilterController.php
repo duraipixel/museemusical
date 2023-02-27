@@ -50,11 +50,15 @@ class FilterController extends Controller
         // $sory_by                = array_merge($tags, $labels, $sory_by);
         // $sory_by                = array_merge($tags, $labels, $sory_by);
 
-        $discounts              = ProductCollection::select('id', 'collection_name', 'slug')
-            ->where('can_map_discount', 'yes')
-            ->where('status', 'published')
-            ->orderBy('order_by', 'asc')
-            ->get()->toArray();
+        // $discounts              = ProductCollection::select('id', 'collection_name', 'slug')
+        //     ->where('can_map_discount', 'yes')
+        //     ->where('status', 'published')
+        //     ->orderBy('order_by', 'asc')
+        //     ->get()->toArray();
+
+        $discounts = ProductCollection::select('id', 'collection_name', 'slug')->where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'yes'])
+                        ->orderBy('order_by', 'asc')->get()->toArray();
+        
 
         $collection              = ProductCollection::select('id', 'collection_name', 'slug')
             ->where('can_map_discount', 'no')
