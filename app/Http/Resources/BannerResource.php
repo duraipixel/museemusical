@@ -23,6 +23,7 @@ class BannerResource extends JsonResource
         $tmp[ 'title' ]         = $this->title;
         $tmp[ 'image' ]         = $path;
         $tmp[ 'mobile_banner' ] = $pathBanner;
+        $tmp['links']           = $this->links;
         $tmp[ 'description' ]   = $this->description;
         $tmp[ 'tag_line' ]      = $this->tag_line;
 

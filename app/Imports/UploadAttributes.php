@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Product\Product;
 use App\Models\Product\ProductAttributeSet;
+use App\Models\Product\ProductMapAttribute;
 use App\Models\Product\ProductWithAttributeSet;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -38,9 +39,19 @@ class UploadAttributes implements ToModel, WithHeadingRow
                 $attribute_info = ProductAttributeSet::where('slug', $attr_slug)->first();
                 if( !empty( $row['keys'] ) && !empty( $row['values'] ) ) {
 
+                    $check = ProductMapAttribute::where('product_id', $product_info->id)->where('attribute_id', $attribute_info->id)->first();
+                    if( isset($check) && !empty( $check ) ) {
+                        $map_id = $check->id;
+                    } else {
+
+                        $atIns['product_id'] = $product_info->id;
+                        $atIns['attribute_id'] = $attribute_info->id;
+                        $map_id = ProductMapAttribute::create($atIns)->id;
+                    }
+
                     $ins_set = [];
                     $ins_set['product_id'] = $product_info->id;
-                    $ins_set['product_attribute_set_id'] = $attribute_info->id;
+                    $ins_set['product_attribute_set_id'] = $map_id;
                     $ins_set['title'] = $row['keys'];
                     $ins_set['attribute_values'] = $row['values'];
                     $ins_set['status'] = 'published';

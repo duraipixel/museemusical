@@ -83,6 +83,7 @@ class FilterController extends Controller
         $filter_availability    = $request->availability;
         $filter_brand           = $request->brand;
         $filter_discount        = $request->discount;
+        $filter_collection      = $request->collection;
         $filter_attribute       = $request->attributes_category;
         $sort                   = $request->sort;
         
@@ -90,6 +91,7 @@ class FilterController extends Controller
         $filter_attribute_array = [];
         $filter_brand_array = [];
         $filter_discount_array = [];
+        $filter_collection_array = [];
         $filter_booking     = $request->booking;
         if (isset($filter_attribute) && !empty($filter_attribute)) {
             
@@ -104,6 +106,10 @@ class FilterController extends Controller
 
         if (isset($filter_discount) && !empty($filter_discount)) {
             $filter_discount_array     = explode("_", $filter_discount);
+        }
+
+        if (isset($filter_collection) && !empty($filter_collection)) {
+            $filter_collection_array     = explode("_", $filter_collection);
         }
 
         $productAttrNames = [];
@@ -149,6 +155,11 @@ class FilterController extends Controller
                 $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
             })
+            ->when($filter_collection != '', function ($q) use ($filter_collection_array) {
+                $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+                return $q->whereIn('product_collections.slug', $filter_collection_array);
+            })
             ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
@@ -162,8 +173,9 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-            ->count();
-
+            ->groupBy('products.id')
+            ->get();
+        $total = count($total);
         $details = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
             ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
@@ -189,6 +201,11 @@ class FilterController extends Controller
                 $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
                 return $q->whereIn('product_collections.slug', $filter_discount_array);
+            })
+            ->when($filter_collection != '', function ($q) use ($filter_collection_array) {
+                $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+                return $q->whereIn('product_collections.slug', $filter_collection_array);
             })
             ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
@@ -251,7 +268,6 @@ class FilterController extends Controller
         //     $to = $total;
         // }
         $to = count($details);
-
         return array('products' => $tmp, 'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
     }
 
@@ -316,7 +332,31 @@ class FilterController extends Controller
             }
         }
 
-        $pro['attributes']              = $items->productAttributes;
+        
+        $attributes = [];
+        if( isset( $items->productMappedAttributes ) && !empty( $items->productMappedAttributes ) ) {
+            foreach ($items->productMappedAttributes as $attrItems ) {
+                $tmp = [];
+                $tmp['id'] = $attrItems->attrInfo->id;
+                $tmp['title'] = $attrItems->attrInfo->title;
+                $tmp['slug'] = $attrItems->attrInfo->slug;
+                $parent_sub = [];
+                if( isset( $attrItems->getFilterSpec ) && !empty( $attrItems->getFilterSpec ) ) {
+                    foreach ($attrItems->getFilterSpec as $subitem ) {
+                        $sub_tmp = [];
+                        
+                        $sub_tmp['id'] = $subitem->id;
+                        $sub_tmp['title'] = $subitem->title;
+                        $sub_tmp['value'] = $subitem->attribute_values;
+                        $parent_sub[] = $sub_tmp;
+                    }
+                }
+                $tmp['child'] = $parent_sub;
+                
+                $attributes[] = $tmp;
+            }
+        }
+        $pro['attributes']              = $attributes;
         $related_arr                    = [];
         if (isset($items->productRelated) && !empty($items->productRelated)) {
             foreach ($items->productRelated as $related) {
@@ -381,7 +421,6 @@ class FilterController extends Controller
                         ->orWhere('sku', 'like', "%{$query}%");
                     })->where('status', 'published')->get();
                 }
-
                 
                 if (isset($productInfo) && !empty($productInfo) && count( $productInfo ) > 0 ) {
                     $error = 0;
@@ -496,34 +535,64 @@ class FilterController extends Controller
             }
             
             $data = [];
-            // $attributeInfo = ProductAttributeSet::whereIn('product_category_id', $whereIn)->where('is_searchable', '1')->get();
-
-            $filterData = ProductAttributeSet::select('product_attribute_sets.*')
-                            ->join('product_categories', 'product_categories.id', '=', 'product_attribute_sets.product_category_id')
-                            ->join('products', function($join){
-                                $join->on('products.category_id', '=', 'product_categories.id');
-                                $join->orOn('products.category_id', '=', 'product_categories.parent_id');
-                            })
-                            // ->join('product_with_attribute_sets', 'product_attribute_sets.id', '=', 'product_with_attribute_sets.product_attribute_set_id')
-                            ->where('product_categories.slug', $category_slug )
-                            // ->where('product_with_attribute_sets.status','published')
-                            ->groupBy('product_attribute_sets.id')
-                            ->get();
+            $attributes = [];
+            $topLevelData = Product::select('product_attribute_sets.id', 'product_attribute_sets.title', 'product_attribute_sets.slug')
+                            ->whereIn('category_id', $whereIn)
+                            ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+                            ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_map_attributes.attribute_id')
+                            ->groupBy('title')->get();
             
-            if( isset( $filterData ) && !empty( $filterData ) ) {
-                foreach ( $filterData as $item ) {
-                                       
+            if( isset( $topLevelData ) && !empty( $topLevelData ) ) {
+                foreach ($topLevelData as $vals ) {
                     $tmp = [];
-                    $tmp['filter_title'] = $item->title;
-                    $tmp['filter_slug'] = $item->slug;
-                    $tmp['filter_id'] = $item->id;
-                    $tmp['child'] = $item->attributesFieldsByTitle ?? [];
-                    $data[] = $tmp;
-                    //get filter attributes
+                    $tmp['id'] = $vals->id;
+                    $tmp['title'] = $vals->title;
+                    $tmp['slug'] = $vals->slug;
+                    $child = [];
+                    $secondLevelData = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
+                                        ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+                                        ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                                        ->whereIn('category_id', $whereIn)
+                                        ->where('product_map_attributes.attribute_id', $vals->id)
+                                        ->groupBy('title')->get();
+                    if( isset( $secondLevelData ) && !empty( $secondLevelData ) ) {
+
+                        foreach ($secondLevelData as $sec ) {
+                            $fValues = [];
+                            $fValues['id'] = $sec->id;
+                            $fValues['title'] = $sec->title;
+                            // $fValues['attribute_values'] = $sec->attribute_values;
+
+                            $filterDatas = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
+                                    ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+                                    ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                                    ->whereIn('category_id', $whereIn)
+                                    ->where('product_map_attributes.attribute_id', $vals->id)
+                                    ->where('product_with_attribute_sets.title', $sec->title)
+                                    ->get();
+                            if( isset( $filterDatas ) && !empty( $filterDatas )) {
+
+                                foreach ( $filterDatas as $filvalues ) {
+                                    $childValues = [];
+                                    $childValues['id']  = $filvalues->id;
+                                    $childValues['attribute_name']  = $filvalues->title;
+                                    $childValues['attribute_values']  = $filvalues->attribute_values;
+
+                                    $fValues['child'][] = $childValues;
+                                }
+                            }
+                            
+                            $tmp['child'][] = $fValues;                            
+                            
+                        }
+
+                    }
+
+                    $attributes[] = $tmp;
                 }
             }
-            return $data;
-
+          
+            return $attributes;
             
         }
     }

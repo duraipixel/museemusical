@@ -86,6 +86,11 @@ class Product extends Model
         return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id');
     }
 
+    public function productMappedAttributes()
+    {
+        return $this->hasMany(ProductMapAttribute::class, 'product_id', 'id');
+    }
+
     public function productMeta()
     {
         return $this->hasOne(ProductMetaTag::class, 'product_id', 'id');

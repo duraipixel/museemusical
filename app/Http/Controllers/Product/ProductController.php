@@ -17,6 +17,7 @@ use App\Models\Product\ProductCrossSaleRelation;
 use App\Models\Product\ProductDiscount;
 use App\Models\Product\ProductImage;
 use App\Models\Product\ProductLink;
+use App\Models\Product\ProductMapAttribute;
 use App\Models\Product\ProductMeasurement;
 use App\Models\Product\ProductMetaTag;
 use App\Models\Product\ProductRelatedRelation;
@@ -319,14 +320,28 @@ class ProductController extends Controller
             $request->session()->put('brochure_product_id', $product_id);
             
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
+                ProductMapAttribute::where('product_id', $product_id)->delete();
+               
+
                 $filter_variation = $request->filter_variation;
                 $filter_variation_value = $request->filter_variation_value;
                 $filter_variation_title = $request->filter_variation_title;
                 ProductWithAttributeSet::where('product_id', $product_id)->delete();
 
                 for ($i=0; $i < count($request->filter_variation); $i++) { 
+                    $atIns = [];
+                    $check = ProductMapAttribute::where('product_id', $product_id)->where('attribute_id', $filter_variation[$i])->first();
+                    if( isset($check) && !empty( $check ) ) {
+                        $map_id = $check->id;
+                    } else {
+
+                        $atIns['product_id'] = $product_id;
+                        $atIns['attribute_id'] = $filter_variation[$i];
+                        $map_id = ProductMapAttribute::create($atIns)->id;
+                    }
+
                     $insAttr = [];
-                    $insAttr['product_attribute_set_id']    = $filter_variation[$i];
+                    $insAttr['product_attribute_set_id']    = $map_id;
                     $insAttr['attribute_values']            = $filter_variation_value[$i];
                     $insAttr['title']                       = $filter_variation_title[$i];
                     $insAttr['product_id']                  = $product_id;

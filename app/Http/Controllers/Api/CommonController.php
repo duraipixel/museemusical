@@ -196,7 +196,7 @@ class CommonController extends Controller
         $response['collection'] = ProductCollectionResource::collection($details);
         $response['testimonials'] =  TestimonialResource::collection(Testimonials::select('id', 'title', 'image', 'short_description', 'long_description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         $response['video'] = HistoryVideoResource::collection(WalkThrough::select('id', 'title', 'video_url', 'file_path', 'description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
-        $response['banner'] = BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image', 'mobile_banner', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
+        $response['banner'] = BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image', 'links', 'mobile_banner', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         return $response;
     }
 
