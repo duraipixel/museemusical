@@ -92,7 +92,19 @@ class ProductCollectionController extends Controller
             $modal_title    = 'Update Product Collection';
         }
         
-        return view('platform.product_collection.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'products'));
+        $orderImages = array(
+            array( 'id' => 1, 'image' => asset('assets/data/collection1.png')),
+            array( 'id' => 2, 'image' => asset('assets/data/collection2.png')),
+            array( 'id' => 3, 'image' => asset('assets/data/collection3.png')),
+            array( 'id' => 4, 'image' => asset('assets/data/collection4.png')),
+            array( 'id' => 5, 'image' => asset('assets/data/collection5.png')),
+            array( 'id' => 6, 'image' => asset('assets/data/collection6.png')),
+            array( 'id' => 7, 'image' => asset('assets/data/collection7.png')),
+            array( 'id' => 8, 'image' => asset('assets/data/collection8.png')),
+        );
+           
+        
+        return view('platform.product_collection.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'products', 'orderImages'));
     }
 
     public function saveForm(Request $request,$id = null)
