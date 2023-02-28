@@ -147,6 +147,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-8" id="collecion_img" @if(isset( $info->order_by ) && !empty( $info->order_by ) && (isset($info->can_map_discount) && $info->can_map_discount == 'no') )  @else style="display:none" @endif>
+                                <center style="font-size: 15px; padding: 13px; font-weight: 800; color: #a5a0a0;">Section Preview</center>
                                 <figure class="zoom" id="zoom-main" onmousemove="zoom(event)" @if(isset( $info->order_by ) && !empty( $info->order_by ) ) style="background-image: url({{ $orderImages[($info->order_by - 1)]['image'] }})" @endif  >
                                     <img id="dynamicImageUrl" src="{{ isset($info->order_by) ? $orderImages[($info->order_by - 1)]['image'] : ''}}" />
                                 </figure>
