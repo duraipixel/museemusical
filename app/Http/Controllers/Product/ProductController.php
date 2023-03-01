@@ -245,7 +245,7 @@ class ProductController extends Controller
             if( isset( $request->avatar_remove ) && !empty($request->avatar_remove) ) {
                 $ins['base_image']          = null;
             }
-            
+            // dd( $request );
             $ins[ 'product_name' ]          = $request->product_name;
             $ins[ 'hsn_code' ]              = $request->hsn_code;
             $ins[ 'product_url' ]           = Str::slug($request->product_name);

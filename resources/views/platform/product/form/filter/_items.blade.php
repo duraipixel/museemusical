@@ -1,7 +1,11 @@
 @if( isset($info->productAttributes) && !empty( $info->productAttributes))
 
     @foreach ($info->productAttributes as $attr)
-   
+        
+        @php
+            $setInfo = \DB::table('product_map_attributes')->where('id', $attr->product_attribute_set_id)->first();
+        
+        @endphp
         <div class="form-group d-flex flex-wrap gap-5 childRow" >
             <!--begin::Select2-->
             <div class="w-100 w-md-200px">
@@ -9,7 +13,7 @@
                     <option></option>
                     @foreach ($attributes as $item)
                         <option value="{{ $item->id }}" 
-                            @if( isset($attr->product_attribute_set_id) && $attr->product_attribute_set_id == $item->id ) selected @endif>
+                            @if( isset($setInfo->attribute_id) && $setInfo->attribute_id == $item->id ) selected @endif>
                             {{ $item->title }}
                         </option>
                     @endforeach
