@@ -48,14 +48,16 @@ class CommonController extends Controller
 
     public function getBrandByAlphabets()
     {
+
         $alphas = range('A', 'Z');
 
         $checkArray = [];
         if (isset($alphas) && !empty($alphas)) {
             foreach ($alphas as $items) {
 
-
-                $data = Brands::where(DB::raw('SUBSTR(brand_name, 1, 1)'), strtolower($items))->get();
+                $data = Brands::where(DB::raw('SUBSTR(brand_name, 1, 1)'), strtolower($items))
+                                ->where('order_by', 'asc')
+                                ->get();
                 $childTmp = [];
                 if (isset($data) && !empty($data)) {
                     foreach ($data as $daitem) {
