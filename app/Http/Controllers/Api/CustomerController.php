@@ -29,7 +29,8 @@ class CustomerController extends Controller
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);
 
-        if ($validator->passes()) {
+        $customer = Customer::where('email', $request->email)->whereNull('deleted_at')->first();
+        if (!$customer) {
 
             $ins['first_name'] = $request->firstName;
             $ins['email'] = $request->email;
@@ -84,7 +85,8 @@ class CustomerController extends Controller
             $status = 'success';
         } else {
             $error = 1;
-            $message = $validator->errors()->all();
+            // $message = $validator->errors()->all();
+            $message = 'Email id is already exists';
             $status = 'error';
         }
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );
