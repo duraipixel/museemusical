@@ -269,6 +269,7 @@ class CustomerController extends Controller
             $res['address_id'] = $addressInfo->id;
             $res['address_line'] = $addressInfo->address_line1 ?? '';
             $res['address_type_id'] = (string)$addressInfo->address_type_id;
+            $res['address_type_name'] = $addressInfo->subCategory->name ?? '';
             $res['city'] = $addressInfo->city ?? '';
             $res['customer_id'] = $addressInfo->customer_id;
             $res['email'] = $addressInfo->email;
