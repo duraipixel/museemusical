@@ -109,11 +109,10 @@ class ProductCollectionController extends Controller
 
     public function saveForm(Request $request,$id = null)
     {
-        
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                             'collection_name' => 'required|string|unique:product_collections,collection_name,' . $id,
-                            'collection_product' => 'required|array',
+                            'collection_product' => 'required|array|min:5',
                         ]);
 
         $categoryId         = '';

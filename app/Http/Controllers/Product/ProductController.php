@@ -226,7 +226,8 @@ class ProductController extends Controller
                                 'filter_variation.*' => 'nullable|required_with:filter_variation',
                                 'filter_variation_value' => 'nullable|required_with:filter_variation|array',
                                 'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
-                               
+                                'related_product'    => 'array|min:5',
+                                'cross_selling_product'    => 'array|min:5',
                             ];
                                        
         if( isset($request->url) && !empty( $request->url) && !is_null($request->url[0]) ) {

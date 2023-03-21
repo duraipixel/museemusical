@@ -153,7 +153,7 @@ class DiscountController extends Controller
                         ->where('can_map_discount', 'yes')
                         ->whereRaw('id not in (select product_collection_id from mm_coupon_product_collection)')
                         ->get();
-            $title = "Product Collection"; 
+            $title = "Product Collection (Minimum 5)"; 
             foreach($data as $key=>$val)
             {
                 $value[] = "<option value=".$val->id.">".$val->collection_name."</option>";

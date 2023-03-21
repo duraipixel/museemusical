@@ -117,7 +117,7 @@ class CouponController extends Controller
         if($name == '1')
         {
             $data       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
-            $title      = "Product"; 
+            $title      = "Product (Minimum 5 )"; 
             foreach($data as $key=>$val)
             {
                 $value[] = "<option value=".$val->id.">".$val->product_name."</option>";

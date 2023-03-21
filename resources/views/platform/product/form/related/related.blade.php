@@ -3,7 +3,7 @@
         <div class="card-body pt-2">
             <div class="mb-10 fv-row">
                
-                <label class="form-label d-block">Related Products </label>
+                <label class="form-label d-block">Related Products (Minimum 5 )</label>
 
                 <select name="related_product[]" id="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
@@ -20,7 +20,7 @@
             </div>
 
             <div class="mb-10 fv-row">
-                <label class="form-label d-block"> Cross Selling Products </label>
+                <label class="form-label d-block"> Cross Selling Products (Minimum 5 )</label>
                 <select name="cross_selling_product[]" id="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)
