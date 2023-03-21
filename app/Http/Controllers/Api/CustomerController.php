@@ -98,7 +98,7 @@ class CustomerController extends Controller
         $email = $request->email;
         $password = $request->password;
 
-        $checkCustomer = Customer::where('email', $email)->first();
+        $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         if ($checkCustomer) {
             // dd( $password );
             if (Hash::check($password, $checkCustomer->password)) {
