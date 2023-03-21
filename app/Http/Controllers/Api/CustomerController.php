@@ -15,6 +15,7 @@ use App\Models\Master\State;
 use App\Services\ShipRocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Mail;
 

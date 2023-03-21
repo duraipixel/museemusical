@@ -227,23 +227,21 @@ class CartController extends Controller
         $customer_id    = $request->customer_id;
         $shipping_id    = $request->shipping_id;
         $type    = $request->type;
-
+        
         if( isset( $type ) && !empty( $type ) && $type == 'rocket' ) {
             $cartInfo = Cart::where('customer_id', $customer_id)->first();
+            
             if( isset($cartInfo->rocketResponse->shipping_charge_response_data ) && !empty( $cartInfo->rocketResponse->shipping_charge_response_data ) ) {
                 $response = json_decode($cartInfo->rocketResponse->shipping_charge_response_data);
-                
                 $tmp = [];
                 if( isset( $response->data->available_courier_companies ) && !empty( $response->data->available_courier_companies ) ) {
                     foreach ($response->data->available_courier_companies as $tiem) {
-                        
                         if( $tiem->id == $shipping_id ) {
                             $tmp = $tiem;
                             break;
                         }
                     }
                 }
-                
                 if( $tmp ) {
 
                     $amount = array( 
