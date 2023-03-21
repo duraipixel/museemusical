@@ -76,7 +76,9 @@
                 },
                 {
                     data: 'billing_info',
-                    name: 'billing_info'
+                    name: 'billing_info',
+                    bSortable: false
+
                 },
                 {
                     data: 'amount',
@@ -104,8 +106,8 @@
                     name: 'sub_total'
                 },
                 {
-                    data: 'order_status',
-                    name: 'order_status'
+                    data: 'status',
+                    name: 'status'
                 },
                 {
                     data: 'payment_status',

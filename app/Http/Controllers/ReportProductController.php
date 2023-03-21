@@ -19,14 +19,13 @@ class ReportProductController extends Controller
     {
         $title                  = "Products Report";
         $breadCrum              = array('Reports', 'Products');
-        
         if ($request->ajax()) {
             
             $data = Order::selectRaw('mm_payments.order_id,mm_payments.payment_no,mm_payments.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
                             ->join('payments', 'payments.order_id', '=', 'orders.id')
                             ->where('orders.status', '!=', 'pending')
-                            ->groupBy('orders.id')->orderBy('orders.id', 'desc');
+                            ->groupBy('orders.id');
             
             $keywords = $request->get('search')['value'];
             $filter_search_data = $request->get('filter_search_data');
@@ -59,6 +58,7 @@ class ReportProductController extends Controller
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where('orders.billing_name','like',"%{$keywords}%")
+                                ->orWhere('orders.order_no', 'like', "%{$keywords}%")
                                 ->orWhere('orders.billing_email', 'like', "%{$keywords}%")
                                 ->orWhere('orders.billing_mobile_no', 'like', "%{$keywords}%")
                                 ->orWhere('orders.billing_address_line1', 'like', "%{$keywords}%")
@@ -80,7 +80,7 @@ class ReportProductController extends Controller
                 ->editColumn('payment_status', function ($row) {
                     return ucwords($row->payment_status);
                 })
-                ->editColumn('order_status', function ($row) {
+                ->editColumn('status', function ($row) {
                     return ucwords($row->status);
                 })
                 ->editColumn('created_at', function ($row) {
@@ -89,7 +89,7 @@ class ReportProductController extends Controller
                 })
              
                
-                ->rawColumns(['billing_info', 'payment_status', 'order_status', 'created_at']);
+                ->rawColumns(['billing_info', 'payment_status', 'status', 'created_at']);
             return $datatables->make(true);
         }
 
