@@ -318,7 +318,7 @@ class ProductController extends Controller
 
             $request->session()->put('image_product_id', $product_id);
             $request->session()->put('brochure_product_id', $product_id);
-            
+
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
                 ProductMapAttribute::where('product_id', $product_id)->delete();
                

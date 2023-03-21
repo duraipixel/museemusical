@@ -76,7 +76,9 @@
                 },
                 {
                     data: 'billing_info',
-                    name: 'billing_info'
+                    name: 'billing_info',
+                    bSortable: false
+
                 },
                 {
                     data: 'amount',
