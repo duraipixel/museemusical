@@ -119,6 +119,17 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/collection/save', [App\Http\Controllers\Product\ProductCollectionController::class, 'saveForm'])->name('product-collection.save')->middleware(['checkAccess:editable']);
         Route::post('/collection/export/excel', [App\Http\Controllers\Product\ProductCollectionController::class, 'export'])->name('product-collection.export.excel')->middleware(['checkAccess:export']);
         Route::get('/collection/export/pdf', [App\Http\Controllers\Product\ProductCollectionController::class, 'exportPdf'])->name('product-collection.export.pdf')->middleware(['checkAccess:export']);
+    
+
+        Route::get('/combos', [App\Http\Controllers\Product\ComboProductController::class, 'index'])->name('combo-product')->middleware(['checkAccess:visible']); 
+        Route::post('/combos/addOrEdit', [App\Http\Controllers\Product\ComboProductController::class, 'modalAddEdit'])->name('combo-product.add.edit')->middleware(['checkAccess:editable']);
+        Route::post('/combos/status', [App\Http\Controllers\Product\ComboProductController::class, 'changeStatus'])->name('combo-product.status')->middleware(['checkAccess:status']);
+        Route::post('/combos/delete', [App\Http\Controllers\Product\ComboProductController::class, 'delete'])->name('combo-product.delete')->middleware(['checkAccess:delete']);
+        Route::post('/combos/save', [App\Http\Controllers\Product\ComboProductController::class, 'saveForm'])->name('combo-product.save')->middleware(['checkAccess:editable']);
+        Route::post('/combos/export/excel', [App\Http\Controllers\Product\ComboProductController::class, 'export'])->name('combo-product.export.excel')->middleware(['checkAccess:export']);
+        Route::get('/combos/export/pdf', [App\Http\Controllers\Product\ComboProductController::class, 'exportPdf'])->name('combo-product.export.pdf')->middleware(['checkAccess:export']);
+    
+    
     });
 
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');

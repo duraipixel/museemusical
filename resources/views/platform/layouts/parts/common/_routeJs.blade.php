@@ -229,6 +229,15 @@
                    'pdf': "{{ route('product-collection.export.pdf') }}",
                 }
             },    
+            'combo-product': {
+               'delete': "{{ route('combo-product.delete') }}",
+               'status': "{{ route('combo-product.status') }}",
+               'add': "{{ route('combo-product.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('combo-product.export.excel') }}",
+                   'pdf': "{{ route('combo-product.export.pdf') }}",
+                }
+            },    
             'sms-template': {
                'delete': "{{ route('sms-template.delete') }}",
                'status': "{{ route('sms-template.status') }}",

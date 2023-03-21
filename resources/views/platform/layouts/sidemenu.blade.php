@@ -18,8 +18,8 @@
                     <span class="menu-title">Dashboard</span>
                 </a>
             </div>
-           @if( access()->hasAccess(['product-category', 'product-tags', 'product-labels', 'products', 'product-attribute', 'product-collection']) )
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels', 'products','products.*', 'product-attribute', 'product-collection'])) hover show @endif">
+           @if( access()->hasAccess(['product-category', 'product-tags', 'product-labels', 'combo-product','products', 'product-attribute', 'product-collection']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['product-category', 'product-tags', 'product-labels','combo-product', 'products','products.*', 'product-attribute', 'product-collection'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -90,6 +90,16 @@
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title">Product Collection</span>
+                        </a>
+                    </div>
+                    @endif
+                    @if( access()->hasAccess(['combo-product']) )
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['combo-product'])) active @endif" href="{{ route('combo-product') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Combo Product</span>
                         </a>
                     </div>
                     @endif

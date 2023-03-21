@@ -15,8 +15,11 @@ class CreateComboProductsTable extends Migration
     {
         Schema::create('combo_products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_product_id');
+            $table->unsignedBigInteger('combo_product_id');
+            $table->foreign('combo_product_id')->references('id')->on('combos')->onDelete('cascade');
             $table->unsignedBigInteger('product_id');
+            $table->integer( 'order_by' )->nullable();
+
             $table->timestamps();
         });
     }
