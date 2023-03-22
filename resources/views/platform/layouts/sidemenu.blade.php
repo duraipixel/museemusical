@@ -465,6 +465,16 @@
                         </a>
                     </div>
                     @endif
+                    @if( access()->hasAccess(['quick-link']) )
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['quick-link'])) active @endif" href="{{ route('quick-link') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Quick Link</span>
+                        </a>
+                    </div>
+                    @endif
                     @if( access()->hasAccess(['city']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['city'])) active @endif" href="{{ route('city') }}">

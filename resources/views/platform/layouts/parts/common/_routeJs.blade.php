@@ -276,6 +276,16 @@
                    'pdf': "{{ route('newsletter.export.pdf') }}",
                 }
             }, 
+            'quick-link': {
+               'delete': "{{ route('quick-link.delete') }}",
+               'status': "{{ route('quick-link.status') }}",
+               'add': "{{ route('quick-link.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('quick-link.export.excel') }}",
+                   'pdf': "{{ route('quick-link.export.pdf') }}",
+                }
+            },
+            
             'charges': {
                'delete': "{{ route('charges.delete') }}",
                'status': "{{ route('charges.status') }}",

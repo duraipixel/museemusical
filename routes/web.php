@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function(){
         'customer' => App\Http\Controllers\CustomerController::class,
         'banner' => App\Http\Controllers\BannerController::class,
         'newsletter' => App\Http\Controllers\NewsletterController::class,
+        'quick-link'    => App\Http\Controllers\Master\QuickLinkController::class,
     );
    
     foreach ($routeArray as $key => $value) {
