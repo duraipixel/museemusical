@@ -40,7 +40,7 @@ Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLo
 Route::post('/send/password/link', [App\Http\Controllers\Api\CustomerController::class, 'sendPasswordLink']);
 Route::post('/reset/password', [App\Http\Controllers\Api\CustomerController::class, 'resetPasswordLink']);
 Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::class, 'checkValidToken']);
-
+Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 Route::middleware(['client'])->group(function(){
     
     Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
