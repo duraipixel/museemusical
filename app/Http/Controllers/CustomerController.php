@@ -56,16 +56,16 @@ class CustomerController extends Controller
                 })
              
                 ->addColumn('action', function ($row) {
-                    $view_btn = '<a href="'.route('customer.view',$row->id).'"  class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
-                    <i class="fa fa-eye"></i>
-                </a>';
+                //     $view_btn = '<a href="'.route('customer.view',$row->id).'"  class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
+                //     <i class="fa fa-eye"></i>
+                // </a>';
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'customer\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                     <i class="fa fa-edit"></i>
                 </a>';
                     $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'customer\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
-                    return $view_btn . $edit_btn . $del_btn;
+                    return $edit_btn . $del_btn;
                 })
                 ->rawColumns(['action', 'status']);
             return $datatables->make(true);

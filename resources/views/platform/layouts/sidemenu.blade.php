@@ -93,7 +93,7 @@
                         </a>
                     </div>
                     @endif
-                    @if( access()->hasAccess(['combo-product']) )
+                    {{-- @if( access()->hasAccess(['combo-product']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['combo-product'])) active @endif" href="{{ route('combo-product') }}">
                             <span class="menu-bullet">
@@ -102,7 +102,7 @@
                             <span class="menu-title">Combo Product</span>
                         </a>
                     </div>
-                    @endif
+                    @endif --}}
                     @if( access()->hasAccess(['product-attribute']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['product-attribute'])) active @endif" href="{{ route('product-attribute') }}">
