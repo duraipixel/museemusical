@@ -63,6 +63,7 @@ Route::middleware(['client'])->group(function(){
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
 
     Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
+    Route::post('/update/profile/image', [App\Http\Controllers\Api\CustomerController::class, 'updateProfileImage']);
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
 
     Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);

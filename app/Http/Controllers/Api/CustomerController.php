@@ -11,6 +11,7 @@ use App\Models\GlobalSettings;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
+use Illuminate\Support\Facades\File;
 use App\Models\Master\State;
 use App\Services\ShipRocketService;
 use Illuminate\Http\Request;
@@ -194,7 +195,25 @@ class CustomerController extends Controller
         $customerInfo->update();
         return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer_data' => $customerInfo);
     }
-
+    public function updateProfileImage(Request $request)
+    {
+        $customerId = $request->customer_id;
+        $customerInfo = Customer::find($customerId);
+        $request->profile_image;
+        if ($request->hasFile('profile_image')) {
+            $filename       = time() . '_' . $request->profile_image->getClientOriginalName();
+            $directory      = 'customer/'.$customerId;
+            $filename       = $directory.'/'.$filename;
+            Storage::deleteDirectory('public/'.$directory);
+            Storage::disk('public')->put($filename, File::get($request->profile_image));
+            
+            $customerInfo->profile_image = $filename;
+            $customerInfo->save();
+        }
+        return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer_id' => $customerId);
+        
+    }
+    
     public function changePassword(Request $request)
     {
 
