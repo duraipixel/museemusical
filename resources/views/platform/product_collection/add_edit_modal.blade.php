@@ -145,13 +145,70 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div>                        
                             <div class="col-sm-8" id="collecion_img" @if(isset( $info->order_by ) && !empty( $info->order_by ) && (isset($info->can_map_discount) && $info->can_map_discount == 'no') )  @else style="display:none" @endif>
                                 <center style="font-size: 15px; padding: 13px; font-weight: 800; color: #a5a0a0;">Section Preview</center>
                                 <figure class="zoom" id="zoom-main" onmousemove="zoom(event)" @if(isset( $info->order_by ) && !empty( $info->order_by ) ) style="background-image: url({{ $orderImages[($info->order_by - 1)]['image'] }})" @endif  >
                                     <img id="dynamicImageUrl" src="{{ isset($info->order_by) ? $orderImages[($info->order_by - 1)]['image'] : ''}}" />
                                 </figure>
                             </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+
+                                <div class="fv-row mb-7">
+                                    <label class="d-block fw-bold fs-6 mb-5">Banner Image</label>
+                    
+                                    <div class="form-text">Allowed file types: png, jpg,
+                                        jpeg. </div>
+                                        <div class="form-text">Size: 1600 * 706 </div>
+                                        
+                                </div>
+                                <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
+                                <div class="image-input image-input-outline manual-image" 
+                                    style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+
+                                    @if ($info->banner_image ?? '')
+                                            @php
+                                            $catImagePath = 'productCollection/' . $info->id . '/' . $info->banner_image;
+                                            $url = Storage::url($catImagePath);
+                                            $path = asset($url);
+                                            @endphp
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
+                                            style="background-image: url({{ $path }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px manual-image"
+                                            id="manual-image"
+                                            style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                        </div>
+                                    @endif
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                        title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="banner_image" id="banner_image" 
+                                            accept=".png, .jpg, .jpeg" />
+                                    </label>
+                    
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                        title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                        title="Remove avatar1">
+                                        <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
+                                    </span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -183,6 +240,32 @@
     
     $(document).ready(function() {
         $('#collection_product').select2();
+
+
+
+        document.getElementById('banner_image').addEventListener('change', function() {
+ 
+ if (this.files[0]) {
+     var picture = new FileReader();
+     picture.readAsDataURL(this.files[0]);
+     picture.addEventListener('load', function(event) {
+         console.log(event.target);
+         let img_url = event.target.result;
+         $('#manual-image').css({
+             'background-image': 'url(' + event.target.result + ')'
+         });
+     });
+ }
+});
+
+document.getElementById('avatar_remove_logo').addEventListener('click', function() {
+ $('#image_remove_image').val("yes");
+ $('#manual-image').css({
+     'background-image': ''
+ });
+});
+
+
     });
     $('.mobile_num').keypress(
         function(event) {

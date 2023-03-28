@@ -195,6 +195,18 @@ class CommonController extends Controller
 
         $details = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'no'])
             ->orderBy('order_by', 'asc')->get();
+           
+        foreach($details as $key=>$val){
+            if(!empty($val['banner_image']))
+            {
+                $bannerImagePath        = 'productCollection/' . $val->id . '/' . $val->banner_image;
+                $url                    = Storage::url($bannerImagePath);
+                $val['banner_image']           = asset($url);
+            }
+            else{
+                $val['banner_image']           = asset('assets/media/product_collection/product_collection.jpg');
+            }
+        }
         $response['collection'] = ProductCollectionResource::collection($details);
         $response['testimonials'] =  TestimonialResource::collection(Testimonials::select('id', 'title', 'image', 'short_description', 'long_description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         $response['video'] = HistoryVideoResource::collection(WalkThrough::select('id', 'title', 'video_url', 'file_path', 'description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());

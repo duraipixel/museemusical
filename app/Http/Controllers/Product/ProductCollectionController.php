@@ -10,8 +10,11 @@ use App\Models\Product\ProductCollectionProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DataTables;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Excel;
 use PDF;
+use Image;
 use Illuminate\Support\Str;
 
 class ProductCollectionController extends Controller
@@ -113,9 +116,10 @@ class ProductCollectionController extends Controller
         $validator      = Validator::make($request->all(), [
                             'collection_name' => 'required|string|unique:product_collections,collection_name,' . $id,
                             'collection_product' => 'required|array|min:5',
+                            'banner_image' => 'mimes:jpeg,png,jpg',
                         ]);
 
-        $categoryId         = '';
+        $collection_id         = '';
         if ($validator->passes()) {
             
             $ins['collection_name']     = $request->collection_name;
@@ -132,10 +136,29 @@ class ProductCollectionController extends Controller
                 $ins['status']          = 'unpublished';
             }
             $error                      = 0;
-            // dd( $ins );
             $collectionInfo             = ProductCollection::updateOrCreate(['id' => $id], $ins);
             $collection_id              = $collectionInfo->id;
-            
+            if ($request->hasFile('banner_image')) {
+               
+                $imagName               = time() . '_' . Str::replace(' ', "-",$request->banner_image->getClientOriginalName());
+                $directory              = 'productCollection/'.$collection_id.'/';
+                $filename               = $directory.'/'.$imagName.'/';
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->banner_image));
+             
+                if (!is_dir(storage_path("app/public/productCollection/".$collection_id."/"))) {
+                    mkdir(storage_path("app/public/productCollection/".$collection_id."/"), 0775, true);
+                }
+
+                $carouselPath1          = 'public/productCollection/'.$collection_id.'/' . $imagName;
+                Image::make($request->file('banner_image'))->save(storage_path('app/' . $carouselPath1));
+                
+                $collectionInfo->banner_image    = $imagName;
+            }
+            if ($request->image_remove_image == "yes") {
+                $collectionInfo['banner_image'] = '';
+            }
+            $collectionInfo->save();
             if( isset($request->collection_product) && !empty($request->collection_product) ) {
                 ProductCollectionProduct::where('product_collection_id', $collection_id)->delete();
                 $iteration              = 1;
@@ -153,7 +176,7 @@ class ProductCollectionController extends Controller
             $error      = 1;
             $message    = $validator->errors()->all();
         }
-        return response()->json(['error' => $error, 'message' => $message, 'categoryId' => $categoryId, 'from' => $request->from ?? '']);
+        return response()->json(['error' => $error, 'message' => $message, 'collection_id' => $collection_id, 'from' => $request->from ?? '']);
     }
 
     public function delete(Request $request)

@@ -12,6 +12,7 @@ class ProductCollection extends Model
         'collection_name',
         'slug',
         'tag_line',
+        'banner_image',
         'order_by',
         'status',
         'show_home_page',

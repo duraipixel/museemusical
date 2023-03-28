@@ -15,6 +15,7 @@ class ProductCollectionResource extends JsonResource
         $tmp[ 'id' ]                = $this->id;
         $tmp[ 'collection_name' ]   = $this->collection_name;
         $tmp[ 'collection_slug' ]   = Str::slug($this->collection_name);
+        $tmp[ 'banner_image' ]      = $this->banner_image;
         $tmp[ 'tag_line' ]          = $this->tag_line;
         $tmp[ 'order_by' ]          = $this->order_by;
         $tmp[ 'status' ]            = $this->status;
