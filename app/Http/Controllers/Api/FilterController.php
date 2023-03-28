@@ -402,11 +402,11 @@ class FilterController extends Controller
         $pro['product_extra_information'] = array(
             array('name' => 'description', 'data' => $items->specification ),
             array('name' => 'specification', 'data' => $attributes ),
-            array('name' => 'media', 'data' => $items->specification ),
+            array('name' => 'media', 'data' => $items->productVideoLinks ),
         );
 
         $pro['related_products']    = $related_arr;
-        $pro['meta'] = $items->productVideoLinks;
+        $pro['meta'] = $items->productMeta;
 
         return $pro;
     }
