@@ -94,19 +94,23 @@ class CouponController extends Controller
         $info               = '';
         $modal_title        = 'Add Coupon';
         $couponTypeAttributes = '';
+        $selected_attributes = [];
         if (isset($id) && !empty($id)) {
-            $info           = Coupons::find($id);
+            $info           = Coupons::with(['couponProducts'])->find($id);
             if( $info->coupon_type == 1 ) {
                 $couponTypeAttributes       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
+                $selected_attributes = array_column( $info->couponProducts->toArray(), 'product_id');
             } else if( $info->coupon_type == 2 ) {
                 $couponTypeAttributes = DB::table('customers')->select('id','first_name')->where('status', 'published')->get();
+                $selected_attributes = array_column( $info->couponCustomers->toArray(), 'customer_id');
             } else if( $info->coupon_type == 3 ) {
                 $couponTypeAttributes = DB::table('product_categories')->select('id','name')->where('status', 'published')->get();
+                $selected_attributes = array_column( $info->couponCategory->toArray(), 'category_id');
             }
             $modal_title    = 'Update Coupon';
         }
         
-        return view('platform.offers.coupon.add_edit_modal', compact('info', 'modal_title', 'couponTypeAttributes'));
+        return view('platform.offers.coupon.add_edit_modal', compact('info', 'modal_title', 'couponTypeAttributes', 'selected_attributes'));
     }
 
     public function couponType(Request $request)
