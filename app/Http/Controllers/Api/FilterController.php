@@ -406,7 +406,7 @@ class FilterController extends Controller
         );
 
         $pro['related_products']    = $related_arr;
-        $pro['meta'] = $items->productMeta;
+        $pro['meta'] = $items->productVideoLinks;
 
         return $pro;
     }
