@@ -56,7 +56,7 @@ class CommonController extends Controller
             foreach ($alphas as $items) {
 
                 $data = Brands::where(DB::raw('SUBSTR(brand_name, 1, 1)'), strtolower($items))
-                                ->where('order_by', 'asc')
+                                ->orderBy('order_by', 'asc')
                                 ->get();
                 $childTmp = [];
                 if (isset($data) && !empty($data)) {
