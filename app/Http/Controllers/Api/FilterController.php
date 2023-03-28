@@ -399,6 +399,12 @@ class FilterController extends Controller
                 $related_arr[]          = $tmp2;
             }
         }
+        $pro['product_extra_information'] = array(
+            array('name' => 'description', 'data' => $items->specification ),
+            array('name' => 'specification', 'data' => $attributes ),
+            array('name' => 'media', 'data' => $items->specification ),
+        );
+
         $pro['related_products']    = $related_arr;
         $pro['meta'] = $items->productMeta;
 
