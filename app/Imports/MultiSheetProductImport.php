@@ -120,12 +120,11 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $brand_id                   = Brands::create($brand_ins)->id;
             }
 
-            #check product exist or create new one
-           
+            #check product exist or create new one           
             $sku            = generateProductSku(trim($row['brand']), trim($row['sku']));
             $amount         = $row['mrp'] ?? $row['tax_inclexcl'] ?? 100;
             $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
-			
+            
             $productInfo = Product::where('sku', $sku)->first();
 
             $ins['product_name'] = trim($row['product_name']);

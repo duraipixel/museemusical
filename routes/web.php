@@ -10,6 +10,7 @@ Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
 Auth::routes();
+
 Route::middleware(['auth'])->group(function(){
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::post('/dynamicview', [App\Http\Controllers\HomeController::class, 'dynamicView'])->name('home.view');
@@ -95,6 +96,8 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('products.status')->middleware(['checkAccess:status']);
         Route::post('/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('products.delete')->middleware(['checkAccess:delete']);
         Route::post('/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('products.save');
+        Route::post('/get/base/mrp', [App\Http\Controllers\Product\ProductController::class, 'getBaseMrpPrice'])->name('get.product.base_mrp_prce');
+        Route::post('/get/category/info', [App\Http\Controllers\Product\ProductController::class, 'getCategoryInfoTax'])->name('get.product.taxCategory');
         Route::post('/remove/image', [App\Http\Controllers\Product\ProductController::class, 'removeImage'])->name('products.remove.image');
         Route::post('/setOrder/image', [App\Http\Controllers\Product\ProductController::class, 'setImageOrder'])->name('products.image.order');
         Route::post('/remove/brochure', [App\Http\Controllers\Product\ProductController::class, 'removeBrochure'])->name('products.remove.brochure');

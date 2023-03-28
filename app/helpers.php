@@ -95,9 +95,27 @@ if (!function_exists('getAmountExclusiveTax')) {
         if ((int)$gstPercentage > 0) {
             $gstAmount = $productAmount - ($productAmount * (100 / (100 + $gstPercentage)));
             $basePrice = $productAmount - $gstAmount;
+
+            $basePrice = number_format((float)$basePrice, 2, '.', '');
+            $gstAmount = number_format((float)$gstAmount, 2, '.', '');
         }
 
         return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage);
+    }
+}
+
+if (!function_exists('getAmountInclusiveTax')) {
+    function getAmountInclusiveTax($productAmount, $gstPercentage)
+    {
+        // GST = (Original Cost * GST rate%) / 100
+        $mrpPrice      = $productAmount ?? 0;
+        $gstAmount      = 0;
+        if ((int)$gstPercentage > 0) {
+            $gstAmount = ($productAmount * $gstPercentage)/100;
+            $mrpPrice = $productAmount + $gstAmount;
+        }
+
+        return array('mrpPrice' => $mrpPrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage);
     }
 }
 
@@ -266,7 +284,7 @@ if (!function_exists('getProductPrice')) {
         $discount               = [];
         $overall_discount_percentage = 0;
         $has_discount           = 'no';
-
+       
         #condition 1:
         if ($today >= $productsObjects->sale_start_date && $today <= $productsObjects->sale_end_date) {
 
@@ -278,7 +296,9 @@ if (!function_exists('getProductPrice')) {
             }
             $discount[]         = array('discount_type' => $productsObjects->productDiscount->discount_type, 'discount_value' => $productsObjects->productDiscount->discount_value, 'discount_name' => '');
         }
-
+        // dump( $strike_rate );
+        // dump( $price );
+        // dd( $productsObjects );
         #condition 2:
         $getDiscountDetails     = \DB::table('coupon_categories')
             ->select('product_categories.name', 'coupons.*')
@@ -386,6 +406,7 @@ if (!function_exists('getProductPrice')) {
         }
 
         $coupon_used['strike_rate']     = number_format($strike_rate, 2);
+        $coupon_used['strike_rate_original'] = $strike_rate;
         $coupon_used['price']           = number_format($price, 2);
         $coupon_used['price_original']  = $price;
         $coupon_used['discount']        = $discount;

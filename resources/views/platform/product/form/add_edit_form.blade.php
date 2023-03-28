@@ -131,6 +131,22 @@
 @section('add_on_script')
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
     <script>
+        function showCategoryTax(category_id) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url:"{{ route('get.product.taxCategory') }}",
+                type:"POST",
+                data:{category_id:category_id},
+                success:function(res){
+                    $('#mrp_tax').html(`(Inclusive Tax ( ${res}%)) `);
+                }
+            })
+        }
+
         @if (isset($info->id) && !empty($info->id))
             addVariationRow('{{ $info->id }}');
         @endif

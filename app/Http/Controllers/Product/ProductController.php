@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Storage;
 use Image;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class ProductController extends Controller
 {
@@ -252,6 +253,7 @@ class ProductController extends Controller
             $ins[ 'product_url' ]           = Str::slug($request->product_name);
             $ins[ 'sku' ]                   = $request->sku;
             $ins[ 'price' ]                 = $request->base_price;
+            $ins[ 'mrp' ]                   = $request->mrp;
             $ins[ 'status' ]                = $request->status;
             $ins[ 'brand_id' ]              = $request->brand_id;
             $ins[ 'category_id' ]           = $request->category_id;
@@ -606,6 +608,41 @@ class ProductController extends Controller
 
         return response()->json(['message'=>"Successfully updated!",'status' => 1 ] );
 
+    }
+
+    public function getBaseMrpPrice(Request $request )
+    {
+        $category_id = $request->category_id;
+        $price = $request->price;
+        $inputField = $request->inputField;
+        $tax = ProductCategory::find($category_id);
+        
+        if( isset( $tax->tax ) && !empty( $tax->tax ) ) {
+
+            $percentage = $tax->tax->pecentage;
+            if( $inputField == 'mrp') {
+                $price_info = getAmountExclusiveTax( $price, $percentage);
+            } else {
+                $price_info = getAmountInclusiveTax( $price, $percentage);
+            }
+
+            $message = 'Success';
+            $error = 0;
+
+        } else {
+            $error = 1;
+            $message = 'Please set Tax to Product Category';
+
+        }
+
+        return response()->json(['error' => $error, 'message' => $message, 'price_info' => $price_info ?? ''] );
+    }
+
+    public function getCategoryInfoTax(Request $request)
+    {
+        $category_id = $request->category_id;
+        $tax = ProductCategory::find($category_id);
+        return $tax->tax->pecentage ?? 0;
     }
 
 }

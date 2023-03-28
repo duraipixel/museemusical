@@ -9,14 +9,13 @@
 <table>
     <thead>
         <tr>
-            <th>Added Date</th>
-            <th>Title</th>
-            <th>Short Description</th>
+            <th> Added Date </th>
+            <th> Title </th>
+            <th> Short Description</th>
             <th>Long Description</th>
             <th>Order By</th>
             <th>Added By</th>
             <th>Status</th>
-          
         </tr>
     </thead>
     <tbody>

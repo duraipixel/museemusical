@@ -41,6 +41,10 @@ Route::post('/send/password/link', [App\Http\Controllers\Api\CustomerController:
 Route::post('/reset/password', [App\Http\Controllers\Api\CustomerController::class, 'resetPasswordLink']);
 Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::class, 'checkValidToken']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
+
+Route::get('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
+
+
 Route::middleware(['client'])->group(function(){
     
     Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);

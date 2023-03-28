@@ -14,6 +14,7 @@ use App\Models\Master\EmailTemplate;
 use Illuminate\Support\Facades\File;
 use App\Models\Master\State;
 use App\Services\ShipRocketService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,30 @@ use Mail;
 
 class CustomerController extends Controller
 {
+
+    public function verifyAccount(Request $request)
+    {
+        // dd( base64_encode('durairaj.pixel@gmail.com') );
+        // $email = 'ZHVyYWlyYWoucGl4ZWxAZ21haWwuY29t';
+        $email = $request->email;
+        $email = base64_decode($email);
+        $error = 1;
+        $message = 'Token Expired';
+        $customer = Customer::where('email', $email)->whereNull('deleted_at')->first();
+        if( $customer ) {
+            if( !empty($customer->verification_token) ) {
+                $customer->email_verified_at = Carbon::now();
+                $customer->verification_token = null;
+                $customer->update();
+                $error = 0;
+                $message = 'Account Verified Succesfull';
+            } 
+        }
+
+        return array('error' => $error, 'message' => $message);
+
+    }
+
     public function registerCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -43,6 +68,8 @@ class CustomerController extends Controller
 
             $customer_data = Customer::create($ins);
 
+            $token_id = base64_encode($request->email);
+
             /** send email for new customer */
             $emailTemplate = EmailTemplate::select('email_templates.*')
                 ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
@@ -50,9 +77,13 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
 
+            $link = 'http://192.168.0.35:3000/#/verify-account/' . $token_id;
+            // $link = 'https://museemusical.shop/#/reset-password/' . $token_id;
+
             $extract = array(
                 'name' => $request->firstName,
                 'regards' => $globalInfo->site_name,
+                'link' => '<a href="' . $link . '"> Verify Account </a>',
                 'company_website' => '',
                 'company_mobile_no' => $globalInfo->site_mobile_no,
                 'company_address' => $globalInfo->address
@@ -100,8 +131,8 @@ class CustomerController extends Controller
         $password = $request->password;
 
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
+        
         if ($checkCustomer) {
-            // dd( $password );
             if (Hash::check($password, $checkCustomer->password)) {
                 $error = 0;
                 $message = 'Login Success';

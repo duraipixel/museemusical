@@ -71,6 +71,7 @@ class EmailTemplateController extends Controller
         $info               = '';
         $modal_title        = 'Add Email Template';
         $subCat             = MainCategory::where('slug', 'email-template')->where('status',"published")->first();
+        
         $subCat             = $subCat->subCategory;
         
         if (isset($id) && !empty($id)) {

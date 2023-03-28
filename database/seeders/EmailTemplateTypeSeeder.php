@@ -26,7 +26,7 @@ class EmailTemplateTypeSeeder extends Seeder
             $ins['status'] = 'published';
             $ins['added_by'] = '1';
 
-            $category_id = MainCategory::create($ins);
+            $category_id = MainCategory::create($ins)->id;
         }
 
         $par['parent_id'] = $category_id;
