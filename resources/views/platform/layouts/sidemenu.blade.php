@@ -440,8 +440,8 @@
                 </div>
             </div>
             @endif
-            @if( access()->hasAccess(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category']) )
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category'])) hover show @endif">
+            @if( access()->hasAccess(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category','quick-link']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category','quick-link', 'sub_category'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
