@@ -285,6 +285,16 @@
                    'pdf': "{{ route('quick-link.export.pdf') }}",
                 }
             },
+            'order-cancel': {
+               'delete': "{{ route('order-cancel.delete') }}",
+               'status': "{{ route('order-cancel.status') }}",
+               'add': "{{ route('order-cancel.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('order-cancel.export.excel') }}",
+                   'pdf': "{{ route('order-cancel.export.pdf') }}",
+                }
+            },
+            
             
             'charges': {
                'delete': "{{ route('charges.delete') }}",
