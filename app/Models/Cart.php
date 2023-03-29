@@ -11,7 +11,7 @@ class Cart extends Model
 
     use HasFactory;
     protected $fillable = [
-        'customer_id', 'guest_token', 'product_id', 'price', 'quantity', 'sub_total'
+        'customer_id', 'guest_token', 'product_id', 'price', 'quantity', 'sub_total', 'token'
     ];
 
     public function products()

@@ -45,10 +45,10 @@ Route::get('/get/orderCancelReason', [App\Http\Controllers\Api\OrderCancelContro
 
 Route::get('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
 
+Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
 
 Route::middleware(['client'])->group(function(){
     
-    Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
     Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
     Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
     Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
