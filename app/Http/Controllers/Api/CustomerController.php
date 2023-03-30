@@ -77,8 +77,8 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
 
-            $link = 'http://192.168.0.35:3000/#/verify-account/' . $token_id;
-            // $link = 'https://museemusical.shop/#/reset-password/' . $token_id;
+            // $link = 'http://192.168.0.35:3000/#/verify-account/' . $token_id;
+            $link = 'https://museemusical.shop/#/verify-account/' . $token_id;
 
             $extract = array(
                 'name' => $request->firstName,
@@ -129,6 +129,7 @@ class CustomerController extends Controller
     {
         $email = $request->email;
         $password = $request->password;
+        $guest_token = $request->guest_token;
 
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         
@@ -139,6 +140,16 @@ class CustomerController extends Controller
                 $status = 'success';
                 $customer_data = $checkCustomer;
                 $customer_address = $checkCustomer->customerAddress ?? [];
+
+                if( $guest_token ) {
+
+                    $cartData = Cart::where('token', $guest_token)->get();
+                    if( isset( $cartData ) && count($cartData) > 0 ) {
+                        Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                    }
+                    
+                }
+
             } else {
                 $error = 1;
                 $message = 'Invalid credentials';

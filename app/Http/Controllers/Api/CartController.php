@@ -46,6 +46,7 @@ class CartController extends Controller
                         })->first();
 
         $salePrices = $request->sale_prices;
+        
         if (isset($checkCart) && !empty($checkCart)) {
             if ($type == 'delete') {
                 $checkCart->delete();
@@ -75,14 +76,15 @@ class CartController extends Controller
             $cart_id = Cart::create($ins)->id;
             $ins['message']         = 'added';
         }
-        return $this->getCartListAll($customer_id);
+        return $this->getCartListAll($customer_id, null, $guest_token);
     }
 
     public function updateCart(Request $request, ShipRocketService $service)
     {
 
         $cart_id        = $request->cart_id;
-        $customer_id  = $request->customer_id;
+        $guest_token    = $request->guest_token;
+        $customer_id    = $request->customer_id;
         $quantity       = $request->quantity ?? 1;
         $checkCart      = Cart::where('id', $cart_id)->first();
         // $service->getShippingRocketOrderDimensions($checkCart->customer_id);
@@ -92,42 +94,58 @@ class CartController extends Controller
         $checkCart->sub_total = $checkCart->price * $quantity;
         $checkCart->update();
 
-        $shiprocket_charges = $service->getShippingRocketOrderDimensions( $customer_id, $service->getToken() );       
+        $shiprocket_charges = $service->getShippingRocketOrderDimensions( $customer_id, $service->getToken(), $guest_token );       
 
-        return $this->getCartListAll($checkCart->customer_id);
+        return $this->getCartListAll($checkCart->customer_id, null, $guest_token);
     }
 
     public function deleteCart(Request $request)
     {
         $cart_id        = $request->cart_id;
+        $guest_token    = $request->guest_token;
         $checkCart      = Cart::find($cart_id);
         $customer_id    = $checkCart->customer_id;
         $checkCart->delete();
-        return $this->getCartListAll($customer_id);
+        return $this->getCartListAll($customer_id, null, $guest_token);
     }
 
     public function clearCart(Request $request)
     {
 
         $customer_id        = $request->customer_id;
+        $guest_token        = $request->guest_token;
 
-        Cart::where('customer_id', $customer_id)->delete();
-        CartAddress::where('customer_id', $customer_id)->delete();
+        Cart::when( $customer_id != '', function($q) use($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })->
+            when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
+                $q->where('token', $guest_token);
+            })->delete();
+
+        if( $customer_id ) {
+            CartAddress::where('customer_id', $customer_id)->delete();
+        }
         // CartShiprocketResponse::where('cart_token')
-        return $this->getCartListAll($customer_id);
+        return $this->getCartListAll($customer_id , null, $guest_token);
     }
 
     public function getCarts(Request $request)
     {
-
+        $guest_token = $request->guest_token;
         $customer_id    = $request->customer_id;
-        return $this->getCartListAll($customer_id);
+        return $this->getCartListAll($customer_id, null, $guest_token);
     }
 
-    function getCartListAll($customer_id, $shipping_info = null)
+    function getCartListAll($customer_id = null, $shipping_info = null, $guest_token = null)
     {
+   
+        $checkCart          = Cart::when( $customer_id != '', function($q) use($customer_id) {
+                                        $q->where('customer_id', $customer_id);
+                                    })->
+                                    when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
+                                        $q->where('token', $guest_token);
+                                    })->get();
 
-        $checkCart          = Cart::where('customer_id', $customer_id)->get();
         $tmp                = ['carts'];
         $grand_total        = 0;
         $tax_total          = 0;
@@ -136,7 +154,6 @@ class CartController extends Controller
 
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
-
                 $items = $citems->products;
                 $tax = [];
                 $tax_percentage = 0;
@@ -191,6 +208,7 @@ class CartController extends Controller
 
                 $pro['image']           = $path;
                 $pro['customer_id']     = $customer_id;
+                $pro['guest_token']     = $citems->token;
                 $pro['cart_id']         = $citems->id;
                 $pro['price']           = $citems->price;
                 $pro['quantity']        = $citems->quantity;
@@ -198,6 +216,7 @@ class CartController extends Controller
                 $pro['shiprocket_order_id'] = $citems->guest_token;
                 $grand_total            += $citems->sub_total;
                 $tmp['carts'][] = $pro;
+                
             }
 
             if (isset($shipping_info) && !empty($shipping_info)) {

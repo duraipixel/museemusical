@@ -46,13 +46,13 @@ Route::get('/get/orderCancelReason', [App\Http\Controllers\Api\OrderCancelContro
 Route::get('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
 
 Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
+Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
+Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
+Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
+Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
 
 Route::middleware(['client'])->group(function(){
     
-    Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
-    Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
-    Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
-    Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
     Route::post('/update/cartAmount', [App\Http\Controllers\Api\CartController::class, 'updateCartAmount']);
 
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);

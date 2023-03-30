@@ -17,11 +17,11 @@ class UploadAttributes implements ToModel, WithHeadingRow
 
         $sku = $row['sku'];
         if( isset( $sku ) && !empty( $sku ) ) {
-            $product_info = Product::select('id', 'category_id')->where('sku', $row['sku'])->first();
+            $product_info = Product::where('sku', $row['sku'])->first();
             
-            $category_id = $product_info->productCategory->parent_id ?? $product_info->productCategory->id;
+            $category_id = $product_info->productCategory->parent_id ?? $product_info->productCategory->id ?? '';
 
-            if( !empty( $category_id )) {
+            if( !empty( $category_id ) && isset( $row['header'] ) && !empty( $row['header'] ) ) {
                 
                 $attribute_set_name = $row['header'];
                 $ins = [];

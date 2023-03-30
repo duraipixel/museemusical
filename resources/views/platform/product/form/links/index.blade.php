@@ -32,7 +32,10 @@
                             <input type="text" name="url[]" placeholder="Url" value="{{ $item->url ?? '' }}" class="form-control mw-100 w-500px">
                             <!--end::Select2-->
                             <!--begin::Input-->
-                            <input type="text" class="form-control mw-100 w-250px" name="url_type[]" value="{{ $item->url_type ?? '' }}" placeholder="url type" />
+                            <select name="url_type[]" id="" class="form-control w-25">
+                                <option value="video_link"  @if( isset( $item->url_type ) && $item->url_type == 'video_link') selected @endif>Video</option>
+                                <option value="audio_link" @if( isset( $item->url_type ) && $item->url_type == 'audio_link') selected @endif>Audio</option>
+                            </select>
                             <!--end::Input-->
                             <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeUrlRow"  >
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
@@ -53,6 +56,10 @@
                             <!--end::Select2-->
                             <!--begin::Input-->
                             <input type="text" class="form-control mw-100 w-250px" name="url_type[]" placeholder="url type" />
+                            <select name="url_type[]" id="" class="form-control w-25">
+                                <option value="video_link">Video</option>
+                                <option value="audio_link">Audio</option>
+                            </select>
                             <!--end::Input-->
                             <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeUrlRow"  >
                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
