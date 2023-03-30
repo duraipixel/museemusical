@@ -80,7 +80,7 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Add Quick Link
+                            Add Quick Links
                         </button>
 
                     </div>

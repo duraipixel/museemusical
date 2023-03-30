@@ -400,9 +400,9 @@ class FilterController extends Controller
             }
         }
         $pro['product_extra_information'] = array(
-            array('name' => 'description', 'data' => $items->specification ),
-            array('name' => 'specification', 'data' => $attributes ),
-            array('name' => 'media', 'data' => $items->productVideoLinks ),
+            array('name' => 'description', 'data' => $items->specification, 'has_data' => isset($items->specification) && !empty($items->specification) ? true : false ),
+            array('name' => 'specification', 'data' => $attributes, 'has_data' => count($attributes) > 0 ? true : false ),
+            array('name' => 'media', 'data' => $items->productVideoLinks, 'has_data' => count($attributes) > 0 ? true : false ),
         );
 
         $pro['related_products']    = $related_arr;

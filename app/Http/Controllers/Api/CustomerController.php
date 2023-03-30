@@ -30,7 +30,7 @@ class CustomerController extends Controller
         $email = $request->token;
         $email = base64_decode($email);
         $error = 1;
-        $message = 'Token Expired or already used';
+        $message = 'Token Expired';
         $customer = Customer::with('customerAddress')->where('email', $email)->whereNull('deleted_at')->first();
         if( $customer ) {
             if( !empty($customer->verification_token) ) {

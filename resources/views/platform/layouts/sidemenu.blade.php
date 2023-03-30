@@ -206,7 +206,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title"> Order Cancel </span>
+                            <span class="menu-title"> Order Cancel Reason </span>
                         </a>
                     </div>
                     @endif
@@ -483,7 +483,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Quick Link</span>
+                            <span class="menu-title">Quick Links</span>
                         </a>
                     </div>
                     @endif

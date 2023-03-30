@@ -37,7 +37,7 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Add Cancel Order
+                            Add Cancel Order Reason
                         </button>
                     </div>
                 </div>

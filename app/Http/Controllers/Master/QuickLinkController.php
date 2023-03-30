@@ -52,8 +52,8 @@ class QuickLinkController extends Controller
                 ->rawColumns(['action', 'status', 'created_at']);
             return $datatables->make(true);
         }
-        $title                  = "Quick Link";
-        $breadCrum              = array('Master','Quick Link');
+        $title                  = "Quick Links";
+        $breadCrum              = array('Master','Quick Links');
         return view('platform.quick_link.index', compact('title', 'breadCrum'));
     }
     public function modalAddEdit(Request $request)

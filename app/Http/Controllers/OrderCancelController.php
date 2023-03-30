@@ -56,8 +56,8 @@ class OrderCancelController extends Controller
                 ->rawColumns(['action', 'status', 'created_at']);
             return $datatables->make(true);
         }
-        $breadCrum = array('Order','Order Cancel');
-        $title      = 'Order Cancel';
+        $breadCrum = array('Order','Order Cancel Reason');
+        $title      = 'Order Cancel Reason';
         return view('platform.order_cancel.index',compact('title','breadCrum'));
     }
     public function modalAddEdit(Request $request)

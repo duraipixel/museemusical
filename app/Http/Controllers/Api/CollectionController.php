@@ -43,7 +43,7 @@ class CollectionController extends Controller
     {
         $customer_id = $request->customer_id;
 
-        $recentDetails = RecentView::where('customer_id', $customer_id)->orderBy('created_at', 'desc')->get();
+        $recentDetails = RecentView::where('customer_id', $customer_id)->orderBy('created_at', 'desc')->limit(10)->get();
         $recentData = [];
         if (isset($recentDetails) && !empty($recentDetails)) {
             foreach ($recentDetails as $items) {
