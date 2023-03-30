@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartAddress;
 use App\Models\CartShiprocketResponse;
+use App\Models\Master\Customer;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
@@ -61,20 +62,26 @@ class CartController extends Controller
                 $checkCart->update();
             }
         } else {
+            $customer_info = Customer::find($request->customer_id);
+            
+            if( isset( $customer_info ) && !empty( $customer_info) || !empty($request->guest_token) ) {
 
-            if ($product_info->quantity <= $quantity) {
-                $quantity = $product_info->quantity;
+                if ($product_info->quantity <= $quantity) {
+                    $quantity = $product_info->quantity;
+                }
+                $ins['customer_id']     = $request->customer_id;
+                $ins['product_id']      = $product_id;
+                $ins['guest_token']     = $getCartToken->guest_token ?? 'ORD' . date('ymdhis');
+                $ins['quantity']        = $quantity ?? 1;
+                $ins['price']           = $salePrices['price_original'];
+                $ins['sub_total']       = $salePrices['price_original'] * $quantity ?? 1;
+                $ins['token']           = $request->guest_token ?? null;
+
+                $cart_id = Cart::create($ins)->id;
+                $ins['message']         = 'added';
+            } else {
+                return array('error' => 1, 'message' => 'Customer Data not available.Contact Administrator');
             }
-            $ins['customer_id']     = $request->customer_id;
-            $ins['product_id']      = $product_id;
-            $ins['guest_token']     = $getCartToken->guest_token ?? 'ORD' . date('ymdhis');
-            $ins['quantity']        = $quantity ?? 1;
-            $ins['price']           = $salePrices['price_original'];
-            $ins['sub_total']       = $salePrices['price_original'] * $quantity ?? 1;
-            $ins['token']           = $request->guest_token ?? null;
-
-            $cart_id = Cart::create($ins)->id;
-            $ins['message']         = 'added';
         }
         return $this->getCartListAll($customer_id, null, $guest_token);
     }
@@ -86,17 +93,23 @@ class CartController extends Controller
         $guest_token    = $request->guest_token;
         $customer_id    = $request->customer_id;
         $quantity       = $request->quantity ?? 1;
-        $checkCart      = Cart::where('id', $cart_id)->first();
-        // $service->getShippingRocketOrderDimensions($checkCart->customer_id);
-        // dd( 'service');
-
-        $checkCart->quantity = $quantity;
-        $checkCart->sub_total = $checkCart->price * $quantity;
-        $checkCart->update();
-
-        $shiprocket_charges = $service->getShippingRocketOrderDimensions( $customer_id, $service->getToken(), $guest_token );       
-
-        return $this->getCartListAll($checkCart->customer_id, null, $guest_token);
+        $customer_info = Customer::find($request->customer_id);
+            
+        if( isset( $customer_info ) && !empty( $customer_info) || !empty($request->guest_token) ) {
+            $checkCart      = Cart::where('id', $cart_id)->first();
+            // $service->getShippingRocketOrderDimensions($checkCart->customer_id);
+            // dd( 'service');
+    
+            $checkCart->quantity = $quantity;
+            $checkCart->sub_total = $checkCart->price * $quantity;
+            $checkCart->update();
+    
+            $shiprocket_charges = $service->getShippingRocketOrderDimensions( $customer_id, $service->getToken(), $guest_token );       
+    
+            return $this->getCartListAll($checkCart->customer_id, null, $guest_token);
+        } else {
+            return array('error' => 1, 'message' => 'Customer Data not available.Contact Administrator');
+        }
     }
 
     public function deleteCart(Request $request)
