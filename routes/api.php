@@ -43,7 +43,7 @@ Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::c
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 Route::get('/get/orderCancelReason', [App\Http\Controllers\Api\OrderCancelController::class, 'index']);
 
-Route::get('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
+Route::post('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
 
 Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
 Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);

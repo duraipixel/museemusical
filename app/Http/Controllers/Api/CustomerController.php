@@ -26,13 +26,12 @@ class CustomerController extends Controller
 
     public function verifyAccount(Request $request)
     {
-        // dd( base64_encode('durairaj.pixel@gmail.com') );
-        // $email = 'ZHVyYWlyYWoucGl4ZWxAZ21haWwuY29t';
-        $email = $request->email;
+        
+        $email = $request->token;
         $email = base64_decode($email);
         $error = 1;
-        $message = 'Token Expired';
-        $customer = Customer::where('email', $email)->whereNull('deleted_at')->first();
+        $message = 'Token Expired or already used';
+        $customer = Customer::with('customerAddress')->where('email', $email)->whereNull('deleted_at')->first();
         if( $customer ) {
             if( !empty($customer->verification_token) ) {
                 $customer->email_verified_at = Carbon::now();
@@ -43,7 +42,7 @@ class CustomerController extends Controller
             } 
         }
 
-        return array('error' => $error, 'message' => $message);
+        return array('error' => $error, 'message' => $message, 'customer' => $customer);
 
     }
 
@@ -80,6 +79,9 @@ class CustomerController extends Controller
             // $link = 'http://192.168.0.35:3000/#/verify-account/' . $token_id;
             $link = 'https://museemusical.shop/#/verify-account/' . $token_id;
 
+            $customer_data->verification_token = $token_id;
+            $customer_data->update();
+
             $extract = array(
                 'name' => $request->firstName,
                 'regards' => $globalInfo->site_name,
@@ -114,12 +116,12 @@ class CustomerController extends Controller
             }
 
             $error = 0;
-            $message = 'Registered success';
+            $message = 'Verification email is sent to your email address, Please verify account to login';
             $status = 'success';
         } else {
             $error = 1;
             // $message = $validator->errors()->all();
-            $message = 'Email id is already exists';
+            $message = ['Email id is already exists'];
             $status = 'error';
         }
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );
@@ -135,19 +137,28 @@ class CustomerController extends Controller
         
         if ($checkCustomer) {
             if (Hash::check($password, $checkCustomer->password)) {
-                $error = 0;
-                $message = 'Login Success';
-                $status = 'success';
-                $customer_data = $checkCustomer;
-                $customer_address = $checkCustomer->customerAddress ?? [];
+                if( $checkCustomer->email_verified_at == null ) {
+                    $error = 1;
+                    $message = 'Verification pending check your mail';
+                    $status = 'error';
+                    $customer_data = '';
+                    $customer_address = [];
+                } else {
 
-                if( $guest_token ) {
-
-                    $cartData = Cart::where('token', $guest_token)->get();
-                    if( isset( $cartData ) && count($cartData) > 0 ) {
-                        Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                    $error = 0;
+                    $message = 'Login Success';
+                    $status = 'success';
+                    $customer_data = $checkCustomer;
+                    $customer_address = $checkCustomer->customerAddress ?? [];
+    
+                    if( $guest_token ) {
+    
+                        $cartData = Cart::where('token', $guest_token)->get();
+                        if( isset( $cartData ) && count($cartData) > 0 ) {
+                            Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                        }
+                        
                     }
-                    
                 }
 
             } else {
