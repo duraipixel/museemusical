@@ -142,8 +142,9 @@ class ShipRocketService
             $cartShipAddress = CartAddress::where('customer_id', $customer_id)
                 ->where('cart_token', $cart_token)
                 ->where('address_type', 'shipping')->first();
-
-            if ($cartBillAddress && $cartShipAddress) {
+                // dump( $cartBillAddress );
+            
+            if ($cartShipAddress) {
 
                 $product_id = [];
                 $cartItemsarr = [];
@@ -202,16 +203,16 @@ class ShipRocketService
                     "pickup_location" =>  "Primary",
                     "channel_id" =>  "",
                     "comment" =>  "",
-                    "billing_customer_name" => $cartBillAddress->name,
+                    "billing_customer_name" => $cartShipAddress->name,
                     "billing_last_name" =>  "",
-                    "billing_address" =>  $cartBillAddress->address_line1,
-                    "billing_address_2" => $cartBillAddress->address_line2,
-                    "billing_city" => $cartBillAddress->city,
-                    "billing_pincode" => $cartBillAddress->post_code,
-                    "billing_state" => $cartBillAddress->state,
+                    "billing_address" =>  $cartShipAddress->address_line1,
+                    "billing_address_2" => $cartShipAddress->address_line2,
+                    "billing_city" => $cartShipAddress->city,
+                    "billing_pincode" => $cartShipAddress->post_code,
+                    "billing_state" => $cartShipAddress->state,
                     "billing_country" => "India",
-                    "billing_email" => $cartBillAddress->email,
-                    "billing_phone" => $cartBillAddress->mobile_no,
+                    "billing_email" => $cartShipAddress->email,
+                    "billing_phone" => $cartShipAddress->mobile_no,
                     "shipping_is_billing" => true,
                     "shipping_customer_name" => $cartShipAddress->name,
                     "shipping_last_name" => "",
@@ -273,11 +274,12 @@ class ShipRocketService
     {
 
         $cart_ship_response = CartShiprocketResponse::where('order_id', $order_id)->first();
-
+        // dd( $cart_ship_response->deliveryAddress );
 
         $charge_array = array(
-            "pickup_postcode" => $cart_ship_response->billingAddress->post_code,
-            "delivery_postcode" => $cart_ship_response->deliveryAddress->post_code,
+            "pickup_postcode" => '600002',
+            // "delivery_postcode" => $cart_ship_response->deliveryAddress->post_code,
+            "delivery_postcode" => '600001',
             "order_id" => $order_id,
             "cod" =>  false,
             "weight" => $measure_ment['weight'],

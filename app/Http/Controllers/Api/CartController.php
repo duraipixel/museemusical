@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartAddress;
 use App\Models\CartShiprocketResponse;
 use App\Models\Master\Customer;
+use App\Models\Master\CustomerAddress;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
@@ -311,6 +312,7 @@ class CartController extends Controller
     {
         $from_type = $request->from_type;
         $address = $request->address;
+        $shippingAddress = CustomerAddress::find($address);
         $customer_id = $request->customer_id;
         
         $cart_info = Cart::where('customer_id', $customer_id)->first();
@@ -322,14 +324,14 @@ class CartController extends Controller
             $ins_cart['cart_token'] = $cart_info->guest_token;
             $ins_cart['customer_id'] = $customer_id;
             $ins_cart['address_type'] = $from_type;
-            $ins_cart['name'] = $address['name'];
-            $ins_cart['email'] = $address['email'];
-            $ins_cart['mobile_no'] = $address['mobile_no'];
-            $ins_cart['address_line1'] = $address['address_line1'];
+            $ins_cart['name'] = $shippingAddress->name;
+            $ins_cart['email'] = $shippingAddress->email;
+            $ins_cart['mobile_no'] = $shippingAddress->mobile_no;
+            $ins_cart['address_line1'] = $shippingAddress->address_line1;
             $ins_cart['country'] = 'india';
-            $ins_cart['post_code'] = $address['post_code'];
-            $ins_cart['state'] = $address['state'];
-            $ins_cart['city'] = $address['city'];
+            $ins_cart['post_code'] = $shippingAddress->post_code;
+            $ins_cart['state'] = $shippingAddress->state;
+            $ins_cart['city'] = $shippingAddress->city;
             CartAddress::create($ins_cart);
         }
 

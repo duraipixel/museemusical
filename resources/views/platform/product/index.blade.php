@@ -182,5 +182,19 @@
             });
 
         }
+
+        function changeStockQuantity(product_id) {
+            var productpane = $('#quantity_input_'+product_id);
+            var quantityEditPane = $('#quantity_edit_'+product_id);
+            productpane.hide();
+            quantityEditPane.css('display', 'flex');
+        }
+
+        function closeStockQuantity(product_id) {
+            var productpane = $('#quantity_input_'+product_id);
+            var quantityEditPane = $('#quantity_edit_'+product_id);
+            productpane.show();
+            quantityEditPane.css('display', 'none');
+        }
     </script>
 @endsection

@@ -111,6 +111,17 @@ class ProductController extends Controller
                     }
                 })
                 ->addIndexColumn()
+                ->editColumn('quantity', function($row){
+                    $quantity = '<div class="postion-relative">
+                    <div id="quantity_input_'.$row->id.'" class="quantity-label">'.$row->quantity.' <i class="fa fa-edit" role="button" onclick="changeStockQuantity('.$row->id.')"></i></div>
+                    <div class="form-group postion-absolute" id="quantity_edit_'.$row->id.'" style="display:none">
+                        <input type="number" maxlength="3" value="'.$row->quantity.'" class="form-control w-90px" name="quantity" id="quantity_'.$row->id.'">
+                        <i class="fa fa-check quantity-btn"></i>
+                        <i class="fa fa-times quantity-close-btn" onclick="closeStockQuantity('.$row->id.')"></i>
+                    </div>
+                    </div>';
+                    return $quantity;
+                })
                 ->editColumn('status', function($row){
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'products\')">'.ucfirst($row->status).'</a>';
                     return $status;
@@ -131,7 +142,7 @@ class ProductController extends Controller
                     return $edit_btn . $del_btn;
                 })
                
-                ->rawColumns(['action', 'status', 'category']);
+                ->rawColumns(['action', 'status', 'category', 'quantity']);
                 
              
                 return $datatables->make(true);
