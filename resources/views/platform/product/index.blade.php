@@ -196,5 +196,43 @@
             productpane.show();
             quantityEditPane.css('display', 'none');
         }
+        function quantityChange(id)
+        {
+            var id = id;
+            var val = $('#quantity_'+id).val();
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type:'POST',
+                    url:"{{ route('quantityChange') }}",
+                    data: {
+                        id:id,
+                        value:val,
+                    },
+                   
+                    success: function(res) {
+                        dtTable.ajax.reload();
+                        Swal.fire({
+                            title: "Updated!",
+                            text: res.message,
+                            icon: "success",
+                            confirmButtonText: "Ok, got it!",
+                            customClass: {
+                                confirmButton: "btn btn-success"
+                            },
+                            timer: 3000
+                        });
+                        
+                    },
+                    error: function(xhr,err){
+                        if( xhr.status == 403 ) {
+                            toastr.error(xhr.statusText, 'UnAuthorized Access');
+                        }
+                    }
+                })
+        }
     </script>
 @endsection

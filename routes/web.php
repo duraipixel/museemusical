@@ -134,6 +134,7 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/combos/export/excel', [App\Http\Controllers\Product\ComboProductController::class, 'export'])->name('combo-product.export.excel')->middleware(['checkAccess:export']);
         Route::get('/combos/export/pdf', [App\Http\Controllers\Product\ComboProductController::class, 'exportPdf'])->name('combo-product.export.pdf')->middleware(['checkAccess:export']);
     
+        Route::post('/quantityChange', [App\Http\Controllers\Product\ProductController::class, 'quantityChange'])->name('quantityChange');
     
     });
 

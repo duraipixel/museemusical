@@ -116,7 +116,7 @@ class ProductController extends Controller
                     <div id="quantity_input_'.$row->id.'" class="quantity-label">'.$row->quantity.' <i class="fa fa-edit" role="button" onclick="changeStockQuantity('.$row->id.')"></i></div>
                     <div class="form-group postion-absolute" id="quantity_edit_'.$row->id.'" style="display:none">
                         <input type="number" maxlength="3" value="'.$row->quantity.'" class="form-control w-90px" name="quantity" id="quantity_'.$row->id.'">
-                        <i class="fa fa-check quantity-btn"></i>
+                        <i class="fa fa-check quantity-btn" onclick="quantityChange('.$row->id.')"></i>
                         <i class="fa fa-times quantity-close-btn" onclick="closeStockQuantity('.$row->id.')"></i>
                     </div>
                     </div>';
@@ -655,5 +655,19 @@ class ProductController extends Controller
         $tax = ProductCategory::find($category_id);
         return $tax->tax->pecentage ?? 0;
     }
+   
 
+    public function quantityChange(Request $request)
+    {
+        $id = $request->id;
+        $value = $request->value;
+        if(!empty($id) && !empty($value))
+        {
+            $data = Product::find($id);
+            $data->quantity = $value;
+            $data->save();
+            return response()->json(['message'=>"You changed the Quantity value!",'status' => 1 ] );
+        }
+
+    }
 }
