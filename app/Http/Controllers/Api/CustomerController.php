@@ -187,7 +187,7 @@ class CustomerController extends Controller
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
-        
+        dd( $request->all() );
         // $details = $service->getShippingRocketOrderDimensions($request->customer_id);
         // echo 'duraira';die;
         $from_address_type = $request->from_address_type;
@@ -314,7 +314,7 @@ class CustomerController extends Controller
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
-
+        
         $ins['customer_id'] = $request->customer_id;
         $ins['address_type_id'] = $request->address_type_id;
         $ins['name'] = $request->name;

@@ -7,6 +7,7 @@ use App\Mail\OrderMail;
 use App\Models\Cart;
 use App\Models\CartShiprocketResponse;
 use App\Models\GlobalSettings;
+use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
 use App\Models\Order;
@@ -29,7 +30,7 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
-        
+       
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
@@ -41,10 +42,16 @@ class CheckoutController extends Controller
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
-        $shipping_id            = $request->shipping_id ?? 1;
+        $shipping_fee_id        = $request->shipping_id ?? 1;
 
         #check product is out of stock
         $errors                 = [];
+        if( !$shipping_address ) {
+            $message     = 'Shipping address not selected';
+            $error = 1;
+            $response['error'] = $error;
+            $response['message'] = $message;
+        }
         
         if (isset($cart_items) && !empty($cart_items)) {
             foreach ($cart_items as $item) {
@@ -58,6 +65,13 @@ class CheckoutController extends Controller
                 }
             }
         }
+        /***
+         * 1. get Shipping address
+         * 2. get Billing Address
+         * */
+        $shipppingAddressInfo = CustomerAddress::find($shipping_address);
+        $billingAddressInfo = CustomerAddress::find($billing_address);
+
         $shippingCharges = [];
         if( isset( $cart_id ) ) {
             $cartInfo = Cart::find($cart_id);
@@ -66,20 +80,13 @@ class CheckoutController extends Controller
             if( isset( $shipmentResponse->shipping_charge_response_data ) && !empty( $shipmentResponse->shipping_charge_response_data)) {
                 $shipChargeResponse = json_decode($shipmentResponse->shipping_charge_response_data);
                 foreach ( $shipChargeResponse->data->available_courier_companies as $items ) {
-                    if( $items->id == $shipping_id ) {
+                    if( $items->id == $shipping_fee_id ) {
                         $shippingCharges = $items;
                     }
                 }
             }
         }
         
-
-        if( !$shipping_address ) {
-            $message     = 'Shipping address not selected';
-            $error = 1;
-            $response['error'] = $error;
-            $response['message'] = $message;
-        }
         if (!empty($errors)) {
 
             $error = 1;
@@ -94,20 +101,18 @@ class CheckoutController extends Controller
         $coupon_amount          = 0;
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        $shipping_type_info = ShippingCharge::find($shipping_id);
+        $shipping_type_info = ShippingCharge::find($shipping_fee_id);
 
         if( !$shipping_type_info ) {
             /**
              * check shiprocket data is available
              */
-
             $shipping_amount = $cart_total['shipping_charge'];
         }
-        
-        $order_ins['customer_id'] = $customer_id;
+
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        $order_ins['shipping_options'] = $shipping_id;
+        $order_ins['shipping_options'] = $shipping_fee_id;
         $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $cart_total['tax_total'];
@@ -120,30 +125,30 @@ class CheckoutController extends Controller
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
-        $order_ins['billing_name'] = $billing_address['name'];
-        $order_ins['billing_email'] = $billing_address['email'];
-        $order_ins['billing_mobile_no'] = $billing_address['mobile_no'];
-        $order_ins['billing_address_line1'] = $billing_address['address_line1'];
-        $order_ins['billing_address_line2'] = $billing_address['address_line2'] ?? null;
-        $order_ins['billing_landmark'] = $billing_address['landmark'] ?? null;
-        $order_ins['billing_country'] = $billing_address['country'] ?? null;
-        $order_ins['billing_post_code'] = $billing_address['post_code'] ?? null;
-        $order_ins['billing_state'] = $billing_address['state'] ?? null;
-        $order_ins['billing_city'] = $billing_address['city'] ?? null;
+        $order_ins['billing_name'] = $billingAddressInfo['name'] ?? $shipppingAddressInfo['name'];
+        $order_ins['billing_email'] = $billingAddressInfo['email'] ?? $shipppingAddressInfo['email'];
+        $order_ins['billing_mobile_no'] = $billingAddressInfo['mobile_no'] ?? $shipppingAddressInfo['email'];
+        $order_ins['billing_address_line1'] = $billingAddressInfo['address_line1'] ?? $shipppingAddressInfo['address_line1'];
+        $order_ins['billing_address_line2'] = $billingAddressInfo['address_line2'] ?? $shipppingAddressInfo['address_line2'] ?? null;
+        $order_ins['billing_landmark'] = $billingAddressInfo['landmark'] ?? $shipppingAddressInfo['landmark'] ?? null;
+        $order_ins['billing_country'] = $billingAddressInfo['country'] ?? $shipppingAddressInfo['country'] ?? null;
+        $order_ins['billing_post_code'] = $billingAddressInfo['post_code'] ?? $shipppingAddressInfo['post_code'] ?? null;
+        $order_ins['billing_state'] = $billingAddressInfo['state'] ?? $shipppingAddressInfo['state'] ?? null;
+        $order_ins['billing_city'] = $billingAddressInfo['city'] ?? $shipppingAddressInfo['city'] ?? null;
 
-        $order_ins['shipping_name'] = $shipping_address['name'];
-        $order_ins['shipping_email'] = $shipping_address['email'];
-        $order_ins['shipping_mobile_no'] = $shipping_address['mobile_no'];
-        $order_ins['shipping_address_line1'] = $shipping_address['address_line1'];
-        $order_ins['shipping_address_line2'] = $shipping_address['address_line2'] ?? null;
-        $order_ins['shipping_landmark'] = $shipping_address['landmark'] ?? null;
-        $order_ins['shipping_country'] = $shipping_address['country'] ?? null;
-        $order_ins['shipping_post_code'] = $shipping_address['post_code'];
-        $order_ins['shipping_state'] = $shipping_address['state'] ?? null;
-        $order_ins['shipping_city'] = $shipping_address['city'] ?? null;
+        $order_ins['shipping_name'] = $shipppingAddressInfo['name'];
+        $order_ins['shipping_email'] = $shipppingAddressInfo['email'];
+        $order_ins['shipping_mobile_no'] = $shipppingAddressInfo['mobile_no'];
+        $order_ins['shipping_address_line1'] = $shipppingAddressInfo['address_line1'];
+        $order_ins['shipping_address_line2'] = $shipppingAddressInfo['address_line2'] ?? null;
+        $order_ins['shipping_landmark'] = $shipppingAddressInfo['landmark'] ?? null;
+        $order_ins['shipping_country'] = $shipppingAddressInfo['country'] ?? null;
+        $order_ins['shipping_post_code'] = $shipppingAddressInfo['post_code'];
+        $order_ins['shipping_state'] = $shipppingAddressInfo['state'] ?? null;
+        $order_ins['shipping_city'] = $shipppingAddressInfo['city'] ?? null;
         $order_ins['rocket_charge_response'] = json_encode($shippingCharges);
         $order_ins['rocket_charge_name'] = $shippingCharges->courier_name ?? null;
-
+        
         $order_id = Order::create($order_ins)->id;
 
         if (isset($cart_items) && !empty($cart_items)) {
@@ -189,9 +194,9 @@ class CheckoutController extends Controller
                 "image"             => asset(gSetting('logo')),
                 "description"       => "Secure Payment",
                 "prefill"           => [
-                    "name"              => $shipping_address['name'],
-                    "email"             => $shipping_address['email'],
-                    "contact"           => $shipping_address['mobile_no'],
+                    "name"              => $shipppingAddressInfo['name'],
+                    "email"             => $shipppingAddressInfo['email'],
+                    "contact"           => $shipppingAddressInfo['mobile_no'],
                 ],
                 "notes"             => [
                     "address"           => "",

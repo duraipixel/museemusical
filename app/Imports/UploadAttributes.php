@@ -56,7 +56,9 @@ class UploadAttributes implements ToModel, WithHeadingRow
                     $ins_set['attribute_values'] = $row['values'];
                     $ins_set['status'] = 'published';
     
-                    ProductWithAttributeSet::updateOrCreate(['product_id' => $product_info->id, 'product_attribute_set_id' => $attribute_info->id, 'title' => $row['keys'] ], $ins_set);
+                    $attr = ProductWithAttributeSet::updateOrCreate(['product_id' => $product_info->id, 'product_attribute_set_id' => $attribute_info->id, 'title' => $row['keys'] ], $ins_set);
+                    echo '<br>';
+                    dump( $attr );
                 }
 
             }

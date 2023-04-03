@@ -141,7 +141,7 @@ class Couponcontroller extends Controller
                                             $tmp['discount_amount'] = percentageAmountOnly($checkCartData->category_total, $coupon->calculate_value);
                                             $tmp['coupon_id'] = $coupon->id;
                                             $tmp['coupon_code'] = $coupon->coupon_code;
-                                            $tmp['coupon_applied_amount'] = $checkCartData->category_total;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->category_total, 2, '.', '');
                                             $tmp['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
                                             $overall_discount_percentage = $coupon->calculate_value;
                                             $couponApplied = $tmp;
@@ -151,7 +151,7 @@ class Couponcontroller extends Controller
                                             $tmp['discount_amount'] = $coupon->calculate_value;
                                             $tmp['coupon_id'] = $coupon->id;
                                             $tmp['coupon_code'] = $coupon->coupon_code;
-                                            $tmp['coupon_applied_amount'] = $checkCartData->sub_total;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->sub_total, 2, '.', '');
                                             $tmp['coupon_type']         = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
                                             $has_product++;
                                             $couponApplied[] = $tmp;
@@ -164,7 +164,7 @@ class Couponcontroller extends Controller
 
                                     $response['coupon_info'] = $couponApplied;
                                     $response['overall_applied_discount'] = $overall_discount_percentage;
-                                    $response['coupon_amount'] = $product_amount;
+                                    $response['coupon_amount'] = number_format((float)$product_amount, 2, '.', '');
                                     $response['coupon_id'] = $coupon->id;
                                     $response['coupon_code'] = $coupon->coupon_code;
                                     $response['status'] = 'success';
