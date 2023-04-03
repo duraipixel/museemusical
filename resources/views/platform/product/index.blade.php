@@ -52,7 +52,11 @@
 @section('add_on_script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
-
+<style>
+     .error {
+      border-color:red
+   }
+</style>
     <script>
         var dtTable = $('#product-table').DataTable({
 
@@ -200,6 +204,15 @@
         {
             var id = id;
             var val = $('#quantity_'+id).val();
+            if (val == "") {
+                $('#quantity_'+id).addClass('error');
+                return false;
+            }
+            if(val == 0)
+            {
+                $('#quantity_'+id).val('');
+                return false; 
+            }
             $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
