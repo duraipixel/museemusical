@@ -40,7 +40,7 @@
                             <div class="col-4">
                                 <label for=""> Sample Excel file </label>
                                 <div class="mt-2">
-                                    <a href="{{ asset('assets/data/StateSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
+                                    <a href="{{ asset('assets/data/StateSamplefile.xls') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
                             </div>
                         </div>
