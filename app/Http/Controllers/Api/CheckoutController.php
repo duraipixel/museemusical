@@ -18,6 +18,7 @@ use App\Models\Product\Product;
 use App\Models\ShippingCharge;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Razorpay\Api\Api;
 use PDF;
@@ -30,7 +31,7 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
-       
+
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
@@ -42,17 +43,17 @@ class CheckoutController extends Controller
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
-        $shipping_fee_id        = $request->shipping_id ?? 1;
+        $shipping_fee_id        = $request->shipping_id ?? '';
 
         #check product is out of stock
         $errors                 = [];
-        if( !$shipping_address ) {
+        if (!$shipping_address) {
             $message     = 'Shipping address not selected';
             $error = 1;
             $response['error'] = $error;
             $response['message'] = $message;
         }
-        
+
         if (isset($cart_items) && !empty($cart_items)) {
             foreach ($cart_items as $item) {
                 $product_id     = $item['id'];
@@ -73,26 +74,26 @@ class CheckoutController extends Controller
         $billingAddressInfo = CustomerAddress::find($billing_address);
 
         $shippingCharges = [];
-        if( isset( $cart_id ) ) {
+        if (isset($cart_id)) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
-            if( isset( $shipmentResponse->shipping_charge_response_data ) && !empty( $shipmentResponse->shipping_charge_response_data)) {
+            if (isset($shipmentResponse->shipping_charge_response_data) && !empty($shipmentResponse->shipping_charge_response_data)) {
                 $shipChargeResponse = json_decode($shipmentResponse->shipping_charge_response_data);
-                foreach ( $shipChargeResponse->data->available_courier_companies as $items ) {
-                    if( $items->id == $shipping_fee_id ) {
+                foreach ($shipChargeResponse->data->available_courier_companies as $items) {
+                    if ($items->id == $shipping_fee_id) {
                         $shippingCharges = $items;
                     }
                 }
             }
         }
-        
+
         if (!empty($errors)) {
 
             $error = 1;
             $response['error'] = $error;
             $response['message'] = implode(',', $errors);
-            
+
             return $response;
         }
 
@@ -103,7 +104,7 @@ class CheckoutController extends Controller
 
         $shipping_type_info = ShippingCharge::find($shipping_fee_id);
 
-        if( !$shipping_type_info ) {
+        if (!$shipping_type_info) {
             /**
              * check shiprocket data is available
              */
@@ -115,7 +116,7 @@ class CheckoutController extends Controller
         $order_ins['shipping_options'] = $shipping_fee_id;
         $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? 'Free';
         $order_ins['amount'] = $pay_amount;
-        $order_ins['tax_amount'] = $cart_total['tax_total'];
+        $order_ins['tax_amount'] = str_replace(',', '', $cart_total['tax_total']);
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
         $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
         $order_ins['discount_amount'] = $discount_amount;
@@ -148,7 +149,7 @@ class CheckoutController extends Controller
         $order_ins['shipping_city'] = $shipppingAddressInfo['city'] ?? null;
         $order_ins['rocket_charge_response'] = json_encode($shippingCharges);
         $order_ins['rocket_charge_name'] = $shippingCharges->courier_name ?? null;
-        
+
         $order_id = Order::create($order_ins)->id;
 
         if (isset($cart_items) && !empty($cart_items)) {
@@ -336,7 +337,7 @@ class CheckoutController extends Controller
                     $title = str_replace("}", "", $title);
                     eval("\$title = \"$title\";");
 
-                    $filePath = 'storage/invoice_order/'.$order_info->order_no.'.pdf';
+                    $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
                     Mail::to($order_info->billing_email)->send($send_mail);
@@ -366,7 +367,7 @@ class CheckoutController extends Controller
             $error_message = 'Payment Failed';
 
             if (isset($request->razor_response['error']) && !empty($request->razor_response['error'])) {
-
+                
                 $orderdata = $request->razor_response['error']['metadata'];
                 $razorpay_payment_id = $orderdata['payment_id'];
                 $razorpay_order_id = $orderdata['order_id'];
