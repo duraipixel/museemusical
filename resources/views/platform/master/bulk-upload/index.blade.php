@@ -8,7 +8,6 @@
 <div class="toolbar" id="kt_toolbar">
     <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
         @include('platform.layouts.parts._breadcrum')
-        @include('platform.layouts.parts._menu_add_button')
     </div>
 </div>
 @endsection
@@ -20,11 +19,11 @@
                     <div class="col-sm-12 text-start">
                         <div class="row">
                             <div class="col-8">
-                                <form id="importform" method="POST" action="{{ route('products.bulk.upload')}}" enctype="multipart/form-data">
+                                <form id="importformState" method="POST" action="{{ route('state.bulk.upload')}}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div>
-                                            <h3> Product Upload Section</h3>
+                                            <h3> State Upload Section</h3>
                                         </div>
                                         <div class="col-6">
                                             <div class="mb-3">
@@ -41,7 +40,7 @@
                             <div class="col-4">
                                 <label for=""> Sample Excel file </label>
                                 <div class="mt-2">
-                                    <a href="{{ asset('assets/data/productSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
+                                    <a href="{{ asset('assets/data/StateSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
                             </div>
                         </div>
@@ -52,11 +51,43 @@
                     <div class="col-sm-12 text-start">
                         <div class="row">
                             <div class="col-8">
-                                <form id="importform" method="POST" action="{{ route('products.bulk.attributes.upload')}}" enctype="multipart/form-data">
+                                <form id="importform" method="POST" action="{{ route('city.bulk.upload')}}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div>
-                                            <h3> Product Attribute Upload Section </h3>
+                                            <h3> City Attribute Upload Section </h3>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Select Import File</label>
+                                                <input type="file" name="file" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 mt-3 pt-5">
+                                            <button type="submit"  class="btn btn-primary mb-2">Import</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-4">
+                                <label for=""> Sample Excel file </label>
+                                <div class="mt-2">
+                                    <a href="{{ asset('assets/data/CityAttributeSamplefile.xls') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col-sm-12 text-start">
+                        <div class="row">
+                            <div class="col-8">
+                                <form id="importformPincode" method="POST" action="{{ route('pincode.bulk.upload')}}" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row">
+                                        <div>
+                                            <h3> Pincode Attribute Upload Section </h3>
                                         </div>
                                         <div class="col-6">
                                             <div class="mb-3">
@@ -89,7 +120,8 @@
 
     <script>
         $(document).ready(function(){
-            $("#importform").validate({
+            $("#importformPincode").validate({
+
                 submitHandler: function(form) {
                     var formData = new FormData(form);
                     $.ajax({
@@ -114,6 +146,33 @@
                     });		
                     
                 }
+            });
+            $("#importformState").validate({
+
+            submitHandler: function(form) {
+            var formData = new FormData(form);
+            $.ajax({
+                url: form.action,
+                type: form.method,
+                data: formData,
+                contentType: false,
+                processData: false,
+            
+                success: function(response) {
+                    
+                    if( response.error == 0 ) {
+                        toastr.success('Success', response.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        toastr.error('Error', response.message);
+                    }
+                    
+                }            
+            });		
+    
+            }
             });
         })
     </script>
