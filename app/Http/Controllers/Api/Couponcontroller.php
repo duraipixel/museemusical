@@ -18,6 +18,7 @@ class Couponcontroller extends Controller
     {
         $coupon_code = $request->coupon_code;
         $customer_id = $request->customer_id;
+        $selected_shipping = $request->selected_shipping ?? '';
         $carts          = Cart::where('customer_id', $customer_id)->get();
 
         if ($carts) {
@@ -94,7 +95,7 @@ class Couponcontroller extends Controller
                                             $response['coupon_code'] = $coupon->coupon_code;
                                             $response['status'] = 'success';
                                             $response['message'] = 'Coupon applied';
-                                            $response['cart_info'] = $this->getCartListAll($customer_id, $response);
+                                            $response['cart_info'] = $this->getCartListAll($customer_id, $response, $selected_shipping);
                                         }
                                     } else {
                                         $has_product_error++;
@@ -169,7 +170,7 @@ class Couponcontroller extends Controller
                                     $response['coupon_code'] = $coupon->coupon_code;
                                     $response['status'] = 'success';
                                     $response['message'] = 'Coupon applied';
-                                    $response['cart_info'] = $this->getCartListAll($customer_id, $response);
+                                    $response['cart_info'] = $this->getCartListAll($customer_id, $response, $selected_shipping);
                                 }
                             } else {
                                 $response['status'] = 'error';
@@ -196,11 +197,12 @@ class Couponcontroller extends Controller
         return $response;
     }
 
-    function getCartListAll($customer_id, $couponInfo = '')
+    function getCartListAll($customer_id, $couponInfo = '', $selected_shipping = '')
     {
 
         $checkCart          = Cart::where('customer_id', $customer_id)->get();
         $tmp                = ['carts'];
+        $tmp['selected_shipping_fees'] = $selected_shipping;
         $grand_total        = 0;
         $tax_total          = 0;
         $product_tax_exclusive_total = 0;
@@ -267,6 +269,9 @@ class Couponcontroller extends Controller
 
             if (isset($couponInfo) && !empty($couponInfo)) {
                 $grand_total            = $grand_total - $couponInfo['coupon_amount'];
+            }
+            if( isset( $selected_shipping ) && !empty( $selected_shipping ) ) {
+                $grand_total = $grand_total + $selected_shipping['shipping_charge_order'] ?? 0;
             }
 
             $tmp['cart_total']         = array(

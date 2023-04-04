@@ -147,10 +147,11 @@ class CartController extends Controller
     {
         $guest_token = $request->guest_token;
         $customer_id    = $request->customer_id;
-        return $this->getCartListAll($customer_id, null, $guest_token);
+        $selected_shipping = $request->selected_shipping ?? '';
+        return $this->getCartListAll($customer_id, null, $guest_token, null, $selected_shipping); 
     }
 
-    function getCartListAll($customer_id = null, $shipping_info = null, $guest_token = null)
+    function getCartListAll($customer_id = null, $shipping_info = null, $guest_token = null, $shipping_type = null, $selected_shipping = null, $coupon_data = null)
     {
    
         $checkCart          = Cart::when( $customer_id != '', function($q) use($customer_id) {
@@ -233,10 +234,17 @@ class CartController extends Controller
                 
             }
 
-            if (isset($shipping_info) && !empty($shipping_info)) {
-                $tmp['shipping_id']         = $shipping_info->id;
-                $tmp['shipping_charge_order']= $shipping_info->charges;
-                $grand_total                = $grand_total + $shipping_info->charges ?? 0;
+            if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+                $tmp['selected_shipping_fees'] = array(
+                                                'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
+                                                'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
+                                                'shipping_type' => $shipping_type ?? $selected_shipping['shipping_type'] ?? 'fees'
+                                                );
+                
+                $grand_total                = $grand_total + ($shipping_info->charges ?? $selected_shipping['shipping_charge_order'] ?? 0);
+            }
+            if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
+                $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
             }
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -271,6 +279,8 @@ class CartController extends Controller
         $customer_id    = $request->customer_id;
         $shipping_id    = $request->shipping_id;
         $type    = $request->type;
+        $coupon_data = $request->coupon_data ?? '';
+        
         
         if( isset( $type ) && !empty( $type ) && $type == 'rocket' ) {
             $cartInfo = Cart::where('customer_id', $customer_id)->first();
@@ -305,7 +315,7 @@ class CartController extends Controller
         }
 
         
-        return $this->getCartListAll($customer_id, $shipping_info);
+        return $this->getCartListAll($customer_id, $shipping_info, null, $type, null, $coupon_data);
     }
 
     public function getShippingRocketCharges(Request $request, ShipRocketService $service)
