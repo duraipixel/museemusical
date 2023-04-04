@@ -30,6 +30,8 @@ Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterContr
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
+Route::get('/get/cities', [App\Http\Controllers\Api\CommonController::class, 'getCities']);
+Route::get('/get/pincode', [App\Http\Controllers\Api\CommonController::class, 'getPincode']);
 Route::post('/get/meta', [App\Http\Controllers\Api\CommonController::class, 'getMetaInfo']);
 Route::post('/get/global/search', [App\Http\Controllers\Api\FilterController::class, 'globalSearch']);
 Route::post('/get/other/category', [App\Http\Controllers\Api\FilterController::class, 'getOtherCategories']);

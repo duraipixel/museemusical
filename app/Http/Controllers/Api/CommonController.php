@@ -11,6 +11,8 @@ use App\Http\Resources\ProductCollectionResource;
 use App\Http\Resources\TestimonialResource;
 use App\Models\Banner;
 use App\Models\Master\Brands;
+use App\Models\Master\City;
+use App\Models\Master\Pincode;
 use App\Models\Master\State;
 use App\Models\Offers\Coupons;
 use App\Models\Product\Product;
@@ -174,6 +176,28 @@ class CommonController extends Controller
     {
         return State::select('state_name', 'id', 'state_code')->where('status', 1)->get();
     }
+    public function getCities()
+    {
+        $data =  City::where('status', 1)->get();
+        $city = [];
+        foreach($data as $key=>$val)
+        {
+            $temp = [];
+            $temp['id'] = $val['id'];
+            $temp['name'] = $val['city'];
+            $temp['state']['id']         = $val->state->id ?? '';
+            $temp['state']['state_name'] = $val->state->state_name ?? '';
+            $temp['state']['state_code'] = $val->state->state_code ?? '';
+            $city[]= $temp;
+        }
+        return $city;
+
+    }
+    public function getPincode()
+    {
+        return Pincode::select('id','pincode','description')->where('status', 1)->get();
+    }
+    
 
     public function getMetaInfo(Request $request)
     {
