@@ -177,3 +177,8 @@ Route::middleware(['auth'])->group(function(){
 Route::get('razorpay-payment', [RazorpayPaymentController::class, 'index']);
 Route::post('razorpay/process', [RazorpayPaymentController::class, 'razorpay_response'])->name('razorpay.payment.store');
 Route::any('/payment/failed', [RazorpayPaymentController::class, 'fail_page'])->name('fail.page');
+
+Route::get('/bulkUpload', [App\Http\Controllers\Master\BulkUploadController::class, 'index'])->name('bulkUpload');
+Route::post('/upload/attributes/state', [App\Http\Controllers\Master\BulkUploadController::class, 'doAttributesBulkUploadState'])->name('state.bulk.upload'); 
+Route::post('/upload/attributes/city', [App\Http\Controllers\Master\BulkUploadController::class, 'doAttributesBulkUploadCity'])->name('city.bulk.upload'); 
+Route::post('/upload/attributes/pincode', [App\Http\Controllers\Master\BulkUploadController::class, 'doAttributesBulkUploadPincode'])->name('pincode.bulk.upload'); 

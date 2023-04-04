@@ -527,6 +527,16 @@
                         </a>
                     </div>
                     @endif
+                    @if( access()->hasAccess(['bulkUpload']) )
+                    <div class="menu-item">
+                        <a class="menu-link @if( request()->routeIs(['bulkUpload'])) active @endif" href="{{ route('bulkUpload') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Bulk Upload</span>
+                        </a>
+                    </div>
+                    @endif
                     @if( access()->hasAccess(['main_category']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['main_category'])) active @endif" href="{{ route('main_category') }}">
