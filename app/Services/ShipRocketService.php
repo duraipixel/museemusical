@@ -8,6 +8,7 @@ use App\Models\CartShiprocketResponse;
 use App\Models\Master\Customer;
 use App\Models\Settings\Tax;
 use Illuminate\Support\Facades\DB;
+use Seshac\Shiprocket\Shiprocket;
 
 class ShipRocketService
 {
@@ -62,6 +63,11 @@ class ShipRocketService
     public function createOrder($params)
     {
         $token = $this->rocketToken($params['order_id']);
+        // dd( $params );
+        // $token =  Shiprocket::getToken();
+        // dump( $token );
+        // $response = Shiprocket::order($token)->create($params);
+        // dd( $response );
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -85,7 +91,7 @@ class ShipRocketService
         curl_close($curl);
 
         $success_response = json_decode($response);
-
+        
         if ($success_response->status_code == 1) {
 
             CartShiprocketResponse::where('cart_token', $params['order_id'])->delete();
@@ -209,9 +215,9 @@ class ShipRocketService
                     "billing_address_2" => $cartShipAddress->address_line2,
                     "billing_city" => $cartShipAddress->city,
                     "billing_pincode" => $cartShipAddress->post_code,
-                    "billing_state" => $cartShipAddress->state,
+                    "billing_state" => $cartShipAddress->state ?? 'Tamil nadu',
                     "billing_country" => "India",
-                    "billing_email" => $cartShipAddress->email,
+                    "billing_email" => $cartShipAddress->email ?? $customer->email,
                     "billing_phone" => $cartShipAddress->mobile_no,
                     "shipping_is_billing" => true,
                     "shipping_customer_name" => $cartShipAddress->name,
@@ -221,8 +227,8 @@ class ShipRocketService
                     "shipping_city" => $cartShipAddress->city,
                     "shipping_pincode" => $cartShipAddress->post_code,
                     "shipping_country" => "India",
-                    "shipping_state" => $cartShipAddress->state,
-                    "shipping_email" => $cartShipAddress->email,
+                    "shipping_state" => $cartShipAddress->state ?? 'Tamil nadu',
+                    "shipping_email" => $cartShipAddress->email ?? $customer->email,
                     "shipping_phone" => $cartShipAddress->mobile_no,
                     "order_items" => $cartItemsarr,
                     "payment_method" => "Prepaid",
@@ -246,7 +252,7 @@ class ShipRocketService
                 );
 
                 $shipResponse = CartShiprocketResponse::where('cart_token', $params['order_id'])->first();
-
+                
                 if (isset($shipResponse) && !empty($shipResponse->order_id)) {
                     /**
                      * update address in order ship rocket
@@ -258,6 +264,7 @@ class ShipRocketService
                      */
                     $createResponse = $this->createOrder($params);
                     $createResponse = json_decode($createResponse);
+                    dd( $createResponse );
                 }
 
                 /**
@@ -278,8 +285,8 @@ class ShipRocketService
 
         $charge_array = array(
             "pickup_postcode" => '600002',
-            // "delivery_postcode" => $cart_ship_response->deliveryAddress->post_code,
-            "delivery_postcode" => '600001',
+            "delivery_postcode" => $cart_ship_response->deliveryAddress->post_code,
+            
             "order_id" => $order_id,
             "cod" =>  false,
             "weight" => $measure_ment['weight'],
@@ -292,28 +299,32 @@ class ShipRocketService
             "couriers_type" => 0,
             "only_local" => 0
         );
+        // dd( $charge_array );
+        // 
+        $token =  Shiprocket::getToken();
+        $response =  Shiprocket::courier($token)->checkServiceability($charge_array);
+        // dd( $response );
+        // $token = $this->getToken();
+        // $curl = curl_init();
 
-        $token = $this->getToken();
-        $curl = curl_init();
+        // curl_setopt_array($curl, array(
+        //     CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => '',
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 0,
+        //     CURLOPT_FOLLOWLOCATION => true,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_CUSTOMREQUEST => 'GET',
+        //     CURLOPT_POSTFIELDS => json_encode($charge_array),
+        //     CURLOPT_HTTPHEADER => array(
+        //         'Content-Type: application/json',
+        //         'Authorization: Bearer ' . $token
+        //     ),
+        // ));
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_POSTFIELDS => json_encode($charge_array),
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $token
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        curl_close($curl);
+        // $response = curl_exec($curl);
+        // curl_close($curl);
 
         $updata = array(
             'shipping_charge_request_data' => json_encode($charge_array),

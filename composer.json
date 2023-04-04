@@ -20,6 +20,7 @@
         "owen-it/laravel-auditing": "^13.0",
         "razorpay/razorpay": "^2.8",
         "romanzipp/laravel-queue-monitor": "^2.3",
+        "seshac/laravel-shiprocket-api": "^2.0",
         "symfony/psr-http-message-bridge": "^2.1",
         "yajra/laravel-datatables-oracle": "^9.21"
     },

@@ -20,8 +20,6 @@ class FilterController extends Controller
         $product_availability = array(
             'in_stock' => 'In Stock',
             'coming_soon' => 'Upcoming',
-            'out_of_stock' => 'Out Of Stock'
-
         );
 
         $video_shopping         = array('video_shopping' => 'Video Shopping is available');
@@ -71,8 +69,7 @@ class FilterController extends Controller
             'product_availability' => $product_availability,
             'video_shopping' => $video_shopping,
             'sory_by' => $sory_by,
-            'discounts' => $discounts,
-            'collection' => $collection
+            'discounts' => $discounts            
         );
 
         return $response;
@@ -177,6 +174,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->where('products.stock_status', '!=','out_of_stock')
             ->groupBy('products.id')
             ->get();
         $total = count($total);
@@ -224,6 +222,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->where('products.stock_status', '!=','out_of_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
