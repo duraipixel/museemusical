@@ -115,7 +115,7 @@ class FilterController extends Controller
 
         $category_info = ProductCategory::where('slug', $filter_category)->first();
         $cat_id = $category_info->id;
-
+        // dd( $category_info );
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
             $productWithData = ProductWithAttributeSet::whereIn('id', $filter_attribute_array)->get();
@@ -141,7 +141,7 @@ class FilterController extends Controller
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->when($filter_category != '', function ($q) use ($cat_id) {
                 $q->where(function ($query) use ($cat_id) {
-                    return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.id', $cat_id);
+                    return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.parent_id', $cat_id);
                 });
             })
             ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
@@ -193,7 +193,7 @@ class FilterController extends Controller
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->when($filter_category != '', function ($q) use ($cat_id) {
                 $q->where(function ($query) use ($cat_id) {
-                    return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.id', $cat_id);
+                    return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.parent_id', $cat_id);
                 });
             })
             ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
