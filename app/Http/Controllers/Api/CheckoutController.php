@@ -31,7 +31,7 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
-
+        
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
@@ -43,8 +43,8 @@ class CheckoutController extends Controller
         $cart_items             = $request->cart_items;
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
-        $shipping_fee_id        = $request->shipping_id ?? '';
-
+        $selected_shipping_fees = $request->selected_shipping_fees ?? '';
+        
         #check product is out of stock
         $errors                 = [];
         if (!$shipping_address) {
@@ -74,7 +74,8 @@ class CheckoutController extends Controller
         $billingAddressInfo = CustomerAddress::find($billing_address);
 
         $shippingCharges = [];
-        if (isset($cart_id)) {
+        $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
+        if (isset($cart_id) && isset( $selected_shipping_fees ) && $selected_shipping_fees['shipping_type'] != 'fees' ) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
@@ -120,9 +121,9 @@ class CheckoutController extends Controller
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
         $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
         $order_ins['discount_amount'] = $discount_amount;
-        $order_ins['coupon_amount'] = $coupon_amount;
-        $order_ins['coupon_code'] = '';
-        $order_ins['sub_total'] = $cart_total['product_tax_exclusive_total_without_format'];
+        $order_ins['coupon_amount'] = $cart_total['coupon_amount'];
+        $order_ins['coupon_code'] = $cart_total['coupon_code'];
+        $order_ins['sub_total'] = str_replace(',', '', $cart_total['product_tax_exclusive_total']);
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
@@ -158,7 +159,7 @@ class CheckoutController extends Controller
                 $items_ins['order_id'] = $order_id;
                 $items_ins['product_id'] = $item['id'];
                 $items_ins['product_name'] = $item['product_name'];
-                $items_ins['hsn_code'] = $item['hsn_no'];
+                $items_ins['hsn_code'] = $item['hsn_code'];
                 $items_ins['sku'] = $item['sku'];
                 $items_ins['quantity'] = $item['quantity'];
                 $items_ins['price'] = $item['price'];

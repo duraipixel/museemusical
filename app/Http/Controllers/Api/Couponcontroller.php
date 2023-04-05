@@ -49,11 +49,12 @@ class Couponcontroller extends Controller
                 $overall_discount_percentage = 0;
                 $couponApplied = [];
                 if ($coupon->quantity > $coupon->used_quantity ?? 0) {
-                    dd( $coupon->couponProducts);
+                    
                     switch ($coupon->coupon_type) {
                         case '1':
                             # product ...
                             if (isset($coupon->couponProducts) && !empty($coupon->couponProducts)) {
+                                $couponApplied['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
                                 foreach ($coupon->couponProducts as $items) {
                                     $cartCount = Cart::where('customer_id', $customer_id)->where('product_id', $items->product_id)->first();
                                     if ($cartCount) {
@@ -68,7 +69,7 @@ class Couponcontroller extends Controller
                                                     $tmp['discount_amount'] = percentageAmountOnly($cartCount->sub_total, $coupon->calculate_value);
                                                     $tmp['product_id'] = $cartCount->product_id;
                                                     $tmp['coupon_applied_amount'] = $cartCount->sub_total;
-                                                    $tmp['coupon_type']     = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                                    // $tmp['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
                                                     $overall_discount_percentage += $coupon->calculate_value;
                                                     $has_product++;
                                                     $couponApplied[] = $tmp;
@@ -78,7 +79,7 @@ class Couponcontroller extends Controller
                                                     $tmp['discount_amount'] = $coupon->calculate_value;
                                                     $tmp['product_id'] = $cartCount->product_id;
                                                     $tmp['coupon_applied_amount'] = $cartCount->sub_total;
-                                                    $tmp['coupon_type']         = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                                    // $tmp['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
                                                     $has_product++;
                                                     $couponApplied[] = $tmp;
 

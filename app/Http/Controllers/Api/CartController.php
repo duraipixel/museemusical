@@ -153,7 +153,7 @@ class CartController extends Controller
 
     function getCartListAll($customer_id = null, $shipping_info = null, $guest_token = null, $shipping_type = null, $selected_shipping = null, $coupon_data = null)
     {
-   
+        // dd( $coupon_data );
         $checkCart          = Cart::when( $customer_id != '', function($q) use($customer_id) {
                                         $q->where('customer_id', $customer_id);
                                     })->
