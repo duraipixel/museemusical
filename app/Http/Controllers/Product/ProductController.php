@@ -112,14 +112,15 @@ class ProductController extends Controller
                 })
                 ->addIndexColumn()
                 ->editColumn('quantity', function($row){
-                    $quantity = '<div class="postion-relative">
-                    <div id="quantity_input_'.$row->id.'" class="quantity-label">'.$row->quantity.' <i class="fa fa-edit" role="button" onclick="changeStockQuantity('.$row->id.')"></i></div>
-                    <div class="form-group postion-absolute" id="quantity_edit_'.$row->id.'" style="display:none">
-                        <input type="text" maxlength="3" value="'.$row->quantity.'" class="form-control w-90px numberonly" name="quantity" id="quantity_'.$row->id.'">
-                        <i class="fa fa-check quantity-btn" onclick="quantityChange('.$row->id.')"></i>
-                        <i class="fa fa-times quantity-close-btn" onclick="closeStockQuantity('.$row->id.')"></i>
-                    </div>
-                    </div>';
+                    // $quantity = '<div class="postion-relative">
+                    // <div id="quantity_input_'.$row->id.'" class="quantity-label">'.$row->quantity.' <i class="fa fa-edit" role="button" onclick="changeStockQuantity('.$row->id.')"></i></div>
+                    // <div class="form-group postion-absolute" id="quantity_edit_'.$row->id.'" style="display:none">
+                    //     <input type="text" maxlength="3" value="'.$row->quantity.'" class="form-control w-90px numberonly" name="quantity" id="quantity_'.$row->id.'">
+                    //     <i class="fa fa-check quantity-btn" onclick="quantityChange('.$row->id.')"></i>
+                    //     <i class="fa fa-times quantity-close-btn" onclick="closeStockQuantity('.$row->id.')"></i>
+                    // </div>
+                    // </div>';
+                    $quantity = '<input type="text" class="form-control numberonly quantityChange" id="quantity_'.$row->id.'" maxlength="3" data-id="'.$row->id.'" name="quantityChange" value="'.$row->quantity.'" >';
                     return $quantity;
                 })
                 ->editColumn('status', function($row){
