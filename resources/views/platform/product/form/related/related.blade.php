@@ -20,7 +20,7 @@
             </div>
 
             <div class="mb-10 fv-row">
-                <label class="form-label d-block"> Cross Selling Products (Minimum 5 )</label>
+                <label class="form-label d-block"> Combo Products (Minimum 5 )</label>
                 <select name="cross_selling_product[]" id="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)

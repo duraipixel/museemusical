@@ -63,6 +63,9 @@ class CouponController extends Controller
                     return $coupon_type;
                 })
                 ->addIndexColumn()
+                ->editColumn('is_discount_on', function($row){
+                    return ucfirst($row->is_discount_on);
+                })
                 ->editColumn('status', function ($row) {
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'coupon\')">'.ucfirst($row->status).'</a>';
                     return $status;
@@ -121,7 +124,7 @@ class CouponController extends Controller
         if($name == '1')
         {
             $data       = DB::table('products')->select('id','product_name')->where('status', 'published')->get();
-            $title      = "Product (Minimum 5 )"; 
+            $title      = "Product "; 
             foreach($data as $key=>$val)
             {
                 $value[] = "<option value=".$val->id.">".$val->product_name."</option>";

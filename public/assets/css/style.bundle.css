@@ -48468,3 +48468,7 @@ body {
   background-color: #ffffff;
   border: 0;
 }
+
+.fv-plugins-bootstrap5 {
+  overflow-y: auto;
+}

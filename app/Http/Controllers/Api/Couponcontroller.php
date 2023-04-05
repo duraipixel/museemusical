@@ -20,14 +20,14 @@ class Couponcontroller extends Controller
         $customer_id = $request->customer_id;
         $selected_shipping = $request->selected_shipping ?? '';
         $carts          = Cart::where('customer_id', $customer_id)->get();
-
+       
         if ($carts) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
                 ->whereDate('coupons.start_date', '<=', date('Y-m-d'))
                 ->whereDate('coupons.end_date', '>=', date('Y-m-d'))
                 ->first();
-
+            
                 //get all category id from cart products
             $category_usedCart = Cart::select('carts.*', 'products.product_name', 'products.category_id', DB::raw('GROUP_CONCAT(DISTINCT concat(mm_product_categories.parent_id, ",", mm_product_categories.id)) as category_array'))
                                         ->join('products', 'products.id', '=', 'carts.product_id')    
@@ -49,7 +49,7 @@ class Couponcontroller extends Controller
                 $overall_discount_percentage = 0;
                 $couponApplied = [];
                 if ($coupon->quantity > $coupon->used_quantity ?? 0) {
-
+                    dd( $coupon->couponProducts);
                     switch ($coupon->coupon_type) {
                         case '1':
                             # product ...

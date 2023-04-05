@@ -56,6 +56,7 @@
                             <th> Coupon Name  </th>
                             <th> Coupon Code </th>
                             <th> Coupon Type </th>
+                            <th> Is Discount Collection </th>
                             <th> Start Date </th>
                             <th> End Date </th>
                             <th> Status </th>
@@ -103,6 +104,10 @@
             {
                 data: 'coupon_type',
                 name: 'coupon_type'
+            },
+            {
+                data: 'is_discount_on',
+                name: 'is_discount_on'
             },
             {
                 data: 'start_date',

@@ -113,9 +113,9 @@
                                         <option value="1"
                                             @if (isset($info->coupon_type) && $info->coupon_type == '1') selected="selected" @endif>Product
                                         </option>
-                                        <option value="2"
+                                        {{-- <option value="2"
                                             @if (isset($info->coupon_type) && $info->coupon_type == '2') selected="selected" @endif>Customer
-                                        </option>
+                                        </option> --}}
                                         <option value="3"
                                             @if (isset($info->coupon_type) && $info->coupon_type == '3') selected="selected" @endif>Category
                                         </option>
@@ -222,10 +222,21 @@
     }
 </style>
 <script>
+    $(document).ready(function(){
+        
+        $('.select2-search__field').on('keydown', function(e) {
+            
+            e.preventDefault();
+            if (e.keyCode) {
+                return false;
+            }
+        });
+    })
+
     var CommonProductArr;
     var alterProductArr;
     $('#product_id').change(function(e) {
-
+        
         var productData = $(this).val();
         if (CommonProductArr == '' || CommonProductArr == null || CommonProductArr == undefined ||
             CommonProductArr == 'undefined') {
@@ -233,18 +244,15 @@
         }
 
         let difference = productData.filter(x => !CommonProductArr.includes(x));
-
-        // console.log( productData );
-        // console.log( productData );
-        // console.log(difference);
+      
         if (productData.includes('all')) {
-            // $('#product_id').select2('destroy').find('option').prop('selected', 'selected').end().select2();
-
+            $('#product_id').select2('destroy').find('option').prop('selected', 'selected').end().select2();
         } else {
             // $('#product_id').select2('destroy').find('option').prop('selected', false).end().select2();
-
         }
+        
     })
+    
 
     $(".number").on("input", function(evt) {
         var self = $(this);

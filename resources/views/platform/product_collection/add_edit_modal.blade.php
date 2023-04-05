@@ -95,8 +95,9 @@
                                     <label class="fw-bold fs-6 mb-2"> Can Map with Discount </label>
                                     <div
                                         class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox" name="can_map_discount" onchange="return checkMapDiscount(this)"
-                                            value="yes" @if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') checked @endif />
+                                        <input class="form-check-input" type="checkbox" name="can_map_discount"
+                                            onchange="return checkMapDiscount(this)" value="yes"
+                                            @if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') checked @endif />
                                     </div>
                                 </div>
                             </div>
@@ -126,58 +127,73 @@
                             <div class="col-sm-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2" id="order-label">
-                                        @if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') Sort Order @else Home Page Section @endif
+                                        @if (isset($info->can_map_discount) && $info->can_map_discount == 'yes')
+                                            Sort Order
+                                        @else
+                                            Home Page Section
+                                        @endif
                                     </label>
-                                    <div id="order-pane-input" style="display:@if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') block @else none @endif">
+                                    <div id="order-pane-input"
+                                        style="display:@if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') block @else none @endif">
                                         <input type="text" name="order_by"
                                             class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                             placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                     </div>
-                                    <div id="order-pane-select" style="display:@if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') none @else block @endif">
-                                        <select name="order_by" id="order_by" onchange="return getBannercollection(this.value)"
+                                    <div id="order-pane-select"
+                                        style="display:@if (isset($info->can_map_discount) && $info->can_map_discount == 'yes') none @else block @endif">
+                                        <select name="order_by" id="order_by"
+                                            onchange="return getBannercollection(this.value)"
                                             class="form-control form-control-solid mb-3 mb-lg-0">
                                             <option value="">select</option>
                                             @if (isset($orderImages) && !empty($orderImages))
                                                 @foreach ($orderImages as $item)
-                                                    <option value="{{ $item['id'] }}" @if(isset( $info->order_by ) && $info->order_by == $item['id']) selected @endif >{{ $item['id'] }}</option>
+                                                    <option value="{{ $item['id'] }}"
+                                                        @if (isset($info->order_by) && $info->order_by == $item['id']) selected @endif>
+                                                        {{ $item['id'] }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
                                     </div>
                                 </div>
-                            </div>                        
-                            <div class="col-sm-8" id="collecion_img" @if(isset( $info->order_by ) && !empty( $info->order_by ) && (isset($info->can_map_discount) && $info->can_map_discount == 'no') )  @else style="display:none" @endif>
-                                <center style="font-size: 15px; padding: 13px; font-weight: 800; color: #a5a0a0;">Section Preview</center>
-                                <figure class="zoom" id="zoom-main" onmousemove="zoom(event)" @if(isset( $info->order_by ) && !empty( $info->order_by ) ) style="background-image: url({{ $orderImages[($info->order_by - 1)]['image'] }})" @endif  >
-                                    <img id="dynamicImageUrl" src="{{ isset($info->order_by) ? $orderImages[($info->order_by - 1)]['image'] : ''}}" />
+                            </div>
+                            <div class="col-sm-8" id="collecion_img"
+                                @if (isset($info->order_by) &&
+                                        !empty($info->order_by) &&
+                                        (isset($info->can_map_discount) && $info->can_map_discount == 'no')) @else style="display:none" @endif>
+                                <center style="font-size: 15px; padding: 13px; font-weight: 800; color: #a5a0a0;">
+                                    Section Preview</center>
+                                <figure class="zoom" id="zoom-main" onmousemove="zoom(event)"
+                                    @if (isset($info->order_by) && !empty($info->order_by)) style="background-image: url({{ $orderImages[$info->order_by - 1]['image'] }})" @endif>
+                                    <img id="dynamicImageUrl"
+                                        src="{{ isset($info->order_by) ? $orderImages[$info->order_by - 1]['image'] : '' }}" />
                                 </figure>
                             </div>
-                            
+
                         </div>
                         <div class="row">
                             <div class="col-md-4">
 
                                 <div class="fv-row mb-7">
                                     <label class="d-block fw-bold fs-6 mb-5">Banner Image</label>
-                    
+
                                     <div class="form-text">Allowed file types: png, jpg,
                                         jpeg. </div>
-                                        <div class="form-text">Size: 1600 * 706 </div>
-                                        
+                                    <div class="form-text">Size: 1600 * 706 </div>
+
                                 </div>
-                                <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
-                                <div class="image-input image-input-outline manual-image" 
+                                <input id="image_remove_image" type="hidden" name="image_remove_image"
+                                    value="no">
+                                <div class="image-input image-input-outline manual-image"
                                     style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
 
                                     @if ($info->banner_image ?? '')
-                                            @php
+                                        @php
                                             $catImagePath = 'productCollection/' . $info->id . '/' . $info->banner_image;
                                             $url = Storage::url($catImagePath);
                                             $path = asset($url);
-                                            @endphp
+                                        @endphp
                                         <div class="image-input-wrapper w-125px h-125px manual-image"
-                                            id="manual-image"
-                                            style="background-image: url({{ $path }});">
+                                            id="manual-image" style="background-image: url({{ $path }});">
                                         </div>
                                     @else
                                         <div class="image-input-wrapper w-125px h-125px manual-image"
@@ -190,10 +206,10 @@
                                         data-kt-image-input-action="change" data-bs-toggle="tooltip"
                                         title="Change avatar">
                                         <i class="bi bi-pencil-fill fs-7"></i>
-                                        <input type="file" name="banner_image" id="banner_image" 
+                                        <input type="file" name="banner_image" id="banner_image"
                                             accept=".png, .jpg, .jpeg" />
                                     </label>
-                    
+
                                     <span
                                         class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                         data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
@@ -237,33 +253,38 @@
 
 <script>
     var ImageBanner = @json($orderImages);
-    
+
     $(document).ready(function() {
         $('#collection_product').select2();
 
-
-
+        $('.select2-search__field').on('keydown', function(e) {
+            e.preventDefault();  
+            if( e.keyCode){
+                return false;
+            }
+            
+        });
         document.getElementById('banner_image').addEventListener('change', function() {
- 
- if (this.files[0]) {
-     var picture = new FileReader();
-     picture.readAsDataURL(this.files[0]);
-     picture.addEventListener('load', function(event) {
-         console.log(event.target);
-         let img_url = event.target.result;
-         $('#manual-image').css({
-             'background-image': 'url(' + event.target.result + ')'
-         });
-     });
- }
-});
 
-document.getElementById('avatar_remove_logo').addEventListener('click', function() {
- $('#image_remove_image').val("yes");
- $('#manual-image').css({
-     'background-image': ''
- });
-});
+            if (this.files[0]) {
+                var picture = new FileReader();
+                picture.readAsDataURL(this.files[0]);
+                picture.addEventListener('load', function(event) {
+                    console.log(event.target);
+                    let img_url = event.target.result;
+                    $('#manual-image').css({
+                        'background-image': 'url(' + event.target.result + ')'
+                    });
+                });
+            }
+        });
+
+        document.getElementById('avatar_remove_logo').addEventListener('click', function() {
+            $('#image_remove_image').val("yes");
+            $('#manual-image').css({
+                'background-image': ''
+            });
+        });
 
 
     });
@@ -457,21 +478,21 @@ document.getElementById('avatar_remove_logo').addEventListener('click', function
     }
 
     function getBannercollection(id) {
-        
-        var data = ImageBanner.find(item => item.id == id );
 
-        if(Object.keys(data).length === 0 ) {
+        var data = ImageBanner.find(item => item.id == id);
+
+        if (Object.keys(data).length === 0) {
 
         } else {
             $('#collecion_img').show();
             document.getElementById('zoom-main').style.backgroundImage = `url(${data.image})`;
             document.getElementById('dynamicImageUrl').src = data.image;
         }
-        
+
     }
 
     function checkMapDiscount(ev) {
-        if( ev.checked ) {
+        if (ev.checked) {
             $('#collecion_img').hide();
             $('#order-pane-input').show();
             $('#order-pane-select').hide();

@@ -138,10 +138,12 @@
                 }
             });
             $.ajax({
-                url:"{{ route('get.product.taxCategory') }}",
-                type:"POST",
-                data:{category_id:category_id},
-                success:function(res){
+                url: "{{ route('get.product.taxCategory') }}",
+                type: "POST",
+                data: {
+                    category_id: category_id
+                },
+                success: function(res) {
                     $('#mrp_tax').html(`(Inclusive Tax ( ${res}%)) `);
                 }
             })
@@ -565,6 +567,14 @@
             $("body").on("click", ".removeUrlRow", function() {
                 $(this).parents(".childUrlRow").remove();
             })
+
+            $('.select2-search__field').on('keydown', function(e) {
+                e.preventDefault();
+                if (e.keyCode) {
+                    return false;
+                }
+
+            });
         });
 
 
