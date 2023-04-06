@@ -85,6 +85,7 @@ class ProductCollectionController extends Controller
                                 ->when($id == '', function($q){
                                     $q->whereRaw('id not IN(SELECT product_id FROM `mm_product_collections_products`)');
                                 } )
+                                ->where('stock_status', 'in_stock')
                                 ->get();
         
         $productCategory    = ProductCollection::where('status', 'published')->get();

@@ -12,8 +12,7 @@
         </div>
         <div class="mb-10">
             <label class="form-label">Meta Tag Description</label>
-            <div id="kt_ecommerce_add_meta_description" name="kt_ecommerce_add_meta_description" class="min-h-100px mb-2">{!! $info->meta->meta_description ?? '' !!}</div>
-            <textarea name="meta_description" id="meta_description" style="display: none;" cols="30" rows="10"></textarea>
+            <textarea name="meta_description" class="form-control" id="meta_description" cols="30" rows="2">{{ $info->meta->meta_description ?? '' }}</textarea>
             <div class="text-muted fs-7">Set a meta tag description to the product for increased SEO ranking.</div>
         </div>
         <div>
