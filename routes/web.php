@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
+Route::get('/upload-image', [App\Http\Controllers\ImageUploadController::class, 'index']);
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function(){
