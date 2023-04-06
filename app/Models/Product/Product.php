@@ -103,7 +103,9 @@ class Product extends Model
 
     public function productRelated()
     {
-        return $this->hasMany(ProductRelatedRelation::class, 'from_product_id', 'id');
+        return $this->hasMany(ProductRelatedRelation::class, 'from_product_id', 'id')->select('product_related_relations.*')->join(
+            'products', 'products.id', '=', 'product_related_relations.to_product_id'
+        )->whereNull('products.deleted_at');
     }
 
     public function productCrossSale()

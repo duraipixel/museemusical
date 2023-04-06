@@ -288,7 +288,7 @@ class FilterController extends Controller
 
         $product_url = $request->product_url;
         $items = Product::where('product_url', $product_url)->first();
-
+        
         $category               = $items->productCategory;
         $salePrices             = getProductPrice($items);
 
@@ -314,7 +314,6 @@ class FilterController extends Controller
         $pro['links']           = $items->productLinks;
         $pro['image']           = $items->base_image;
         $pro['max_quantity']    = $items->quantity;
-
 
         $imagePath              = $items->base_image;
 
@@ -370,10 +369,14 @@ class FilterController extends Controller
         }
         $pro['attributes']              = $attributes;
         $related_arr                    = [];
+
+        $productInfo            = Product::find(1340);
+
         if (isset($items->productRelated) && !empty($items->productRelated)) {
             foreach ($items->productRelated as $related) {
 
                 $productInfo            = Product::find($related->to_product_id);
+                
                 $category               = $productInfo->productCategory;
                 $salePrices1            = getProductPrice($productInfo);
 
