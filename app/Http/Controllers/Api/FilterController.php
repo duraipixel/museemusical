@@ -114,7 +114,7 @@ class FilterController extends Controller
         }
 
         $category_info = ProductCategory::where('slug', $filter_category)->first();
-        $cat_id = $category_info->id;
+        $cat_id = $category_info->id ?? '';
         // dd( $category_info );
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
