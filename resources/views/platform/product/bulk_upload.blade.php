@@ -44,6 +44,7 @@
                                     <a href="{{ asset('assets/data/productSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
                             </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -75,6 +76,9 @@
                                 <div class="mt-2">
                                     <a href="{{ asset('assets/data/ProductAttributeSamplefile.xls') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
+                            </div>
+                            <div class="col-12">
+                                <strong class="text-danger">Excel must only include a single sheet with a maximum of 5000 rows. </strong>
                             </div>
                         </div>
                     </div>

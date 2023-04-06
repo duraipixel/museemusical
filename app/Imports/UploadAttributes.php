@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Events\BeforeImport;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Redirect;
 
-class UploadAttributes implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithEvents 
+class UploadAttributes implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading 
 {
     /*public function registerEvents(): array
     {
