@@ -7,14 +7,45 @@ use App\Models\Product\ProductAttributeSet;
 use App\Models\Product\ProductMapAttribute;
 use App\Models\Product\ProductWithAttributeSet;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redirect;
 
-class UploadAttributes implements ToModel, WithHeadingRow
+class UploadAttributes implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithEvents 
 {
+    /*public function registerEvents(): array
+    {
+        return [
+            BeforeImport::class => function (BeforeImport $event) {
+                $totalRows = $event->getReader()->getTotalRows();
+                $total_count='';
+                foreach($totalRows as $x => $totalrow)
+                {
+                    $total_count=$totalRows[$x];
+                }
+                if (!empty($totalRows)) {
+                    $row_count=$totalRows['MMPL-Sheet1'];
+                    if($row_count>5001)
+                    {
+                        dd('hi2213232223233');
+                        $data='hhh';
+                        return Redirect::route('products')->with( ['data' => $data] );
+                    }
+                    else
+                    {
+                        echo 'less Count '.$totalRows['MMPL-Sheet1'];
+                    }
+                   
+                }
+            }
+        ];
+    }*/
     public function model(array $row)
     {
-
         $sku = $row['sku'];
         if( isset( $sku ) && !empty( $sku ) ) {
             $product_info = Product::where('sku', $row['sku'])->first();
@@ -63,5 +94,14 @@ class UploadAttributes implements ToModel, WithHeadingRow
 
             }
         }
+    }
+    public function batchSize(): int
+    {
+        return 10;
+    }
+    
+    public function chunkSize(): int
+    {
+        return 10;
     }
 }
