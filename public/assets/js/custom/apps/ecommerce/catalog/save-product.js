@@ -19,28 +19,6 @@ var KTAppEcommerceSaveProduct = function () {
         var quill_tech_desc = document.querySelector('#kt_ecommerce_add_product_technical_specification');
         var spec_eleme = '#kt_ecommerce_add_product_specification';
         var quill_spec_desc = document.querySelector('#kt_ecommerce_add_product_specification');
-        var meta_eleme = '#kt_ecommerce_add_product_meta_description';
-        var quill_meta_desc = document.querySelector('#kt_ecommerce_add_product_meta_description');
-        //meta descripton
-        quill_meta_desc = new Quill(meta_eleme, {
-            modules: {
-                toolbar: [
-                    [{
-                        header: [1, 2, 3, 4, 5, 6, false]
-                    }],
-                    ['bold', 'italic', 'underline'],
-                    ['image', 'code-block'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['clean']
-                ]
-            },
-            placeholder: 'Type your text here...',
-            theme: 'snow' // or 'bubble'
-        });
-        quill_meta_desc.on('text-change', function(delta, oldDelta, source) {
-            $('#meta_description').val(quill_meta_desc.container.firstChild.innerHTML);
-        });
-
 
         // prodcut desctionpt 
         quill_product_desc = new Quill(pro_eleme, {
