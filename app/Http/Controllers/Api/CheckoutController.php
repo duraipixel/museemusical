@@ -72,10 +72,11 @@ class CheckoutController extends Controller
          * */
         $shipppingAddressInfo = CustomerAddress::find($shipping_address);
         $billingAddressInfo = CustomerAddress::find($billing_address);
-
+        // dd( $selected_shipping_fees );
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
-        if (isset($cart_id) && isset( $selected_shipping_fees ) && $selected_shipping_fees['shipping_type'] != 'fees' ) {
+        
+        if (isset($cart_id) && isset( $selected_shipping_fees ) && !empty( $selected_shipping_fees ) && $selected_shipping_fees['shipping_type'] != 'fees' ) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
