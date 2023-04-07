@@ -573,6 +573,7 @@ class FilterController extends Controller
                 ->whereIn('category_id', $whereIn)
                 ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
                 ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_map_attributes.attribute_id')
+                ->where('products.stock_status', 'in_stock')
                 ->groupBy('title')->get();
 
             if (isset($topLevelData) && !empty($topLevelData)) {
@@ -585,6 +586,7 @@ class FilterController extends Controller
                     $secondLevelData = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
                         ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
                         ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                        ->where('products.stock_status', 'in_stock')
                         ->whereIn('category_id', $whereIn)
                         ->where('product_map_attributes.attribute_id', $vals->id)
                         ->groupBy('title')->get();
@@ -599,9 +601,11 @@ class FilterController extends Controller
                             $filterDatas = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
                                 ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
                                 ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                                ->where('products.stock_status', 'in_stock')
                                 ->whereIn('category_id', $whereIn)
                                 ->where('product_map_attributes.attribute_id', $vals->id)
                                 ->where('product_with_attribute_sets.title', $sec->title)
+                                ->groupBy('product_with_attribute_sets.title')
                                 ->get();
                             if (isset($filterDatas) && !empty($filterDatas)) {
 
