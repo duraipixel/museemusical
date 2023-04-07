@@ -27,9 +27,8 @@ class CartController extends Controller
         $type = $request->type;
         
         /**
-         *1.check customer id and product exist if not insert
-         *2. if exist update quantiy 
-         * 
+         * 1. check customer id and product exist if not insert
+         * 2. if exist update quantiy
          */
 
         $product_info = Product::find($product_id);
@@ -48,6 +47,7 @@ class CartController extends Controller
                         })->first();
 
         $salePrices = $request->sale_prices;
+        // dd($salePrices['price_original']);
         
         if (isset($checkCart) && !empty($checkCart)) {
             if ($type == 'delete') {
@@ -74,10 +74,10 @@ class CartController extends Controller
                 $ins['product_id']      = $product_id;
                 $ins['guest_token']     = $getCartToken->guest_token ?? 'ORD' . date('ymdhis');
                 $ins['quantity']        = $quantity ?? 1;
-                $ins['price']           = $salePrices['price_original'];
+                $ins['price']           = (float)$salePrices['price_original'];
                 $ins['sub_total']       = $salePrices['price_original'] * $quantity ?? 1;
                 $ins['token']           = $request->guest_token ?? null;
-
+                
                 $cart_id = Cart::create($ins)->id;
                 $ins['message']         = 'added';
             } else {
@@ -320,6 +320,7 @@ class CartController extends Controller
 
     public function getShippingRocketCharges(Request $request, ShipRocketService $service)
     {
+
         $from_type = $request->from_type;
         $address = $request->address;
         $shippingAddress = CustomerAddress::find($address);
@@ -329,7 +330,7 @@ class CartController extends Controller
         if( isset( $from_type ) && !empty( $from_type ) ) {
 
             CartAddress::where('customer_id', $request->customer_id)
-                ->where('address_type', $from_type)->delete();
+                            ->where('address_type', $from_type)->delete();
             $ins_cart = [];
             $ins_cart['cart_token'] = $cart_info->guest_token;
             $ins_cart['customer_id'] = $customer_id;
@@ -342,7 +343,9 @@ class CartController extends Controller
             $ins_cart['post_code'] = $shippingAddress->post_code;
             $ins_cart['state'] = $shippingAddress->state;
             $ins_cart['city'] = $shippingAddress->city;
+
             CartAddress::create($ins_cart);
+
         }
 
         return array( 'shiprocket_charges' => $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token) );

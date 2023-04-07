@@ -541,9 +541,8 @@ class FilterController extends Controller
     {
         $category_slug = $request->category_slug;
         // $category_slug = 'keyboard-keyboard';
-
-
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
+        
         if (isset($productCategory) && !empty($productCategory)) {
             $cat_id = $productCategory->id;
             $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
@@ -622,7 +621,7 @@ class FilterController extends Controller
                     $attributes[] = $tmp;
                 }
             }
-
+            
             return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
         }
     }
