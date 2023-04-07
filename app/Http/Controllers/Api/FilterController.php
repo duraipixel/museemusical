@@ -539,6 +539,7 @@ class FilterController extends Controller
 
     public function getDynamicFilterCategory(Request $request)
     {
+        // dd( $request->all() );
         $category_slug = $request->category_slug;
         // $category_slug = 'keyboard-keyboard';
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
@@ -621,7 +622,7 @@ class FilterController extends Controller
                     $attributes[] = $tmp;
                 }
             }
-            
+
             return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
         }
     }

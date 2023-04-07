@@ -19,13 +19,8 @@ class CartController extends Controller
 {
     public function addToCart(Request $request, ShipRocketService $service)
     {
-<<<<<<< Updated upstream
         
         $customer_id = $request->customer_id;
-=======
-        // dd( session()->getId() );
-        $customer_id = $request->customer_id ?? session_id();
->>>>>>> Stashed changes
         $guest_token = $request->guest_token;
         $product_id = $request->id;
         $quantity = $request->quantity ?? 1;
