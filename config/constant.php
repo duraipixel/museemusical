@@ -31,7 +31,8 @@ return [
                     'sub_category',
                     'global',
                     'my-profile',
-                    'newsletter'
+                    'newsletter',
+                    'quick-link'
 
                 ),
     
