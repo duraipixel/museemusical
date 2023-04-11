@@ -32,7 +32,9 @@ return [
                     'global',
                     'my-profile',
                     'newsletter',
-                    'quick-link'
+                    'quick-link',
+                    'bulkUpload',
+
 
                 ),
     

@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row mb-2">
+                {{-- <div class="row mb-2">
                     <div class="col-sm-12 text-start">
                         <div class="row">
                             <div class="col-8">
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 </div>
-                <hr>
+                <hr> --}}
                 <div class="row mb-2">
                     <div class="col-sm-12 text-start">
                         <div class="row">
