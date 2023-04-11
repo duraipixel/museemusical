@@ -54,7 +54,7 @@
                                         <td>
                                             <!--begin::Checkbox-->
                                             <label class="form-check form-check-sm form-check-custom form-check-solid me-9">
-                                                <input class="form-check-input" type="checkbox" value="" name="" id="kt_roles_select_all" />
+                                                <input class="form-check-input" type="checkbox" value="on" @if(isset($info->select_all) && $info->select_all == 'on') checked @endif name="select_all" id="kt_roles_select_all" />
                                                 <span class="form-check-label" for="kt_roles_select_all">Select all</span>
                                             </label>
                                             <!--end::Checkbox-->

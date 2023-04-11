@@ -75,8 +75,7 @@ class RoleController extends Controller
         if( isset( $id ) && !empty( $id ) ) {
             $info = Role::find( $id );
             $modal_title = 'Update Role and Permission';
-
-        }
+}     
         return view('platform.settings.roles.add_edit_modal', compact('info', 'modal_title'));
     }
 
@@ -106,6 +105,15 @@ class RoleController extends Controller
             $ins['description'] = $request->description;
             $ins['permissions'] = serialize($perm);
             $ins['added_by'] = Auth::id();
+            
+            if((!empty($request->select_all) &&  $request->select_all) == 'on')
+            {
+                $ins['select_all'] = $request->select_all;
+            }
+            else{
+                $ins['select_all'] = '' ;
+            }
+
             $ins['status'] = 1;
             $error = 0;
             $info = Role::updateOrCreate(['id' => $id],$ins);

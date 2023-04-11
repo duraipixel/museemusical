@@ -16,6 +16,7 @@ class Role extends Model implements Auditable
         'name',
         'description',
         'permissions',
+        'select_all',
         'status',
         'added_by'
     ];

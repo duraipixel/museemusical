@@ -28,7 +28,7 @@ return [
                     'product-collection',
                     'product-tags',
                     'product-labels',
-                    'reports.products',
+                    'reports',
                     'sub_category',
                     'global',
                     'my-profile',
