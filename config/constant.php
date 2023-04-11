@@ -18,6 +18,7 @@ return [
                     'state',
                     'country',
                     'order-status',
+                    'order-cancel',
                     'sms-template',
                     'payment-gateway',
                     'customer',
