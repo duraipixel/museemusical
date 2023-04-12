@@ -22,7 +22,7 @@
                     data-hide-search="true">
                     <option value="0">All</option>
                     <option value="paid">Paid</option>
-                    <option value="fail">Fail</option>
+                    <option value="failed">Failed</option>
                 </select>
             </div>
             <div class="d-flex justify-content-end">

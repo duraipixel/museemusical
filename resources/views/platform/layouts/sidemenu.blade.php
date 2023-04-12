@@ -346,7 +346,7 @@
                 </a>
             </div>
             @endif
-            @if( access()->hasAccess(['newsletter']) )
+            {{-- @if( access()->hasAccess(['newsletter']) )
             <div class="menu-item">
                 <a class="menu-link @if( request()->routeIs(['newsletter'])) active @endif" href="{{ route('newsletter') }}">
                     <span class="menu-icon">
@@ -361,7 +361,7 @@
                     <span class="menu-title">NewsLetter</span>
                 </a>
             </div>
-            @endif
+            @endif --}}
             @if( access()->hasAccess(['testimonials']) )
             <div class="menu-item">
                 <a class="menu-link @if(  request()->routeIs(['testimonials'])) active @endif" href="{{ route('testimonials') }}">
@@ -379,7 +379,7 @@
                 </a>
             </div>
             @endif
-            @if( access()->hasAccess(['video-booking']) )
+            {{-- @if( access()->hasAccess(['video-booking']) )
             <div class="menu-item">
                 <a class="menu-link @if(  request()->routeIs(['video-booking'])) active @endif" href="{{ route('video-booking') }}">
                     <span class="menu-icon">
@@ -393,7 +393,7 @@
                     <span class="menu-title">Video Booking</span>
                 </a>
             </div>
-            @endif
+            @endif --}}
             @if( access()->hasAccess(['global', 'my-profile', 'users', 'roles']) )
             <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if( request()->routeIs(['global', 'my-profile', 'my-profile.*', 'users', 'roles'])) hover show @endif">
                 <span class="menu-link">
@@ -452,8 +452,8 @@
                 </div>
             </div>
             @endif
-            @if( access()->hasAccess(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category','quick-link']) )
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category','quick-link', 'sub_category'])) hover show @endif">
+            @if( access()->hasAccess(['country', 'brands', 'city', 'state', 'pincode', 'main_category', 'sub_category','quick-link','email-template','bulkUpload']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if( request()->routeIs(['country', 'brands', 'city', 'state', 'pincode', 'main_category','quick-link', 'sub_category','email-template','bulkUpload'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">

@@ -13,7 +13,7 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->ajax()) {         
             $data = Payment::selectRaw('mm_orders.order_no, mm_payments.status as payment_status, mm_payments.*, sum(mm_order_products.quantity) as order_quantity')
                             ->join('orders', 'orders.id', '=', 'payments.order_id')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
@@ -25,7 +25,7 @@ class PaymentController extends Controller
             $datatables = DataTables::of($data)
                 ->filter(function ($query) use ($keywords, $status, $filter_subCategory) {
                     if ($status) {
-                        return $query->where('payments.status', 'like', $status);
+                        return $query->where('payments.status', '=', "$status");
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
@@ -33,7 +33,7 @@ class PaymentController extends Controller
                                 ->orWhere('payments.payment_no', 'like', "%{$keywords}%")
                                 ->orWhere('payments.amount', 'like', "%{$keywords}%")
                                 ->orWhere('payments.payment_mode', 'like', "%{$keywords}%")
-                                ->orWhere('payments.status', 'like', "%{$keywords}%")
+                                // ->orWhere('payments.status', 'like', "%{$keywords}%")
                                 ->orWhereDate("payments.created_at", $date);
                     }
                 })
