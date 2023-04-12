@@ -103,7 +103,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 }
     
                 $subcat_ins['slug']             = Str::slug($sub_category.' '.$parent_name);
-                $sub_category_id                = ProductCategory::create($subcat_ins);
+                $sub_category_id                = ProductCategory::create($subcat_ins)->id;
 
             }
             #check brand exist or create new one
