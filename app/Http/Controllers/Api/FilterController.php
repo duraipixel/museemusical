@@ -544,7 +544,7 @@ class FilterController extends Controller
         $category_slug = $request->category_slug;
         // $category_slug = 'keyboard-keyboard';
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
-        dd( $productCategory );
+        // dd( $productCategory );
         if (isset($productCategory) && !empty($productCategory)) {
             $cat_id = $productCategory->id;
             $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
