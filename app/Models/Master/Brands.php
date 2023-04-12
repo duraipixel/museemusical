@@ -29,9 +29,10 @@ class Brands extends Model
 
     public function category() {
         return $this->hasMany(Product::class, 'brand_id', 'id')   
-                    ->selectRaw('p.*')                 
+                    ->selectRaw('p.*, mm_products.id as product_id')                 
                     ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
                     ->join( DB::raw('mm_product_categories as p'), DB::raw('p.id'),'=','product_categories.parent_id')
+                    ->where('products.status', 'published')
                     ->groupBy(DB::raw('p.id'));
     }
 

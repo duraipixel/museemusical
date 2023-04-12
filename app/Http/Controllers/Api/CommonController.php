@@ -243,7 +243,7 @@ class CommonController extends Controller
 
         $slug = $request->slug;
         $brand_info = Brands::where('slug', $slug)->first();
-
+        
         if( isset( $brand_info->brand_banner ) && !empty( $brand_info->brand_banner ) ) {
 
             $bannerImagePath        = 'brands/' . $brand_info->id . '/banner/' . $brand_info->brand_banner;
@@ -272,9 +272,20 @@ class CommonController extends Controller
         if ($brand_info->category) {
             foreach ($brand_info->category as $items) {
                 $tmp = [];
+                $cat_id = $items->id;
+                $parent_cat_id = $items->parent_id;
+
+                $products  = Product::where('brand_id', $brand_info->id)->where(function($query) use($cat_id, $parent_cat_id){
+                    $query->where('category_id', $cat_id);
+                    if( $parent_cat_id ) {
+                        $query->orWhere('category_id', $parent_cat_id);
+                    }
+                })->first();
                 $tmp['id'] = $items->id;
                 $tmp['name'] = $items->name;
                 $tmp['slug'] = $items->slug;
+                /**** check product has brand */
+               
                 if ($items->image) {
                     $catImagePath = 'productCategory/' . $items->id . '/default/' . $items->image;
                     $url = Storage::url($catImagePath);
@@ -306,58 +317,62 @@ class CommonController extends Controller
                     $path2 = asset('assets/logo/no_img_category_md.jpg');
                 }
                 $tmp['image_md'] = $path2;
+                
+                if( $products ) {
 
-                /**
-                 * get sub category
-                 */
-                $sub_category_info =  ProductCategory::select('product_categories.*')->join('products', 'products.category_id', '=', 'product_categories.id')
-                    ->join('brands', 'brands.id', '=', 'products.brand_id')
-                    ->where('product_categories.parent_id', $items->id)
-                    ->groupBy('product_categories.id')->get();
-                $sub_category = [];
-                if (isset($sub_category_info) && !empty($sub_category_info)) {
-                    foreach ($sub_category_info as $catitem) {
-                        $tmp1 = [];
-                        $tmp1['id'] = $catitem->id;
-                        $tmp1['name'] = $catitem->name;
-                        $tmp1['slug'] = $catitem->slug;
-                        if ($catitem->image) {
-                            $catImagePath = 'productCategory/' . $catitem->id . '/default/' . $catitem->image;
-                            $url = Storage::url($catImagePath);
-                            $path1 = asset($url);
-                        } else {
-                            $path1 = asset('assets/logo/no_img_category_lg.jpg');
+    
+                    /**
+                     * get sub category
+                     */
+                    $sub_category_info =  ProductCategory::select('product_categories.*')->join('products', 'products.category_id', '=', 'product_categories.id')
+                        ->join('brands', 'brands.id', '=', 'products.brand_id')
+                        ->where('product_categories.parent_id', $items->id)
+                        ->groupBy('product_categories.id')->get();
+                    $sub_category = [];
+                    if (isset($sub_category_info) && !empty($sub_category_info)) {
+                        foreach ($sub_category_info as $catitem) {
+                            $tmp1 = [];
+                            $tmp1['id'] = $catitem->id;
+                            $tmp1['name'] = $catitem->name;
+                            $tmp1['slug'] = $catitem->slug;
+                            if ($catitem->image) {
+                                $catImagePath = 'productCategory/' . $catitem->id . '/default/' . $catitem->image;
+                                $url = Storage::url($catImagePath);
+                                $path1 = asset($url);
+                            } else {
+                                $path1 = asset('assets/logo/no_img_category_lg.jpg');
+                            }
+                            $tmp1['image'] = $path1;
+    
+                            /**
+                             * small images
+                             */
+                            if ($catitem->image_sm) {
+                                $catImagePath1 = 'productCategory/' . $catitem->id . '/small/' . $catitem->image_sm;
+                                $url1 = Storage::url($catImagePath1);
+                                $path1 = asset($url1);
+                            } else {
+                                $path1 = asset('assets/logo/no_img_category_sm.jpg');
+                            }
+                            $tmp1['image_sm'] = $path1;
+                            /**
+                             * medium images
+                             */
+                            if ($catitem->image_md) {
+                                $catImagePath2 = 'productCategory/' . $catitem->id . '/medium/' . $catitem->image_md;
+                                $url2 = Storage::url($catImagePath2);
+                                $path2 = asset($url2);
+                            } else {
+                                $path2 = asset('assets/logo/no_img_category_md.jpg');
+                            }
+                            $tmp1['image_md'] = $path2;
+    
+                            $sub_category[] = $tmp1;
                         }
-                        $tmp1['image'] = $path1;
-
-                        /**
-                         * small images
-                         */
-                        if ($catitem->image_sm) {
-                            $catImagePath1 = 'productCategory/' . $catitem->id . '/small/' . $catitem->image_sm;
-                            $url1 = Storage::url($catImagePath1);
-                            $path1 = asset($url1);
-                        } else {
-                            $path1 = asset('assets/logo/no_img_category_sm.jpg');
-                        }
-                        $tmp1['image_sm'] = $path1;
-                        /**
-                         * medium images
-                         */
-                        if ($catitem->image_md) {
-                            $catImagePath2 = 'productCategory/' . $catitem->id . '/medium/' . $catitem->image_md;
-                            $url2 = Storage::url($catImagePath2);
-                            $path2 = asset($url2);
-                        } else {
-                            $path2 = asset('assets/logo/no_img_category_md.jpg');
-                        }
-                        $tmp1['image_md'] = $path2;
-
-                        $sub_category[] = $tmp1;
                     }
                 }
-                $tmp['sub_category'] = $sub_category;
-                $parent['category'][] = $tmp;
+                $tmp['sub_category'] = $sub_category ?? [];
+                $parent['category'][] = $tmp ?? [];
             }
         }
         return $parent;
