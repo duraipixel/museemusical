@@ -627,7 +627,17 @@ class FilterController extends Controller
 
                     $attributes[] = $tmp;
                 }
-            }
+            } 
+        } else {
+            $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
+            ->join('brands', 'brands.id', '=', 'products.brand_id')
+            ->join('product_categories', function ($join) {
+                $join->on('product_categories.id', '=', 'products.category_id');
+                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+            })
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')->groupBy('products.brand_id')
+            ->get();
         }
         return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
     }
