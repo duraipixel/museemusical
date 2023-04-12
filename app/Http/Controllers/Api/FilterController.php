@@ -94,6 +94,7 @@ class FilterController extends Controller
         $filter_discount_array = [];
         $filter_collection_array = [];
         $filter_booking     = $request->booking;
+        
         if (isset($filter_attribute) && !empty($filter_attribute)) {
 
             $filter_attribute_array = explode("-", $filter_attribute);
@@ -114,8 +115,8 @@ class FilterController extends Controller
         }
 
         $category_info = ProductCategory::where('slug', $filter_category)->first();
+        
         $cat_id = $category_info->id ?? '';
-        // dd( $category_info );
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
             $productWithData = ProductWithAttributeSet::whereIn('id', $filter_attribute_array)->get();
@@ -574,8 +575,9 @@ class FilterController extends Controller
                 ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
                 ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_map_attributes.attribute_id')
                 ->where('products.stock_status', 'in_stock')
+                ->where('product_attribute_sets.is_searchable', '1')
                 ->groupBy('title')->get();
-
+            
             if (isset($topLevelData) && !empty($topLevelData)) {
                 foreach ($topLevelData as $vals) {
                     $tmp = [];
