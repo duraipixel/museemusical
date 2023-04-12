@@ -628,8 +628,7 @@ class FilterController extends Controller
                     $attributes[] = $tmp;
                 }
             }
-
-            return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
         }
+        return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
     }
 }
