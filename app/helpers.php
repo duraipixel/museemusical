@@ -291,10 +291,10 @@ if (!function_exists('getProductPrice')) {
             $strike_rate        = $productsObjects->mrp;
             $price              = $productsObjects->sale_price;
             $has_discount       = 'yes';
-            if ($productsObjects->productDiscount->discount_type == 'percentage') {
+            if (isset($productsObjects->productDiscount->discount_type) && !empty($productsObjects->productDiscount->discount_type) && $productsObjects->productDiscount->discount_type == 'percentage') {
                 $overall_discount_percentage += $productsObjects->productDiscount->discount_value;
             }
-            $discount[]         = array('discount_type' => $productsObjects->productDiscount->discount_type, 'discount_value' => $productsObjects->productDiscount->discount_value, 'discount_name' => '');
+            $discount[]         = array('discount_type' => $productsObjects->productDiscount->discount_type ?? '', 'discount_value' => $productsObjects->productDiscount->discount_value ?? 0, 'discount_name' => '');
         }
         // dump( $strike_rate );
         // dump( $price );
