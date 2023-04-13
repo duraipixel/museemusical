@@ -235,7 +235,7 @@ class FilterController extends Controller
             ->where('products.stock_status', '!=', 'out_of_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
-            ->dd();
+            ->get();
 
         $tmp = [];
         if (isset($details) && !empty($details)) {
