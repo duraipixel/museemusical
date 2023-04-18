@@ -255,15 +255,23 @@
     var ImageBanner = @json($orderImages);
 
     $(document).ready(function() {
-        $('#collection_product').select2();
+        $.fn.select2.amd.require(['select2/selection/search'], function (Search) {
+    var oldRemoveChoice = Search.prototype.searchRemoveChoice;
+    
+    Search.prototype.searchRemoveChoice = function () {
+        oldRemoveChoice.apply(this, arguments);
+        this.$search.val('');
+    };
+    $('#collection_product').select2({
+        
+       // width:'300px'
+    });
+});
+var collection_product=$("#collection_product").val();
 
-        $('.select2-search__field').on('keydown', function(e) {
-            e.preventDefault();  
-            if( e.keyCode){
-                return false;
-            }
-            
-        });
+      //  $('#collection_product').select2({    placeholder: 'This is my placeholder',   allowClear: true});
+
+        
         document.getElementById('banner_image').addEventListener('change', function() {
 
             if (this.files[0]) {
