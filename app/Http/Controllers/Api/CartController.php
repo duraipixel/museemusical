@@ -161,12 +161,12 @@ class CartController extends Controller
                                         $q->where('token', $guest_token);
                                     })->get();
 
-        $tmp                = ['carts'];
+        $tmp                = [];
         $grand_total        = 0;
         $tax_total          = 0;
         $product_tax_exclusive_total = 0;
         $tax_percentage = 0;
-
+        $cartTmp = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 $items = $citems->products;
@@ -230,10 +230,12 @@ class CartController extends Controller
                 $pro['sub_total']       = $citems->sub_total;
                 $pro['shiprocket_order_id'] = $citems->guest_token;
                 $grand_total            += $citems->sub_total;
-                $tmp['carts'][] = $pro;
+                $cartTmp[] = $pro;
                 
             }
 
+            $tmp['carts'] = $cartTmp;
+            $tmp['cart_count'] = count($cartTmp);
             if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
                 $tmp['selected_shipping_fees'] = array(
                                                 'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
