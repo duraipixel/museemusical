@@ -169,6 +169,22 @@
     }
 </style>
 <script>
+    $(document).ready(function(){
+        //select2 backspace issue start 
+        $.fn.select2.amd.require(['select2/selection/search'], function (Search) {
+            var oldRemoveChoice = Search.prototype.searchRemoveChoice;
+
+            Search.prototype.searchRemoveChoice = function () {
+            oldRemoveChoice.apply(this, arguments);
+            this.$search.val('');
+            };
+            $('#product_id').select2({
+            });
+        });
+        var product_id=$("#product_id").val();
+        //select2 backspace issue end
+
+    });
         $(".number").on("input", function(evt) {
             var self = $(this);
             self.val(self.val().replace(/\D/g, ""));
