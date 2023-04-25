@@ -145,7 +145,7 @@
             <th rowspan="2"> HSN</th>
             <th rowspan="2"> Reference</th>
             <th rowspan="2"> Qty</th>
-            <th rowspan="2"> Rate </th>
+            <th rowspan="2"> MRP </th>
             <th rowspan="2"> Discount </th>
             <th colspan="2"> CGST </th>
             <th colspan="2"> SGST </th>
@@ -170,13 +170,18 @@
                     <td> {{ $item->hsn_code }}</td>
                     <td> {{ $item->sku }} </td>
                     <td> {{ $item->quantity }} nos</td>
-                    <td> {{ number_format($item->price, 2) }} </td>
-                    <td>0%</td>
+                    <td> {{ number_format($item->mrp, 2) }} </td>
+                    <?php 
+                    $discount_amount=$order_info->discount_amount;
+                    $mrp_amount=$item->mrp;
+                    $discount_percentage=$discount_amount/$mrp_amount*100;
+                    ?>
+                    <td>{{$discount_percentage}}%</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
-                    <td>{{ number_format($item->sub_total, 2) }}</td>
+                    <td>{{ number_format($item->price, 2) }}</td>
                 </tr>
             @endforeach
         @endif
@@ -198,8 +203,7 @@
                 <table class="no-border" cellspacing="0" padding="0" style="width: 100%;">
                     <tr>
                         <td style="text-align: right">
-                            <div>Sub Total </div>
-                            <small>(Tax inclusive)</small>
+                            <div>Sub Total </div>                          
                         </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
                     </tr>
