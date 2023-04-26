@@ -183,8 +183,9 @@ class CartController extends Controller
                 }
                 // dump( $citems );
                 if (isset($tax_info) && !empty($tax_info)) {
-                    $tax = getAmountExclusiveTax($salePrices['price_original'], $tax_info->pecentage);
-                    $tax_total =  $tax_total + ($tax['gstAmount'] * $citems->quantity) ?? 0;
+                    $tax_calculate_price = $salePrices['price_original'] * $citems->quantity;
+                    $tax = getAmountExclusiveTax($tax_calculate_price, $tax_info->pecentage);
+                    $tax_total =  $tax_total + ($tax['gstAmount']) ?? 0;
                     $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] * $citems->quantity);
                     // print_r( $product_tax_exclusive_total );
                     $tax_percentage         = $tax['tax_percentage'] ?? 0;
