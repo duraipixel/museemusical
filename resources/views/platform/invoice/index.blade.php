@@ -172,9 +172,15 @@
                     <td> {{ $item->quantity }} nos</td>
                     <td> {{ number_format($item->mrp, 2) }} </td>
                     <?php 
-                    $discount_amount=$order_info->discount_amount;
-                    $mrp_amount=$item->mrp;
-                    $discount_percentage=$discount_amount/$mrp_amount*100;
+                    if($order_info->discount_amount=='0.00')
+                    {
+                        $discount_percentage='';
+                    }
+                    else {
+                        $discount_amount=$order_info->discount_amount;
+                        $mrp_amount=$item->mrp;
+                        $discount_percentage=$discount_amount/$mrp_amount*100;
+                    }                   
                     ?>
                     <td>{{$discount_percentage}}%</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
