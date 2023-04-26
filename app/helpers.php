@@ -219,7 +219,11 @@ if (!function_exists('percentage')) {
 if (!function_exists('percentageAmountOnly')) {
     function percentageAmountOnly($amount, $percent)
     {
-        return ($amount * ($percent / 100));
+        if( $amount && $percent ) {
+            return ($amount * ($percent / 100));
+        } else {
+            return 0;
+        }
     }
 }
 

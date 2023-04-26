@@ -18,6 +18,9 @@ class OrderProduct extends Model
         'sku',
         'quantity',
         'price',
+        'mrp_price',
+        'discount_price',
+        'discount_percentage',
         'tax_amount',
         'tax_percentage',
         'sub_total'

@@ -164,6 +164,9 @@ class CheckoutController extends Controller
                 $items_ins['sku'] = $item['sku'];
                 $items_ins['quantity'] = $item['quantity'];
                 $items_ins['price'] = $item['price'];
+                $items_ins['mrp_price'] = $item['sale_prices']['strike_rate_original'] ?? 0;
+                $items_ins['discount_price'] = percentageAmountOnly($item['sale_prices']['strike_rate_original'], $item['sale_prices']['discount']['overall_discount_percentage'] );
+                $items_ins['discount_percentage'] = $item['sale_prices']['discount']['overall_discount_percentage'] ?? 0;
                 $items_ins['tax_amount'] = $item['tax']['gstAmount'] ?? 0;
                 $items_ins['tax_percentage'] = $item['tax_percentage'] ?? 0;
                 $items_ins['sub_total'] = $item['sub_total'];
