@@ -115,6 +115,12 @@
                         <td class="w-30"> Payment Status </td>
                         <td class="w-30"> {{ $order_info->payments->status }} </td>
                     </tr>
+                    @if( $order_info->is_cod == 'yes')
+                    <tr>
+                        <td class="w-30"> Delivery Type </td>
+                        <td class="w-30"> Cash on Delivery </td>
+                    </tr>
+                    @endif
                 </table>
             </td>
         </tr>
@@ -225,7 +231,6 @@
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}</td>
                     </tr>
                     <tr>
-
                         <td colspan="2 " style="text-align: center;border-top:1px solid #ddd">
                             <div style="margin-top: 100px">Authorized Signature</div>
                         </td>

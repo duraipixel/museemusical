@@ -66,6 +66,10 @@ Route::middleware(['client'])->group(function(){
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
     Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);
     Route::post('/get/shipping/rocket/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingRocketCharges']);
+    /**
+     * Cod 
+     */
+    Route::post('/proceed/cod', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCod']);
 
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
 

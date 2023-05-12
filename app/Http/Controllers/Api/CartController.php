@@ -116,10 +116,12 @@ class CartController extends Controller
     public function deleteCart(Request $request)
     {
         $cart_id        = $request->cart_id;
+        $customer_id = $request->customer_id;
         $guest_token    = $request->guest_token;
         $checkCart      = Cart::find($cart_id);
-        $customer_id    = $checkCart->customer_id;
-        $checkCart->delete();
+        if( $checkCart ) {
+            $checkCart->delete();
+        }
         return $this->getCartListAll($customer_id, null, $guest_token);
     }
 
@@ -186,7 +188,7 @@ class CartController extends Controller
                     $tax_calculate_price = $salePrices['price_original'] * $citems->quantity;
                     $tax = getAmountExclusiveTax($tax_calculate_price, $tax_info->pecentage);
                     $tax_total =  $tax_total + ($tax['gstAmount']) ?? 0;
-                    $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] * $citems->quantity);
+                    $product_tax_exclusive_total = $product_tax_exclusive_total + $tax['basePrice'];
                     // print_r( $product_tax_exclusive_total );
                     $tax_percentage         = $tax['tax_percentage'] ?? 0;
                 } else {
@@ -348,10 +350,10 @@ class CartController extends Controller
             $ins_cart['city'] = $shippingAddress->city;
 
             CartAddress::create($ins_cart);
-
+            $data = $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token ?? null);
         }
 
-        return array( 'shiprocket_charges' => $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token) );
+        return array( 'shiprocket_charges' => $data ?? [] );
 
     }
 }

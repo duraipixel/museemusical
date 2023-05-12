@@ -9,12 +9,15 @@ use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderHistory;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Mail;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -197,8 +200,33 @@ class OrderController extends Controller
                     break;
                 
                 case '5':
+
                     $action = 'Order Delivered';
+                    if( $info->is_cod == 'yes') {
+                        #send sms for notification
+                        $sms_params = array(
+                            'name' => $info->billing_name,
+                            'order_no' => $info->order_no,
+                            'amount' => $info->amount,
+                            'payment_through' => 'Cash on delivery',
+                            'mobile_no' => [$info->billing_mobile_no]
+                        );
+                        sendMuseeSms('new_order', $sms_params);
+
+                       
+                        $pay_ins['status'] = 'paid';            
+                        Payment::where('order_id', $info->id )->update($pay_ins);
+                        $order_info = $info;
+                        #generate invoice
+                        $globalInfo = GlobalSettings::first();
+                        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+                        Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
+
+                    }
                     $info->status = 'delivered';
+                    $info->paid_amount = $info->amount;
+                    $info->delivered_at = date('Y-m-d H:i:s');
+                    $info->delivery_authenticate_by = auth()->user()->id;
                     break;
                 
                 default:

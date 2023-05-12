@@ -132,6 +132,12 @@
                         <td class="w-50"> Payment Status </td>
                         <td class="w-50"> {{ $order_info->payments->status }} </td>
                     </tr>
+                    @if( $order_info->is_cod == 'yes')
+                    <tr>
+                        <td class="w-30"> Delivery Type </td>
+                        <td class="w-30"> Cash on Delivery </td>
+                    </tr>
+                    @endif
                 </table>
             </td>
         </tr>
@@ -177,7 +183,7 @@
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
-                    <td>{{ number_format($item->price, 2) }}</td>
+                    <td>{{ number_format($item->sub_total, 2) }}</td>
                 </tr>
             @endforeach
         @endif

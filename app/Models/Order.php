@@ -50,7 +50,15 @@ class Order extends Model
         'rocket_charge_name',
         'rocket_charge_response',
         'payment_id',
-        'payment_response_id'        
+        'payment_response_id',
+        'is_cod',
+        'delivery_notes',
+        'paid_amount',
+        'delivery_otp',
+        'delivered_by',
+        'delivered_mobile_no',
+        'delivered_at',
+        'delivery_authenticate_by'
     ];
 
     public function orderItems()

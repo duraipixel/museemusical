@@ -132,7 +132,7 @@ class CustomerController extends Controller
         $email = $request->email;
         $password = $request->password;
         $guest_token = $request->guest_token;
-
+        $total_cart_count = 0;
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         
         if ($checkCustomer) {
@@ -159,6 +159,8 @@ class CustomerController extends Controller
                         }
                         
                     }
+                    $cart_count = Cart::where('customer_id', $checkCustomer->id )->get();
+                    $total_cart_count = count($cart_count);
                 }
 
             } else {
@@ -176,7 +178,7 @@ class CustomerController extends Controller
             $customer_address = [];
         }
 
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address);
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address, 'total_cart_count' => $total_cart_count);
     }
 
     public function addCustomerAddress(Request $request, ShipRocketService $service)
