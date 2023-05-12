@@ -169,7 +169,7 @@ class CartController extends Controller
         $product_tax_exclusive_total = 0;
         $tax_percentage = 0;
         $cartTmp = [];
-        dd( $checkCart );
+        // dd( $checkCart );
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 $items = $citems->products;
