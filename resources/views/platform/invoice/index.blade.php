@@ -176,7 +176,7 @@
                     <td> {{ $item->hsn_code }}</td>
                     <td> {{ $item->sku }} </td>
                     <td> {{ $item->quantity }} nos</td>
-                    <td> {{ number_format($item->mrp_price, 2) }} </td>
+                    <td> {{ number_format($item->price, 2) }} </td>
                    
                     <td>{{ $item->discount_percentage }}%</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
