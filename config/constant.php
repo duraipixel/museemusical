@@ -6,6 +6,7 @@ return [
                     'brands',
                     'product-category',
                     'tax',
+                    'charges',
                     'coupon',
                     'discount',
                     'email-template',
