@@ -252,7 +252,7 @@ class ShipRocketService
                 );
 
                 $shipResponse = CartShiprocketResponse::where('cart_token', $params['order_id'])->first();
-                dd( $shipResponse );
+                // dd( $shipResponse );
                 if (isset($shipResponse) && !empty($shipResponse->order_id)) {
                     /**
                      * update address in order ship rocket
@@ -299,7 +299,7 @@ class ShipRocketService
             "couriers_type" => 0,
             "only_local" => 0
         );
-        // dd( $charge_array );
+        dd( $charge_array );
         // 
         $token =  Shiprocket::getToken();
         $response =  Shiprocket::courier($token)->checkServiceability($charge_array);
