@@ -257,7 +257,9 @@ class ShipRocketService
                     /**
                      * update address in order ship rocket
                      */
-                    return $this->getShippingCharges($shipResponse->order_id, $measure_ment);
+                    $updateResponse = $this->updateOrder($params);
+                    dd( $updateResponse );
+                    // return $this->getShippingCharges($shipResponse->order_id, $measure_ment);
                 } else {
                     /**
                      * create new order in ship rocket
