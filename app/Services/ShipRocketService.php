@@ -254,6 +254,7 @@ class ShipRocketService
                 $shipResponse = CartShiprocketResponse::where('cart_token', $params['order_id'])->first();
                 // dd( $shipResponse );
                 if (isset($shipResponse) && !empty($shipResponse->order_id)) {
+
                     /**
                      * update address in order ship rocket
                      */
@@ -262,6 +263,7 @@ class ShipRocketService
                     $createResponse = json_decode($createResponse);
                     
                     return $this->getShippingCharges($shipResponse->order_id, $measure_ment);
+
                 } else {
                     /**
                      * create new order in ship rocket
@@ -303,12 +305,12 @@ class ShipRocketService
             "couriers_type" => 0,
             "only_local" => 0
         );
-        dump($charge_array);
+        // dump($charge_array);
         // 
         $token =  Shiprocket::getToken();
-        dump( $token );
+        // dump( $token );
         $response =  Shiprocket::courier($token)->checkServiceability($charge_array);
-        dd( $response );
+        // dd( $response );
         // $token = $this->getToken();
         // $curl = curl_init();
 
