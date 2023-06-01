@@ -240,7 +240,7 @@ class CartController extends Controller
 
             $tmp['carts'] = $cartTmp;
             $tmp['cart_count'] = count($cartTmp);
-            if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+            if (isset($shipping_info) && ( !empty($shipping_info) && $shipping_type != 'flat' )  || (isset( $selected_shipping ) && !empty( $selected_shipping ) && $shipping_type != 'flat' ) ) {
                 $tmp['selected_shipping_fees'] = array(
                                                 'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
                                                 'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
@@ -248,6 +248,13 @@ class CartController extends Controller
                                                 );
                 
                 $grand_total                = $grand_total + ($shipping_info->charges ?? $selected_shipping['shipping_charge_order'] ?? 0);
+            } else if( $shipping_type == 'flat' && $shipping_info ) {
+                $tmp['selected_shipping_fees'] = array(
+                        'shipping_id' => $shipping_info['flat_charge'],
+                        'shipping_charge_order' => $shipping_info['flat_charge'],
+                        'shipping_type' => $shipping_type
+                    );
+                $grand_total                = $grand_total + ($shipping_info['flat_charge'] ?? 0);
             }
             if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
                 $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
@@ -255,6 +262,7 @@ class CartController extends Controller
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $charges        = ShippingCharge::where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
+            
 
             $tmp['shipping_charges']    = $charges;
             $tmp['cart_total']          = array(
@@ -263,7 +271,7 @@ class CartController extends Controller
                 'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
                 'tax_total' => number_format(round($tax_total), 2),
                 'tax_percentage' => number_format(round($tax_percentage), 2),
-                'shipping_charge' => $shipping_info->charges ?? 0
+                'shipping_charge' => $shipping_info->charges ?? $shipping_info['flat_charge'] ?? 0
             );
         }
         // dd( $tmp );die;
@@ -315,6 +323,8 @@ class CartController extends Controller
                     $shipping_info = (object)$shipping_info;
                 }
             }
+        } else if( isset( $type ) && !empty( $type ) && $type == 'flat' ) {
+            $shipping_info = array('flat_charge' => $shipping_id );
         } else {
 
             $shipping_info  = ShippingCharge::find($shipping_id);
@@ -333,6 +343,28 @@ class CartController extends Controller
         $customer_id = $request->customer_id;
         
         $cart_info = Cart::where('customer_id', $customer_id)->first();
+        /**
+         * get volume metric value for kg
+         */
+        $all_cart = Cart::where('customer_id', $customer_id)->get();
+        $flat_charges = [];
+        $overall_flat_charges = 0;
+        if( isset( $all_cart ) && !empty( $all_cart ) ) {
+            foreach ( $all_cart as $item ) {
+                
+                $flat_charges[] = getVolumeMetricCalculation( $item->products->productMeasurement->length ?? 0, $item->products->productMeasurement->width ?? 0, $item->products->productMeasurement->hight ?? 0 );
+
+            }
+        }
+        if( !empty( $flat_charges ) ) {
+
+            $volume_metric_weight = max($flat_charges);
+            $overall_flat_charges = $volume_metric_weight * gSetting('flat_charge') ?? 0;
+        }
+        
+        /**
+         *  End Metric value calculation
+         */
         if( isset( $from_type ) && !empty( $from_type ) ) {
 
             CartAddress::where('customer_id', $request->customer_id)
@@ -354,7 +386,7 @@ class CartController extends Controller
             $data = $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token ?? null);
         }
 
-        return array( 'shiprocket_charges' => $data ?? [] );
+        return array( 'shiprocket_charges' => $data ?? [], 'flat_charge' => round($overall_flat_charges) );
 
     }
 }

@@ -457,3 +457,7 @@ function getSecondLevelCharges( $array ) {
     sort($array);
     return $array[1];
 }
+
+function getVolumeMetricCalculation( $length, $width, $height ) {
+    return ( $length * $width * $height)/5000; //it return weight in kg
+}

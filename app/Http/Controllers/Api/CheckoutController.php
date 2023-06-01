@@ -77,7 +77,7 @@ class CheckoutController extends Controller
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
 
-        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] != 'fees') {
+        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ( $selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat' )) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
@@ -105,19 +105,28 @@ class CheckoutController extends Controller
         $coupon_amount          = 0;
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        $shipping_type_info = ShippingCharge::find($shipping_fee_id);
+        $flat_type = [];
+        if( isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
+            $flat_type = $selected_shipping_fees;
+            $shipping_amount = $selected_shipping_fees['shipping_charge_order'];
+        } else {
 
-        if (!$shipping_type_info) {
-            /**
-             * check shiprocket data is available
-             */
-            $shipping_amount = $cart_total['shipping_charge'];
+            $shipping_type_info = ShippingCharge::find($shipping_fee_id);
+    
+            if (!$shipping_type_info) {
+                /**
+                 * check shiprocket data is available
+                 */
+                $shipping_amount = $cart_total['shipping_charge'];
+            }
+
         }
+
 
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
         $order_ins['shipping_options'] = $shipping_fee_id;
-        $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? 'Free';
+        $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? $flat_type['shipping_type'] ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = str_replace(',', '', $cart_total['tax_total']);
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
@@ -441,7 +450,7 @@ class CheckoutController extends Controller
          * 1.insert in order table with status init
          * 2.INSERT IN Order Products          
          */
-      
+        
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $customer_id            = $request->customer_id;
         $cart_total             = $request->cart_total;
@@ -481,7 +490,7 @@ class CheckoutController extends Controller
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
 
-        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] != 'fees') {
+        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ( $selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat' ) ) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
@@ -494,6 +503,7 @@ class CheckoutController extends Controller
                 }
             }
         }
+        
 
         if (!empty($errors)) {
 
@@ -509,13 +519,20 @@ class CheckoutController extends Controller
         $coupon_amount          = 0;
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
-        $shipping_type_info = ShippingCharge::find($shipping_fee_id);
+        $flat_type = [];
+        if( isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
+            $flat_type = $selected_shipping_fees;
+            $shipping_amount = $selected_shipping_fees['shipping_charge_order'];
+        } else {
 
-        if (!$shipping_type_info) {
-            /**
-             * check shiprocket data is available
-             */
-            $shipping_amount = $cart_total['shipping_charge'];
+            $shipping_type_info = ShippingCharge::find($shipping_fee_id);
+    
+            if (!$shipping_type_info) {
+                /**
+                 * check shiprocket data is available
+                 */
+                $shipping_amount = $cart_total['shipping_charge'];
+            }
         }
 
         $customer_info = Customer::find($customer_id);
@@ -523,7 +540,7 @@ class CheckoutController extends Controller
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
         $order_ins['shipping_options'] = $shipping_fee_id;
-        $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? 'Free';
+        $order_ins['shipping_type'] = $shippingCharges->courier_name ?? $shipping_type_info->shipping_title ?? $flat_type['shipping_type'] ?? 'Free';
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = str_replace(',', '', $cart_total['tax_total']);
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
