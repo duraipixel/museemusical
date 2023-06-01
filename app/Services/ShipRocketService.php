@@ -299,12 +299,12 @@ class ShipRocketService
             "couriers_type" => 0,
             "only_local" => 0
         );
-        dump($charge_array);
+        // dump($charge_array);
         // 
         $token =  Shiprocket::getToken();
-        dump( $token );
+        // dump( $token );
         $response =  Shiprocket::courier($token)->checkServiceability($charge_array);
-        dd( $response );
+        // dd( $response );
         // $token = $this->getToken();
         // $curl = curl_init();
 
