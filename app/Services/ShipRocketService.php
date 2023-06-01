@@ -302,6 +302,7 @@ class ShipRocketService
         dump($charge_array);
         // 
         $token =  Shiprocket::getToken();
+        dump( $token );
         $response =  Shiprocket::courier($token)->checkServiceability($charge_array);
         dd( $response );
         // $token = $this->getToken();
