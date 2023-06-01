@@ -36,8 +36,6 @@ return [
                     'newsletter',
                     'quick-link',
                     'bulkUpload',
-
-
                 ),
     
 ];
