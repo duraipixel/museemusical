@@ -46,6 +46,7 @@ class GlobalSettingController extends Controller
             $ins['site_email'] = $request->site_email;
             $ins['copyrights'] = $request->copyrights;
             $ins['address'] = $request->address;
+            $ins['flat_charge'] = $request->flat_charge;
 
             if ($request->hasFile('favicon')) {
                 $filename       = time() . '_' . $request->favicon->getClientOriginalName();

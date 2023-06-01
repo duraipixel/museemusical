@@ -18,7 +18,8 @@ class GlobalSettings extends Model
         'copyrights',
         'enable_mail',
         'enable_sms',
-        'payment_mode'
+        'payment_mode',
+        'flat_charge'
     ];
 
     public function links()

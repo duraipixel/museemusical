@@ -119,9 +119,15 @@
             </div>
         </div>
         <div class="row mb-6">
-            <label class="col-lg-4 col-form-label fw-bold fs-6">Copyrights</label>
+            <label class="col-lg-4 col-form-label fw-bold fs-6"> Copyrights </label>
             <div class="col-lg-8 fv-row">
                 <input type="text" name="copyrights" class="form-control form-control-lg form-control-solid" placeholder="Copyrights" value="{{ $data->copyrights ?? '' }}" />
+            </div>
+        </div>
+        <div class="row mb-6">
+            <label class="col-lg-4 col-form-label fw-bold fs-6"> Flat Charge </label>
+            <div class="col-lg-8 fv-row">
+                <input type="text" name="flat_charge" class="form-control numberonly form-control-lg form-control-solid" placeholder="Flat Charge" value="{{ $data->flat_charge ?? '' }}" />
             </div>
         </div>
     </div>
