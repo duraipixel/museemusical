@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Mail\TestMail;
 use App\Models\GlobalSettings;
+use App\Models\Master\Brands;
 use App\Models\Master\EmailTemplate;
 use App\Models\Order;
+use App\Models\Product\Product;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -137,5 +139,21 @@ class TestController extends Controller
         // return $send_mail->render();
         Mail::to("durairaj.pixel@gmail.com")->send($send_mail);
         
+    }
+
+    public function generateSiteMap(Request $request)
+    {
+        $products = Product::all();
+        $pages = array(
+            'https://museemusical.shop',
+            'https://museemusical.shop/#/privacypolicy',
+            'https://museemusical.shop/#/TermsofUse',
+            'https://museemusical.shop/#/returnpolicy',
+            'https://museemusical.shop/#/shippingpolicy',
+            'https://museemusical.shop/#/brand',
+            
+        );
+        $brands = Brands::all();
+        return response()->view('site-map', compact('products', 'brands', 'pages' ))->header('Content-Type', 'text/xml');
     }
 }

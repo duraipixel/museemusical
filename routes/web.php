@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
+Route::get('/generate-sitemap', [App\Http\Controllers\TestController::class, 'generateSiteMap']);
 // Route::get('/upload-image', [App\Http\Controllers\ImageUploadController::class, 'index']);
 
 Auth::routes();
