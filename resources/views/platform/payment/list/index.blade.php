@@ -90,8 +90,8 @@
                 },
                
                 {
-                    data: 'payment_status',
-                    name: 'payment_status'
+                    data: 'status',
+                    name: 'status'
                 },
                 {
                     data: 'action',

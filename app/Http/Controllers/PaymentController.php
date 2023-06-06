@@ -7,18 +7,24 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->ajax()) {         
-            $data = Payment::selectRaw('mm_orders.order_no, mm_payments.status as payment_status, mm_payments.*, sum(mm_order_products.quantity) as order_quantity')
-                            ->join('orders', 'orders.id', '=', 'payments.order_id')
-                            ->join('order_products', 'order_products.order_id', '=', 'orders.id')
-                            ->groupBy('orders.id')->orderBy('orders.id', 'desc');
+        if ($request->ajax()) {    
 
+            // $connection = DB::getDefaultConnection();
+            // $connection->setTablePrefix('');
+
+            // $data = DB::table('payments as o')->selectRaw('o.*, mm_orders.order_no')
+            //                 ->join('orders', 'orders.id', '=', 'payments.order_id')                            
+            //                 ->whereRaw('o.created_at = ( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id)')
+            //                 ->orderBy('payments.id', 'desc')->dd();
+            $data = DB::select('SELECT o.*, mm_orders.order_no FROM mm_payments o JOIN mm_orders on mm_orders.id = o.order_id WHERE o.created_at = ( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id ) ORDER BY `id` DESC');
+            
             $filter_subCategory   = '';
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
@@ -39,20 +45,19 @@ class PaymentController extends Controller
                 })
                 ->addIndexColumn()
                 ->editColumn('billing_info', function ($row) {
+                    
                     $billing_info = '';
-                    $billing_info .= '<div class="font-weight-bold">'.$row['billing_name'].'</div>';
-                    $billing_info .= '<div class="">'.$row['billing_email'].','.$row['billing_mobile_no'].'</div>';
-                    $billing_info .= '<div class="">'.$row['billing_address_line1'].'</div>';
+                    // $billing_info .= '<div class="font-weight-bold">'.$row['billing_name'].'</div>';
+                    // $billing_info .= '<div class="">'.$row['billing_email'].','.$row['billing_mobile_no'].'</div>';
+                    // $billing_info .= '<div class="">'.$row['billing_address_line1'].'</div>';
                     return $billing_info;
                 })               
-                ->editColumn('payment_status', function ($row) {
-                    return ucwords($row->payment_status);
-                })
+                
                 ->editColumn('order_status', function ($row) {
                     return ucwords($row->status);
                 })
                 ->editColumn('created_at', function ($row) {
-                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
+                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d-m-Y');
                     return $created_at;
                 })             
                 ->addColumn('action', function ($row) {
@@ -61,7 +66,7 @@ class PaymentController extends Controller
                                 </a>';
                     return $view_btn;
                 })
-                ->rawColumns(['action', 'status', 'billing_info', 'payment_status', 'order_status', 'created_at']);
+                ->rawColumns(['action', 'status', 'billing_info',  'order_status', 'created_at']);
             return $datatables->make(true);
         }
         $breadCrum = array('Payments');
