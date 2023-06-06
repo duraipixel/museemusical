@@ -13,6 +13,7 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,9 +25,12 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Order::selectRaw('mm_payments.order_id,mm_payments.payment_no,mm_payments.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
+            $data = Order::selectRaw('pay.order_id,pay.payment_no,pay.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
-                            ->join('payments', 'payments.order_id', '=', 'orders.id')
+                            // ->join('payments', 'payments.order_id', '=', 'orders.id')
+                            ->join(DB::raw('(select o.created_at,o.order_id, o.payment_no, o.status from mm_payments o WHERE o.created_at =( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id ) ) as pay'), function ($join){
+                                    $join->on(DB::raw('pay.order_id'), '=', 'orders.id');
+                                })
                             ->groupBy('orders.id')->orderBy('orders.id', 'desc');
             $filter_subCategory   = '';
             $status = $request->get('status');
