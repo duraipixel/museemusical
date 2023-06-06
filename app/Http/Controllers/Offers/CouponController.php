@@ -314,7 +314,7 @@ class CouponController extends Controller
         $info->couponProducts()->delete();
         $info->couponCustomers()->delete();
         $info->couponCategory()->delete();
-        $info->forceDelete();
+        $info->delete();
         return response()->json(['message'=>"Successfully deleted Coupon!",'status'=>1]);
     }
 
