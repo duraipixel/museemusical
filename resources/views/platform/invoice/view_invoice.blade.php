@@ -156,7 +156,7 @@
                     <td>
                        {{ $item->product_name }}
                     </td>
-                    <td>15200</td>
+                    <td> {{ $item->hsn_code }} </td>
                     <td> {{ $item->sku }} </td>
                     <td> {{ $item->quantity }} nos</td>
                     <td> {{ number_format($item->price, 2) }} </td>

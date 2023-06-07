@@ -130,7 +130,8 @@
                     </tr>
                     <tr>
                         <td class="w-50"> Payment Status </td>
-                        <td class="w-50"> {{ $order_info->payments->status }} </td>
+                        {{-- <td class="w-50"> {{ $order_info->payments->status }} </td> --}}
+                        <td class="w-50"> Paid </td>
                     </tr>
                     @if( $order_info->is_cod == 'yes')
                     <tr>
