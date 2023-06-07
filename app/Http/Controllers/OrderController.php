@@ -102,7 +102,7 @@ class OrderController extends Controller
         $order_info = Order::selectRaw('mm_orders.*, pay.order_id,pay.payment_no,pay.status as payment_status')->join(DB::raw('(select o.created_at,o.order_id, o.payment_no, o.status from mm_payments o WHERE o.created_at =( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id ) ) as pay'), function ($join){
                                 $join->on(DB::raw('pay.order_id'), '=', 'orders.id');
                             })->where('id', $order_id)->first();
-        dd( $order_info );
+        
         $modal_title = 'View Order';
         $globalInfo = GlobalSettings::first();
         $view_order = view('platform.invoice.view_invoice', compact('order_info', 'globalInfo')); 
