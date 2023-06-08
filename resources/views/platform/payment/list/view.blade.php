@@ -57,6 +57,7 @@
                     try {
                         $unserializedData = unserialize($payment_info->response);
                         // Handle the unserialized data as needed
+                        dump( gettype($unserializedData) )
                         dd( $unserializedData );
                     } catch (\Throwable $e) {
                         dd($e->getMessage());
