@@ -53,10 +53,11 @@
             @if (isset($payment_info->response) && !empty($payment_info->response))
                 @php
                     $check_code = [];
+                    $unserializedData = [];
                     try {
                         $unserializedData = unserialize($payment_info->response);
                         // Handle the unserialized data as needed
-                        dd( $unserializedData );
+                        // dd( $unserializedData );
                     } catch (\Throwable $e) {
                         dd($e->getMessage());
                     }
@@ -64,9 +65,9 @@
                     // dd( $th );
                     
                 @endphp
-                @if (isset($check_code) && !empty($check_code))
+                @if (isset($unserializedData) && !empty($unserializedData))
 
-                    @foreach (unserialize($payment_info->response) as $itemkey => $itemvalue)
+                    @foreach ($unserializedData as $itemkey => $itemvalue)
                         <tr>
                             <th>{{ $itemkey }}</th>
                             <td>
