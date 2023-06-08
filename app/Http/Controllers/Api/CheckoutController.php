@@ -323,7 +323,8 @@ class CheckoutController extends Controller
                      */
                     #generate invoice
                     $globalInfo = GlobalSettings::first();
-                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+                    $payment_status = 'pending';
+                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'payment_status'));
                     Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
                     #send mail
                     $emailTemplate = EmailTemplate::select('email_templates.*')
@@ -653,9 +654,9 @@ class CheckoutController extends Controller
              * 2.send sms for notification
              */
             #generate invoice
-            $is_cod = 'cod';
+            $payment_status = 'pending';
             $globalInfo = GlobalSettings::first();
-            $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'is_cod'));
+            $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'payment_status'));
             Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
             #send mail
             $emailTemplate = EmailTemplate::select('email_templates.*')

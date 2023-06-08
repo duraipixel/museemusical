@@ -19,7 +19,7 @@ use Mail;
 class TestController extends Controller
 {
     public function index(Request $request) {
-
+        
         $number = ['919551706025'];
         $name   = 'Durairaj';
         $orderId = 'IOP9090909P';

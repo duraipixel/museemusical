@@ -80,7 +80,8 @@ class PaymentController extends Controller
         $payment_id     = $request->id;        
         $payment_info   = Payment::find($payment_id);
         $modal_title    = 'View Payment List';
-        
+        dump( $request->all() );
+        dd($payment_info);
         return view('platform.payment.list.view', compact('payment_info', 'modal_title'));
 
     }

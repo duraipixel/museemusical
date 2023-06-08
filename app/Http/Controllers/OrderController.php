@@ -224,9 +224,10 @@ class OrderController extends Controller
                         $pay_ins['status'] = 'paid';            
                         Payment::where('order_id', $info->id )->update($pay_ins);
                         $order_info = $info;
+                        $payment_status = 'paid';
                         #generate invoice
                         $globalInfo = GlobalSettings::first();
-                        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+                        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'payment_status'));
                         Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
 
                     }
