@@ -52,22 +52,19 @@
             </tr>
             @if (isset($payment_info->response) && !empty($payment_info->response))
                 @php
-                $check_code = [];
+                    $check_code = [];
                     try {
-                        $test_string = str_replace('\x00*\x00', '',$payment_info->response );
-                        dump( $test_string );
-                        if( strpos($payment_info->response, '\x00*\x00')){
-                            dump( 'yes');
-                        }
-                        dd( $payment_info->response );
-                        $check_code = unserialize($payment_info->response);
-                    } catch (\Throwable $th) {
-                        dd($th);
+                        $unserializedData = unserialize($payment_info->response);
+                        // Handle the unserialized data as needed
+                        dd( $unserializedData );
+                    } catch (\Throwable $e) {
+                        dd($e->getMessage());
                     }
                     
                     // dd( $th );
+                    
                 @endphp
-                @if( isset( $check_code ) && !empty( $check_code ) ) 
+                @if (isset($check_code) && !empty($check_code))
 
                     @foreach (unserialize($payment_info->response) as $itemkey => $itemvalue)
                         <tr>
@@ -79,8 +76,8 @@
                                             <div>{{ $item }}</div>
                                         @endforeach
                                     @endif
-                                @else 
-                                {{ $itemvalue }}
+                                @else
+                                    {{ $itemvalue }}
                                 @endif
                             </td>
                         </tr>
