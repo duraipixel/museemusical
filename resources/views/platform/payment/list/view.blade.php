@@ -54,7 +54,7 @@
                 @php
                 $check_code = [];
                     try {
-                        
+                        dd( $payment_info->response );
                         $check_code = unserialize($payment_info->response);
                     } catch (\Throwable $th) {
                         dd($th);
