@@ -257,7 +257,7 @@ class CartController extends Controller
                 $grand_total                = $grand_total + ($shipping_info['flat_charge'] ?? 0);
             }
             if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
-                $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
+                $grand_total = $grand_total - $coupon_data[0]['discount_amount'] ??$coupon_data['discount_amount'] ?? 0;
             }
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
