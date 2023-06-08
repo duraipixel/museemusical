@@ -45,7 +45,7 @@ class CheckoutController extends Controller
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
         $selected_shipping_fees = $request->selected_shipping_fees ?? '';
-
+        
         #check product is out of stock
         $errors                 = [];
         if (!$shipping_address) {
@@ -178,7 +178,7 @@ class CheckoutController extends Controller
                 $items_ins['discount_price'] = percentageAmountOnly($item['sale_prices']['strike_rate_original'], $item['sale_prices']['overall_discount_percentage']);
                 $items_ins['discount_percentage'] = $item['sale_prices']['overall_discount_percentage'] ?? 0;
                 $items_ins['tax_amount'] = $item['tax']['gstAmount'] ?? 0;
-                $items_ins['tax_percentage'] = $item['tax_percentage'] ?? 0;
+                $items_ins['tax_percentage'] = $item['tax_percentage'] ?? $cart_total['tax_percentage'] ?? 0;
                 $items_ins['sub_total'] = $item['sub_total'];
 
                 OrderProduct::create($items_ins);
