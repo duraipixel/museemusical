@@ -653,8 +653,9 @@ class CheckoutController extends Controller
              * 2.send sms for notification
              */
             #generate invoice
+            $is_cod = 'cod';
             $globalInfo = GlobalSettings::first();
-            $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+            $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'is_cod'));
             Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
             #send mail
             $emailTemplate = EmailTemplate::select('email_templates.*')

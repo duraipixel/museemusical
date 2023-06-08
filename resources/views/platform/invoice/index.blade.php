@@ -131,7 +131,7 @@
                     <tr>
                         <td class="w-50"> Payment Status </td>
                         {{-- <td class="w-50"> {{ $order_info->payments->status }} </td> --}}
-                        <td class="w-50"> Paid </td>
+                        <td class="w-50"> @if(isset( $is_cod ) && !empty( $is_code )) Pending @else Paid @endif  </td>
                     </tr>
                     @if( $order_info->is_cod == 'yes')
                     <tr>
