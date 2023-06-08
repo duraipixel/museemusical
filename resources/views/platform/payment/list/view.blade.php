@@ -67,10 +67,11 @@
                     
                 @endphp
                 @if (isset($unserializedData) && !empty($unserializedData))
-                    @php
-                        dd( $unserializedData );
-                    @endphp
                     @foreach ($unserializedData as $itemkey => $itemvalue)
+                        @php
+                        dump( $itemvalue );
+                            dd( $itemkey );
+                        @endphp
                         <tr>
                             <th>{{ $itemkey }}</th>
                             <td>
