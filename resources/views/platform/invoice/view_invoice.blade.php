@@ -149,6 +149,7 @@
         @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
         @php
             $i = 1;
+            // dd( $order_info->orderItems);
         @endphp
             @foreach ($order_info->orderItems as $item)
                 <tr>
@@ -160,7 +161,7 @@
                     <td> {{ $item->sku }} </td>
                     <td> {{ $item->quantity }} nos</td>
                     <td> {{ number_format($item->price, 2) }} </td>
-                    <td>0%</td>
+                    <td>{{ $item->discount_percentage }}%</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
