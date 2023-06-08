@@ -54,6 +54,9 @@
                 @php
                 $check_code = [];
                     try {
+                        if( strpos($payment_info->response, '\x00*\x00')){
+                            dump( 'yes');
+                        }
                         dd( $payment_info->response );
                         $check_code = unserialize($payment_info->response);
                     } catch (\Throwable $th) {
