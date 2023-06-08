@@ -57,7 +57,7 @@
                         
                         $check_code = unserialize($payment_info->response);
                     } catch (\Throwable $th) {
-                        // dd($th);
+                        dd($th);
                     }
                     
                     // dd( $th );
