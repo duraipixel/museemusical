@@ -67,10 +67,16 @@
                     
                 @endphp
                 @if (isset($unserializedData) && !empty($unserializedData))
+                @php
+                    try
+                    {
+                @endphp
+
+
                     @foreach ($unserializedData as $itemkey => $itemvalue)
                         @php
-                        dump( $itemvalue );
-                            dd( $itemkey );
+                        // dump( $itemvalue );
+                        //     dd( $itemkey );
                         @endphp
                         <tr>
                             <th>{{ $itemkey }}</th>
@@ -87,6 +93,11 @@
                             </td>
                         </tr>
                     @endforeach
+                    @php
+                    } catch (\Throwable $e) {
+                        dd($e->getMessage());
+                    }
+                    @endphp
 
                 @endif
             @endif
