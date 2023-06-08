@@ -54,6 +54,8 @@
                 @php
                 $check_code = [];
                     try {
+                        $test_string = str_replace('\x00*\x00', '',$payment_info->response );
+                        dump( $test_string );
                         if( strpos($payment_info->response, '\x00*\x00')){
                             dump( 'yes');
                         }
