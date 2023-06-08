@@ -130,8 +130,8 @@
     <table class="item-table" cellspacing="0" padding="0">
         <tr>
             <th style="width: 10px;" rowspan="2">S.No</th>
-            <th rowspan="2" style="width: 140px;"> Items</th>
-            <th rowspan="2"> HSN</th>
+            <th rowspan="2" style="width: 78%"> Items</th>
+            <th rowspan="2" style="width: 90px;"> HSN</th>
             <th rowspan="2"> Reference</th>
             <th rowspan="2"> Qty</th>
             <th rowspan="2"> Rate </th>
