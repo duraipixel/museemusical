@@ -48,26 +48,40 @@
             </tr>
             <tr>
                 <th>Payment Date </th>
-                <td>{{ date( 'd M Y H:i A', strtotime($payment_info->created_at)) }}</td>
+                <td>{{ date('d M Y H:i A', strtotime($payment_info->created_at)) }}</td>
             </tr>
-            @if( isset( $payment_info->response ) && !empty( $payment_info->response ) ) 
-            {{ dump( $payment_info->response ) }}
-            {{-- @foreach ( unserialize($payment_info->response) as $itemkey => $itemvalue)
-                <tr>
-                    <th>{{ $itemkey }}</th>
-                    <td>
-                        @if(gettype($itemvalue) == 'object')
-                            @if( isset( $itemvalue ) && !empty( $itemvalue ) )
-                                @foreach ($itemvalue as $item)
-                                    <div>{{ $item }}</div>
-                                @endforeach
-                            @endif
-                        @else 
-                        {{ $itemvalue }}
-                        @endif
-                    </td>
-                </tr>
-            @endforeach --}}
+            @if (isset($payment_info->response) && !empty($payment_info->response))
+                @php
+                $check_code = [];
+                    try {
+                        
+                        $check_code = unserialize($payment_info->response);
+                    } catch (\Throwable $th) {
+                        // dd($th);
+                    }
+                    
+                    // dd( $th );
+                @endphp
+                @if( isset( $check_code ) && !empty( $check_code ) ) 
+
+                    @foreach (unserialize($payment_info->response) as $itemkey => $itemvalue)
+                        <tr>
+                            <th>{{ $itemkey }}</th>
+                            <td>
+                                @if (gettype($itemvalue) == 'object')
+                                    @if (isset($itemvalue) && !empty($itemvalue))
+                                        @foreach ($itemvalue as $item)
+                                            <div>{{ $item }}</div>
+                                        @endforeach
+                                    @endif
+                                @else 
+                                {{ $itemvalue }}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+
+                @endif
             @endif
         </table>
     </div>
