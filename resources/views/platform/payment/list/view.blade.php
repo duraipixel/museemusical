@@ -75,8 +75,8 @@
 
                     @foreach ($unserializedData as $itemkey => $itemvalue)
                         @php
-                        // dump( $itemvalue );
-                        //     dd( $itemkey );
+                        dump( $itemvalue );
+                            dd( $itemkey );
                         @endphp
                         <tr>
                             <th>{{ $itemkey }}</th>
@@ -95,7 +95,7 @@
                     @endforeach
                     @php
                     } catch (\Throwable $e) {
-                        dd($e->getMessage());
+                        // dd($e->getMessage());
                     }
                     @endphp
 
