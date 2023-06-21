@@ -90,7 +90,6 @@
                     <tr>
                         <td class="w-50">
                             <h3> Billing Details </h3>
-                            {{ dd( $order_info ) }}
                             <div><b>{{ $order_info->billing_name  }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
