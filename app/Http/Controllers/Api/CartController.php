@@ -352,7 +352,7 @@ class CartController extends Controller
         // dd( $all_cart );
         if( isset( $all_cart ) && !empty( $all_cart ) ) {
             foreach ( $all_cart as $item ) {
-                
+                    
                 $flat_charges[] = getVolumeMetricCalculation( $item->products->productMeasurement->length ?? 0, $item->products->productMeasurement->width ?? 0, $item->products->productMeasurement->hight ?? 0 );
 
             }
