@@ -556,7 +556,7 @@ class CheckoutController extends Controller
         $order_ins['status'] = 'pending';
         $order_ins['billing_name'] = $billingAddressInfo['name'] ?? $shipppingAddressInfo['name'];
         $order_ins['billing_email'] = $billingAddressInfo['email'] ?? $shipppingAddressInfo['email'] ?? $customer_info->email ?? null;
-        $order_ins['billing_mobile_no'] = $billingAddressInfo['mobile_no'] ?? $shipppingAddressInfo['email'];
+        $order_ins['billing_mobile_no'] = $billingAddressInfo['mobile_no'] ?? $shipppingAddressInfo['mobile_no'];
         $order_ins['billing_address_line1'] = $billingAddressInfo['address_line1'] ?? $shipppingAddressInfo['address_line1'];
         $order_ins['billing_address_line2'] = $billingAddressInfo['address_line2'] ?? $shipppingAddressInfo['address_line2'] ?? null;
         $order_ins['billing_landmark'] = $billingAddressInfo['landmark'] ?? $shipppingAddressInfo['landmark'] ?? null;
