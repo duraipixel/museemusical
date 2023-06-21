@@ -87,6 +87,7 @@ class FilterController extends Controller
         $filter_collection      = $request->collection;
         $filter_attribute       = $request->attributes_category;
         $sort                   = $request->sort;
+        $search                 = $request->search ?? '';
 
         $filter_availability_array = [];
         $filter_attribute_array = [];
@@ -181,6 +182,14 @@ class FilterController extends Controller
                 $q->orderBy('products.is_featured', 'desc');
             })
             ->where('products.stock_status', '!=', 'out_of_stock')
+            ->when($search, function($q) use($search){
+                $q->where('products.product_name', 'like', "%{$search}%")
+                ->orWhere('products.sku', 'like', "%{$search}%")
+                ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                ->orWhere('products.price', 'like', "%{$search}%")
+                ->orWhere('product_categories.name', 'like', "%{$search}%")
+                ->orWhere('brands.brand_name', 'like', "%{$search}%");
+            } )
             ->groupBy('products.id')
             ->get();
         $total = count($total);
@@ -232,6 +241,14 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->when($search, function($q) use($search){
+                $q->where('products.product_name', 'like', "%{$search}%")
+                ->orWhere('products.sku', 'like', "%{$search}%")
+                ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                ->orWhere('products.price', 'like', "%{$search}%")
+                ->orWhere('product_categories.name', 'like', "%{$search}%")
+                ->orWhere('brands.brand_name', 'like', "%{$search}%");
+            } )
             ->where('products.stock_status', '!=', 'out_of_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
