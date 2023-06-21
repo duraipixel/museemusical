@@ -459,7 +459,7 @@ class CheckoutController extends Controller
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
         $selected_shipping_fees = $request->selected_shipping_fees ?? '';
-
+        
         #check product is out of stock
         $errors                 = [];
         if (!$shipping_address) {
@@ -487,6 +487,8 @@ class CheckoutController extends Controller
          * */
         $shipppingAddressInfo = CustomerAddress::find($shipping_address);
         $billingAddressInfo = CustomerAddress::find($billing_address);
+
+        // dd( $billingAddressInfo );
      
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
@@ -503,8 +505,7 @@ class CheckoutController extends Controller
                     }
                 }
             }
-        }
-        
+        }        
 
         if (!empty($errors)) {
 
