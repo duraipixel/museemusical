@@ -349,6 +349,7 @@ class CartController extends Controller
         $all_cart = Cart::where('customer_id', $customer_id)->get();
         $flat_charges = [];
         $overall_flat_charges = 0;
+        // dd( $all_cart );
         if( isset( $all_cart ) && !empty( $all_cart ) ) {
             foreach ( $all_cart as $item ) {
                 
@@ -383,7 +384,7 @@ class CartController extends Controller
             $ins_cart['city'] = $shippingAddress->city;
 
             CartAddress::create($ins_cart);
-            $data = $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token ?? null);
+            // $data = $service->getShippingRocketOrderDimensions($customer_id, $cart_info->guest_token ?? null);
         }
 
         return array( 'shiprocket_charges' => $data ?? [], 'flat_charge' => round($overall_flat_charges) );
