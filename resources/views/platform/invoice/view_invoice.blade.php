@@ -96,6 +96,7 @@
                             <div>{{ $order_info->billing_state }}</div>
                             <div>{{ $order_info->billing_mobile_no }}</div>
                             <div>{{ $order_info->billing_email }}</div>
+                            <div>{{ $order_info->billing_post_code }}</div>
                         </td>
                     </tr>
                 </table>
@@ -105,7 +106,7 @@
                 <table class="no-border">
                     <tr>
                         <td class="w-30"> Invoice Date </td>
-                        <td class="w-30"> {{ date('d/m/Y', strtotime($order_info->created_at)) }} </td>
+                        <td class="w-30"> {{ date('d/m/Y H:i A', strtotime($order_info->created_at)) }} </td>
                     </tr>
                     <tr>
                         <td class="w-30"> Invoice No </td>
