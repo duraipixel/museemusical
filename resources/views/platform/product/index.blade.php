@@ -57,52 +57,7 @@
       border-color:red
    }
 </style>
-<script>
-    $(document).ready(function(){
-        $('.quantityChange').keyup(function(e){
-            var val   = this.value;
-            var id      = $(this).data('id');
-            
-            if (val == "") {
-                $('#quantity_'+id).addClass('error');
-                return false;
-            }
-            else{
-                $('#quantity_'+id).removeClass('error');
-            }
-            if(val == 0)
-            {
-                $('#quantity_'+id).val('');
-                return false; 
-            }
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    type:'POST',
-                    url:"{{ route('quantityChange') }}",
-                    data: {
-                        id:id,
-                        value:val,
-                    },
-                   
-                    success: function(res) {
-                        
-                    },
-                    error: function(xhr,err){
-                        if( xhr.status == 403 ) {
-                            toastr.error(xhr.statusText, 'UnAuthorized Access');
-                        }
-                    }
-                })
 
-
-        });
-    })
-
-</script>
     <script>
        
         $('.numberonly').keypress(function (e) {    
@@ -252,5 +207,51 @@
             productpane.show();
             quantityEditPane.css('display', 'none');
         } 
+
+        
+        $(document).ready(function(){
+            $('.quantityChange').keyup(function(e){
+                var val   = this.value;
+                var id      = $(this).data('id');
+                
+                if (val == "") {
+                    $('#quantity_'+id).addClass('error');
+                    return false;
+                }
+                else{
+                    $('#quantity_'+id).removeClass('error');
+                }
+                if(val == 0)
+                {
+                    $('#quantity_'+id).val('');
+                    return false; 
+                }
+                $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type:'POST',
+                        url:"{{ route('quantityChange') }}",
+                        data: {
+                            id:id,
+                            value:val,
+                        },
+                       
+                        success: function(res) {
+                            
+                        },
+                        error: function(xhr,err){
+                            if( xhr.status == 403 ) {
+                                toastr.error(xhr.statusText, 'UnAuthorized Access');
+                            }
+                        }
+                    })
+    
+    
+            });
+        })
+    
     </script>
 @endsection
