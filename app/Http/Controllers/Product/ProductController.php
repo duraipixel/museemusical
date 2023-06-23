@@ -120,7 +120,7 @@ class ProductController extends Controller
                     //     <i class="fa fa-times quantity-close-btn" onclick="closeStockQuantity('.$row->id.')"></i>
                     // </div>
                     // </div>';
-                    $quantity = '<input type="text" class="form-control numberonly quantityChange" id="quantity_'.$row->id.'" maxlength="3" data-id="'.$row->id.'" name="quantityChange" value="'.$row->quantity.'" >';
+                    $quantity = '<input type="text" class="form-control numberonly quantityChange" id="quantity_'.$row->id.'" maxlength="3" data-id="'.$row->id.'" name="quantityChange" oninput="return changeQuantity(this.value, '.$row->id.')" value="'.$row->quantity.'" >';
                     return $quantity;
                 })
                 ->editColumn('status', function($row){
