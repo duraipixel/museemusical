@@ -187,6 +187,9 @@
                     <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
                     <td>{{ number_format($item->sub_total, 2) }}</td>
                 </tr>
+                @php
+                    $i++;
+                @endphp
             @endforeach
         @endif
     </table>
