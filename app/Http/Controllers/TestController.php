@@ -88,16 +88,18 @@ class TestController extends Controller
     {
         $info = 'teste';
         
-        // $order_info = Order::find(5);
-        $order_info = Order::selectRaw('mm_orders.*, pay.order_id,pay.payment_no,pay.status as payment_status')->join(DB::raw('(select o.created_at,o.order_id, o.payment_no, o.status from mm_payments o WHERE o.created_at =( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id ) ) as pay'), function ($join){
-            $join->on(DB::raw('pay.order_id'), '=', 'orders.id');
-        })->where('id', 77)->first();
+        if( $request->id ) {
 
-        $globalInfo = GlobalSettings::first();
-        // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
-        // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
-        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
-        return $pdf->stream('test.pdf');
+            $order_info = Order::selectRaw('mm_orders.*, pay.order_id,pay.payment_no,pay.status as payment_status')->join(DB::raw('(select o.created_at,o.order_id, o.payment_no, o.status from mm_payments o WHERE o.created_at =( SELECT MAX(mm_payments.created_at) FROM mm_payments WHERE order_id = o.order_id ) ) as pay'), function ($join){
+                $join->on(DB::raw('pay.order_id'), '=', 'orders.id');
+            })->where('id', $request->id)->first();
+    
+            $globalInfo = GlobalSettings::first();
+            // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
+            // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
+            $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
+            return $pdf->stream('test.pdf');
+        }
     }
 
     public function sendMail()
