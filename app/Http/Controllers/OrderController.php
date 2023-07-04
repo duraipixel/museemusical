@@ -83,14 +83,10 @@ class OrderController extends Controller
                             </a>';
 
 
-                    if (!Storage::exists(asset('storage/invoice_order/' . $row->order_no . '.pdf'))) {
-                        
-                    } else {
-                        $view_btn .= '<a target="_blank" href="' . asset('storage/invoice_order/' . $row->order_no . '.pdf') . '" tooltip="Download Invoice"  class="btn btn-icon btn-active-success btn-light-success mx-1 w-30px h-30px" > 
+                   
+                    $view_btn .= '<a target="_blank" href="' . asset('storage/invoice_order/' . $row->order_no . '.pdf') . '" tooltip="Download Invoice"  class="btn btn-icon btn-active-success btn-light-success mx-1 w-30px h-30px" > 
                                         <i class="fa fa-download"></i>
                                     </a>';
-                    }
-
 
                     return $view_btn;
                 })
