@@ -27,14 +27,14 @@ class OrderController extends Controller
 
         // MM-ORD-000139 
         // $document = asset('storage/invoice_order/MM-ORD-000139.pdf');
-        $document = 'public/invoice_order/MM-ORD-000139.pdf';
-        if (!Storage::exists($document)) {
-            dd('no');
-        } else {
+        // $document = 'public/invoice_order/MM-ORD-000139.pdf';
+        // if (!Storage::exists($document)) {
+        //     dd('no');
+        // } else {
             
-            $url                = Storage::url($document);
-            dd($url);
-        }
+        //     $url                = Storage::url($document);
+        //     dd($url);
+        // }
 
         if ($request->ajax()) {
             $data = Order::selectRaw('pay.order_id,pay.payment_no,pay.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
