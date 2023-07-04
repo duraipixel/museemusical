@@ -27,14 +27,7 @@ class OrderController extends Controller
 
         // MM-ORD-000139 
         // $document = asset('storage/invoice_order/MM-ORD-000139.pdf');
-        // $document = 'public/invoice_order/MM-ORD-000138.pdf';
-        // if (!Storage::exists($document)) {
-        //     dd('no');
-        // } else {
-            
-        //     $url                = Storage::url($document);
-        //     dd($url);
-        // }
+
 
         if ($request->ajax()) {
             $data = Order::selectRaw('pay.order_id,pay.payment_no,pay.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
@@ -94,9 +87,13 @@ class OrderController extends Controller
                                 <i class="fa fa-edit"></i>
                             </a>';
 
+                    $document = 'public/invoice_order/'.$row->order_no.'.pdf';
+                    if (!Storage::exists($document)) {
+                        
+                    } else {
+                        $view_btn .= '<a target="_blank" href="' . asset('storage/invoice_order/' . $row->order_no . '.pdf') . '" tooltip="Download Invoice"  class="btn btn-icon btn-active-success btn-light-success mx-1 w-30px h-30px" > 
+                    }
 
-                   
-                    $view_btn .= '<a target="_blank" href="' . asset('storage/invoice_order/' . $row->order_no . '.pdf') . '" tooltip="Download Invoice"  class="btn btn-icon btn-active-success btn-light-success mx-1 w-30px h-30px" > 
                                         <i class="fa fa-download"></i>
                                     </a>';
 
