@@ -45,7 +45,7 @@ class CheckoutController extends Controller
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
         $selected_shipping_fees = $request->selected_shipping_fees ?? '';
-        
+
         #check product is out of stock
         $errors                 = [];
         if (!$shipping_address) {
@@ -77,7 +77,7 @@ class CheckoutController extends Controller
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
 
-        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ( $selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat' )) {
+        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ($selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat')) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
@@ -106,20 +106,19 @@ class CheckoutController extends Controller
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
         $flat_type = [];
-        if( isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
+        if (isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
             $flat_type = $selected_shipping_fees;
             $shipping_amount = $selected_shipping_fees['shipping_charge_order'];
         } else {
 
             $shipping_type_info = ShippingCharge::find($shipping_fee_id);
-    
+
             if (!$shipping_type_info) {
                 /**
                  * check shiprocket data is available
                  */
                 $shipping_amount = $cart_total['shipping_charge'];
             }
-
         }
 
 
@@ -132,7 +131,7 @@ class CheckoutController extends Controller
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
         $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
         $order_ins['discount_amount'] = $discount_amount;
-        $order_ins['coupon_amount'] = isset($cart_total['coupon_amount']) && !empty( $cart_total['coupon_amount'] ) ? str_replace(',', '', $cart_total['coupon_amount']) : 0;
+        $order_ins['coupon_amount'] = isset($cart_total['coupon_amount']) && !empty($cart_total['coupon_amount']) ? str_replace(',', '', $cart_total['coupon_amount']) : 0;
         $order_ins['coupon_code'] = $cart_total['coupon_code'] ?? '';
         $order_ins['sub_total'] = str_replace(',', '', $cart_total['product_tax_exclusive_total']);
         $order_ins['description'] = '';
@@ -230,7 +229,10 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-            dd($e);
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -451,7 +453,7 @@ class CheckoutController extends Controller
          * 1.insert in order table with status init
          * 2.INSERT IN Order Products          
          */
-        
+
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $customer_id            = $request->customer_id;
         $cart_total             = $request->cart_total;
@@ -459,7 +461,7 @@ class CheckoutController extends Controller
         $shipping_address       = $request->shipping_address;
         $billing_address        = $request->billing_address;
         $selected_shipping_fees = $request->selected_shipping_fees ?? '';
-        
+
         #check product is out of stock
         $errors                 = [];
         if (!$shipping_address) {
@@ -489,11 +491,11 @@ class CheckoutController extends Controller
         $billingAddressInfo = CustomerAddress::find($billing_address);
 
         // dd( $billingAddressInfo );
-     
+
         $shippingCharges = [];
         $shipping_fee_id = $selected_shipping_fees['shipping_id'] ?? '';
 
-        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ( $selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat' ) ) {
+        if (isset($cart_id) && isset($selected_shipping_fees) && !empty($selected_shipping_fees) && ($selected_shipping_fees['shipping_type'] != 'fees' && $selected_shipping_fees['shipping_type'] != 'flat')) {
             $cartInfo = Cart::find($cart_id);
             $cart_token = $cartInfo->guest_token;
             $shipmentResponse = CartShiprocketResponse::where('cart_token', $cart_token)->first();
@@ -505,7 +507,7 @@ class CheckoutController extends Controller
                     }
                 }
             }
-        }        
+        }
 
         if (!empty($errors)) {
 
@@ -522,13 +524,13 @@ class CheckoutController extends Controller
         $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
         $flat_type = [];
-        if( isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
+        if (isset($selected_shipping_fees) && !empty($selected_shipping_fees) && $selected_shipping_fees['shipping_type'] == 'flat') {
             $flat_type = $selected_shipping_fees;
             $shipping_amount = $selected_shipping_fees['shipping_charge_order'];
         } else {
 
             $shipping_type_info = ShippingCharge::find($shipping_fee_id);
-    
+
             if (!$shipping_type_info) {
                 /**
                  * check shiprocket data is available
@@ -548,7 +550,7 @@ class CheckoutController extends Controller
         $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
         $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
         $order_ins['discount_amount'] = $discount_amount;
-        $order_ins['coupon_amount'] = isset($cart_total['coupon_amount']) && !empty( $cart_total['coupon_amount'] ) ? str_replace(',', '', $cart_total['coupon_amount']) : 0;
+        $order_ins['coupon_amount'] = isset($cart_total['coupon_amount']) && !empty($cart_total['coupon_amount']) ? str_replace(',', '', $cart_total['coupon_amount']) : 0;
         $order_ins['coupon_code'] = $cart_total['coupon_code'] ?? '';
         $order_ins['sub_total'] = str_replace(',', '', $cart_total['product_tax_exclusive_total']);
         $order_ins['description'] = '';
@@ -608,7 +610,7 @@ class CheckoutController extends Controller
          *  2. update order status and payment response
          *  3. insert in payment entry 
          */
-        
+
         $order_info = Order::find($order_id);
         if ($order_info) {
 
@@ -642,7 +644,7 @@ class CheckoutController extends Controller
                     $product_info->save();
                 }
             }
-         
+
 
             /**** order history */
             $his['order_id'] = $order_info->id;
