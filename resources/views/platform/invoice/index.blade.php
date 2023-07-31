@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <body>
     <style>
@@ -47,6 +47,7 @@
         .w-70 {
             width: 70%;
         }
+
         .w-50 {
             width: 50%;
         }
@@ -97,7 +98,7 @@
                     <tr>
                         <td class="w-50">
                             <h3> Billing Details </h3>
-                            <div><b>{{ $order_info->billing_name  }}</b></div>
+                            <div><b>{{ $order_info->billing_name }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
                             <div>{{ $order_info->billing_state }}</div>
@@ -108,7 +109,7 @@
 
                         <td class="w-50">
                             <h3> Shipping Details </h3>
-                            <div><b>{{ $order_info->shipping_name  }}</b></div>
+                            <div><b>{{ $order_info->shipping_name }}</b></div>
                             <div>{{ $order_info->shipping_address_line1 }}</div>
                             <div>{{ $order_info->shipping_city }}</div>
                             <div>{{ $order_info->shipping_state }}</div>
@@ -121,7 +122,7 @@
             </td>
             <td class="w-30">
 
-                <table class="no-border w-100" >
+                <table class="no-border w-100">
                     <tr>
                         <td class="w-50"> Invoice Date </td>
                         <td class="w-50"> {{ date('d/m/Y H:i A', strtotime($order_info->created_at)) }} </td>
@@ -133,13 +134,13 @@
                     <tr>
                         <td class="w-50"> Payment Status </td>
                         {{-- <td class="w-50"> {{ $order_info->payments->status }} </td> --}}
-                        <td class="w-50">  {{ $payment_status ?? '' }}  </td>
+                        <td class="w-50"> {{ $payment_status ?? '' }} </td>
                     </tr>
-                    @if( $order_info->is_cod == 'yes')
-                    <tr>
-                        <td class="w-30"> Delivery Type </td>
-                        <td class="w-30"> Cash on Delivery </td>
-                    </tr>
+                    @if ($order_info->is_cod == 'yes')
+                        <tr>
+                            <td class="w-30"> Delivery Type </td>
+                            <td class="w-30"> Cash on Delivery </td>
+                        </tr>
                     @endif
                 </table>
             </td>
@@ -147,120 +148,147 @@
 
 
     </table>
-    <table class="item-table" cellspacing="0" padding="0">
-        <tr>
-            <th style="width: 10px;" rowspan="2">S.No</th>
-            <th rowspan="2" style="width: 140px;"> Items</th>
-            <th rowspan="2"> HSN</th>
-            <th rowspan="2"> Reference</th>
-            <th rowspan="2"> Qty</th>
-            <th rowspan="2"> MRP </th>
-            <th rowspan="2"> Discount </th>
-            <th colspan="2"> CGST </th>
-            <th colspan="2"> SGST </th>
-            <th rowspan="2"> Amount </th>
-        </tr>
-        <tr>
-            <th>%</th>
-            <th>Amt</th>
-            <th>%</th>
-            <th>Amt</th>
-        </tr>
-        @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
+    @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
         @php
-            $i = 1;
+            $check_discount = 0;
         @endphp
-            @foreach ($order_info->orderItems as $item)
-                <tr>
-                    <td>{{ $i }}</td>
-                    <td>
-                       {{ $item->product_name }}
-                    </td>
-                    <td> {{ $item->hsn_code }}</td>
-                    <td> {{ $item->sku }} </td>
-                    <td> {{ $item->quantity }} nos</td>
-                    <td> {{ number_format($item->price, 2) }} </td>
-                    <td>{{ $item->discount_percentage }}%</td>
-                    <td>{{ $item->tax_percentage / 2 }}%</td>
-                    <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
-                    <td>{{ $item->tax_percentage / 2 }}%</td>
-                    <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
-                    <td>{{ number_format($item->sub_total, 2) }}</td>
-                </tr>
+        @foreach ($order_info->orderItems as $item)
+            @if ($item->discount_percentage > 0)
                 @php
-                    $i++;
+                    $check_discount = 1;
                 @endphp
             @endforeach
         @endif
-    </table>
-    <table class="item-table" cellspacing="0" padding="0">
-        <tr>
-            <td style="padding-top:10px;width:50%;border-bottom:none;">
-                <div>
-                    <label for="">Total in words </label>
-                </div>
-                <div>
-                    <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
-                </div>
-                <div style="margin-top: 10px;">
-                    Thank you for the payment. You just made our day
-                </div>
-            </td>
-            <td style="width: 50%;">
-                <table class="no-border" cellspacing="0" padding="0" style="width: 100%;">
+        <table class="item-table" cellspacing="0" padding="0">
+            <tr>
+                <th style="width: 10px;" rowspan="2">S.No</th>
+                <th rowspan="2" style="width: 140px;"> Items</th>
+                <th rowspan="2"> HSN</th>
+                <th rowspan="2"> Reference</th>
+                <th rowspan="2"> Qty</th>
+                <th rowspan="2"> MRP </th>
+                @if ($check_discount == 1)
+                    <th rowspan="2"> Discount </th>
+                @endif
+                <th colspan="2"> CGST </th>
+                <th colspan="2"> SGST </th>
+                <th rowspan="2"> Amount </th>
+            </tr>
+            <tr>
+                <th>%</th>
+                <th>Amt</th>
+                <th>%</th>
+                <th>Amt</th>
+            </tr>
+            @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
+                @php
+                    $i = 1;
+                @endphp
+                @foreach ($order_info->orderItems as $item)
                     <tr>
-                        <td style="text-align: right">
-                            <div>Sub Total </div>                          
+                        <td>{{ $i }}</td>
+                        <td>
+                            {{ $item->product_name }}
                         </td>
-                        <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
+                        <td> {{ $item->hsn_code }}</td>
+                        <td> {{ $item->sku }} </td>
+                        <td> {{ $item->quantity }} nos</td>
+                        <td> {{ number_format($item->price, 2) }} </td>
+                        @if ($check_discount == 1)
+                            <td>{{ $item->discount_percentage }}%</td>
+                        @endif
+                        <td>{{ $item->tax_percentage / 2 }}%</td>
+                        <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
+                        <td>{{ $item->tax_percentage / 2 }}%</td>
+                        <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
+                        <td>{{ number_format($item->sub_total, 2) }}</td>
                     </tr>
-                    <tr>
-                        <td style="text-align: right">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
-                        <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
-                    </tr>
-                    @if ($order_info->coupon_amount > 0)
+                    @php
+                        $i++;
+                    @endphp
+                @endforeach
+            @endif
+        </table>
+        <table class="item-table" cellspacing="0" padding="0">
+            <tr>
+                <td style="padding-top:10px;width:50%;border-bottom:none;">
+                    <div>
+                        <label for="">Total in words </label>
+                    </div>
+                    <div>
+                        <b>{{ ucwords(getIndianCurrency($order_info->amount)) }}</b>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        Thank you for the payment. You just made our day
+                    </div>
+                </td>
+                <td style="width: 50%;">
+                    <table class="no-border" cellspacing="0" padding="0" style="width: 100%;">
                         <tr>
                             <td style="text-align: right">
-                                <div>Coupon Amount </div>
-                                <small>( {{ $order_info->coupon_code }})</small>
+                                <div>Sub Total </div>
                             </td>
-                            <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
+                            <td style="text-align: right"><span
+                                    style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>
+                                {{ number_format($order_info->sub_total, 2) }}</td>
                         </tr>
-                    @endif
-
-                    @if ($order_info->discount_amount > 0)
                         <tr>
-                            <td style="text-align: right">
-                                <div>Discount Amount </div>
+                            <td style="text-align: right">Tax (%{{ (int) $order_info->tax_percentage }}) </td>
+                            <td style="text-align: right"><span
+                                    style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}
                             </td>
-                            <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->discount_amount, 2) }}</td>
                         </tr>
-                    @endif
-                    @if ($order_info->shipping_amount > 0)
+                        @if ($order_info->coupon_amount > 0)
+                            <tr>
+                                <td style="text-align: right">
+                                    <div>Coupon Amount </div>
+                                    <small>( {{ $order_info->coupon_code }})</small>
+                                </td>
+                                <td style="text-align: right"><span
+                                        style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}
+                                </td>
+                            </tr>
+                        @endif
+
+                        @if ($order_info->discount_amount > 0)
+                            <tr>
+                                <td style="text-align: right">
+                                    <div>Discount Amount </div>
+                                </td>
+                                <td style="text-align: right"><span
+                                        style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->discount_amount, 2) }}
+                                </td>
+                            </tr>
+                        @endif
+                        @if ($order_info->shipping_amount > 0)
+                            <tr>
+                                <td style="text-align: right">
+                                    <div>Shipping Fee </div>
+                                    <small>( {{ $order_info->shipping_type }})</small>
+                                </td>
+                                <td style="text-align: right"><span
+                                        style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
-                            <td style="text-align: right">
-                                <div>Shipping Fee </div>
-                                <small>( {{ $order_info->shipping_type }})</small>
+                            <td style="text-align: right;font-weight:700;font-size:15px;">Total</td>
+                            <td style="text-align: right;font-weight:700;font-size:15px;">
+                                <span
+                                    style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}
                             </td>
-                            <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
                         </tr>
-                    @endif
-                    <tr>
-                        <td style="text-align: right;font-weight:700;font-size:15px;">Total</td>
-                        <td style="text-align: right;font-weight:700;font-size:15px;">
-                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}</td>
-                    </tr>
-                    <tr>
+                        <tr>
 
-                        <td colspan="2 " style="text-align: center;border-top:1px solid #ddd">
-                            <div style="margin-top: 100px">Authorized Signature</div>
-                        </td>
-                    </tr>
+                            <td colspan="2 " style="text-align: center;border-top:1px solid #ddd">
+                                <div style="margin-top: 100px">Authorized Signature</div>
+                            </td>
+                        </tr>
 
-                </table>
-            </td>
-        </tr>
-    </table>
+                    </table>
+                </td>
+            </tr>
+        </table>
 </body>
 
 </html>

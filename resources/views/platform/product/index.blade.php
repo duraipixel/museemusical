@@ -16,7 +16,8 @@
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
-                @if (access()->hasAccess('products', 'filter'))
+                {{-- @if (access()->hasAccess('products', 'filter')) --}}
+                @if (access()->hasAccess('products', 'editable'))
                     @include('platform.product._filter_form')
                 @endif
             </div>
