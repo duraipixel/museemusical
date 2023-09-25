@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFirstnamenullToCustomers extends Migration
+class CreateCouponBrandsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddFirstnamenullToCustomers extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->string('first_name')->nullable()->change();
+        Schema::create('coupon_brands', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('coupon_id');
+            $table->unsignedInteger('brand_id');
+            $table->integer('quantity');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddFirstnamenullToCustomers extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->string('first_name')->nullable()->change(false);
-        });
+        Schema::dropIfExists('coupon_brands');
     }
 }

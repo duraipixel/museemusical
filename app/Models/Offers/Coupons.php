@@ -46,6 +46,11 @@ class Coupons extends Model
         return $this->hasMany(CouponCategory::class, 'coupon_id', 'id');
     }
 
+    public function couponBrands()
+    {
+        return $this->hasMany(CouponBrands::class, 'coupon_id', 'id');
+    }
+
     public function couponProductCollection()
     {
         return $this->hasMany(CouponProductCollection::class, 'coupon_id', 'id');

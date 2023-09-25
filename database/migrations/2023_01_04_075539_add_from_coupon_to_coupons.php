@@ -25,8 +25,8 @@ class AddFromCouponToCoupons extends Migration
      */
     public function down()
     {
-        Schema::table('coupon_to_coupons', function (Blueprint $table) {
+        /* Schema::table('coupon_to_coupons', function (Blueprint $table) {
             $table->dropColumn('from_coupon');
-        });
+        }); */
     }
 }

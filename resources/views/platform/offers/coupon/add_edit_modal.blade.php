@@ -119,6 +119,9 @@
                                         <option value="3"
                                             @if (isset($info->coupon_type) && $info->coupon_type == '3') selected="selected" @endif>Category
                                         </option>
+                                         <option value="4"
+                                            @if (isset($info->coupon_type) && $info->coupon_type == '4') selected="selected" @endif>Brands
+                                        </option>
                                     </select>
                                 </div>
                             </div>
