@@ -234,10 +234,13 @@ class Couponcontroller extends Controller
                                     $response['status'] = 'success';
                                     $response['message'] = 'Coupon applied';
                                     $response['cart_info'] = $this->getCartListAll($customer_id, $response, $selected_shipping);
+                                } else {
+                                    $response['status'] = 'error';
+                                    $response['message'] = 'Cart order does not meet coupon minimum order amount';
                                 }
                             } else {
                                 $response['status'] = 'error';
-                                $response['message'] = 'Cart order does not meet coupon minimum order amount';
+                                $response['message'] = 'Coupon not applicable';
                             }
                             break;
 
