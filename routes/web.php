@@ -148,7 +148,7 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('customer')->group(function(){
         Route::get('/coupon-gendrate', [App\Http\Controllers\CustomerController::class, 'couponGendrate'])->name('customer.coupon-gendrate');
         Route::post('/coupon-apply', [App\Http\Controllers\CustomerController::class, 'couponType'])->name('customer.coupon-apply');
-        Route::post('/customer/delete', [App\Http\Controllers\CustomerController::class, 'customerDelete'])->name('customer.delete')->middleware(['checkAccess:delete']);
+        //Route::post('/customer/delete', [App\Http\Controllers\CustomerController::class, 'customerDelete'])->name('customer.delete')->middleware(['checkAccess:delete']);
         Route::get('/customer/view/{id}', [App\Http\Controllers\CustomerController::class, 'view'])->name('customer.view')->middleware(['checkAccess:visible']);
         Route::get('/add-address', [App\Http\Controllers\CustomerController::class, 'addAddress'])->name('customer.add-address')->middleware(['checkAccess:editable']);
         Route::post('/address', [App\Http\Controllers\CustomerController::class, 'customerAddress'])->name('customer.address');
