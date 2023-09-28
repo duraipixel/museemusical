@@ -29,11 +29,11 @@ class Couponcontroller extends Controller
                 ->first();
 
             //get all category id from cart products
-            $category_usedCart = Cart::select('carts.*', 'products.product_name', 'products.category_id', DB::raw('GROUP_CONCAT(DISTINCT concat(mm_product_categories.parent_id, ",", mm_product_categories.id)) as category_array'))
+            /*$category_usedCart = Cart::select('carts.*', 'products.product_name', 'products.category_id', DB::raw('GROUP_CONCAT(DISTINCT concat(mm_product_categories.parent_id, ",", mm_product_categories.id)) as category_array'))
                 ->join('products', 'products.id', '=', 'carts.product_id')
                 ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
                 ->where('carts.customer_id', $customer_id)
-                ->first();
+                ->first();*/
 
             if (isset($coupon) && !empty($coupon)) {
                 /**
@@ -185,11 +185,10 @@ class Couponcontroller extends Controller
                                 ->join('brands', 'brands.id', '=', 'products.brand_id')
                                 ->join('coupon_brands', function ($join) {
                                     $join->on('coupon_brands.brand_id', '=', 'brands.id');
-                                    // $join->orOn('coupon_categories.category_id', '=', 'product_categories.parent_id');
                                 })
                                 ->where('coupon_brands.coupon_id', $coupon->id)
                                 ->where('carts.customer_id', $customer_id)
-                                // ->groupBy('carts.product_id')
+                                //->groupBy('carts.product_id')
                                 ->first();
 
                             if (isset($checkCartData) && !empty($checkCartData)) {
