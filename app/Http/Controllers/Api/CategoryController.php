@@ -26,6 +26,6 @@ class CategoryController extends Controller
             $meta = null;
         }
 
-        return json_encode($meta);
+        return json_encode(['meta' => $meta]);
     }
 }
