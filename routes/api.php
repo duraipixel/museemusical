@@ -52,7 +52,8 @@ Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addTo
 Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
 Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
 Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
-Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
+Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);
+Route::get('/get-category-meta', [App\Http\Controllers\Api\CategoryController::class, 'getCategoryMeta']);
 
 Route::middleware(['client'])->group(function(){
     
@@ -82,6 +83,8 @@ Route::middleware(['client'])->group(function(){
     Route::post('/cancel/request/orders', [App\Http\Controllers\Api\OrderController::class, 'requestCancelOrder']);
     Route::post('/get/orderByno', [App\Http\Controllers\Api\OrderController::class, 'getOrderByOrderNo']);
     Route::post('/get/recent/view', [App\Http\Controllers\Api\CollectionController::class, 'getRecentViews']);
+
+   
     
 });
 
