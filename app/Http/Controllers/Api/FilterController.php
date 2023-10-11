@@ -11,6 +11,7 @@ use App\Models\Product\ProductCollection;
 use App\Models\Product\ProductWithAttributeSet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CategoryMetaTags;
 
 class FilterController extends Controller
 {
@@ -95,7 +96,7 @@ class FilterController extends Controller
         $filter_discount_array = [];
         $filter_collection_array = [];
         $filter_booking     = $request->booking;
-        
+
         if (isset($filter_attribute) && !empty($filter_attribute)) {
 
             $filter_attribute_array = explode("-", $filter_attribute);
@@ -116,7 +117,15 @@ class FilterController extends Controller
         }
 
         $category_info = ProductCategory::where('slug', $filter_category)->first();
-        
+        $sub_category_info = isset($filter_sub_category) ?  ProductCategory::where('slug', $filter_sub_category)->first() : [];
+
+        $catId = isset($filter_sub_category) ? $sub_category_info->id : $category_info->id;
+        if ($catId && $catId != 0) {
+            $meta = CategoryMetaTags::where('category_id', $catId)->first();
+        }else{
+            $meta = null;
+        }
+
         $cat_id = $category_info->id ?? '';
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
@@ -136,10 +145,10 @@ class FilterController extends Controller
 
         $take_limit = $limit + ($page * $limit);
         $total = Product::select('products.*')->where('products.status', 'published')
-                ->join('product_categories', function ($join) {
-                    $join->on('product_categories.id', '=', 'products.category_id');
-                    $join->orOn('product_categories.parent_id', '=', 'products.category_id');
-                })
+            ->join('product_categories', function ($join) {
+                $join->on('product_categories.id', '=', 'products.category_id');
+                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+            })
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->when($filter_category != '', function ($q) use ($cat_id) {
                 $q->where(function ($query) use ($cat_id) {
@@ -181,18 +190,18 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-            
-            ->when($search, function($q) use($search){
-                $q->where(function($query) use($search) {
+
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
                     $query->where('products.product_name', 'like', "%{$search}%")
-                    ->orWhere('products.sku', 'like', "%{$search}%")
-                    ->orWhere('products.hsn_code', 'like', "%{$search}%")
-                    ->orWhere('products.price', 'like', "%{$search}%")
-                    ->orWhere('product_categories.name', 'like', "%{$search}%")
-                    ->orWhere('brands.brand_name', 'like', "%{$search}%");
+                        ->orWhere('products.sku', 'like', "%{$search}%")
+                        ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                        ->orWhere('products.price', 'like', "%{$search}%")
+                        ->orWhere('product_categories.name', 'like', "%{$search}%")
+                        ->orWhere('brands.brand_name', 'like', "%{$search}%");
                 });
-            } )
-            ->where(function($q){
+            })
+            ->where(function ($q) {
                 $q->where('products.stock_status', '!=', 'out_of_stock');
             })
             ->groupBy('products.id')
@@ -246,20 +255,20 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-           
-            ->where(function($q){
+
+            ->where(function ($q) {
                 $q->where('products.stock_status', '!=', 'out_of_stock');
             })
-            ->when($search, function($q) use($search){
-                $q->where(function($query) use($search) {
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
                     $query->where('products.product_name', 'like', "%{$search}%")
-                    ->orWhere('products.sku', 'like', "%{$search}%")
-                    ->orWhere('products.hsn_code', 'like', "%{$search}%")
-                    ->orWhere('products.price', 'like', "%{$search}%")
-                    ->orWhere('product_categories.name', 'like', "%{$search}%")
-                    ->orWhere('brands.brand_name', 'like', "%{$search}%");
+                        ->orWhere('products.sku', 'like', "%{$search}%")
+                        ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                        ->orWhere('products.price', 'like', "%{$search}%")
+                        ->orWhere('product_categories.name', 'like', "%{$search}%")
+                        ->orWhere('brands.brand_name', 'like', "%{$search}%");
                 });
-            } )
+            })
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
@@ -308,7 +317,7 @@ class FilterController extends Controller
         //     $to = $total;
         // }
         $to = count($details);
-        return array('products' => $tmp, 'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
+        return array('products' => $tmp, 'mets' => $meta ,'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
     }
 
     public function getProductBySlug(Request $request)
@@ -316,7 +325,7 @@ class FilterController extends Controller
 
         $product_url = $request->product_url;
         $items = Product::where('product_url', $product_url)->first();
-        
+
         $category               = $items->productCategory;
         $salePrices             = getProductPrice($items);
 
@@ -404,7 +413,7 @@ class FilterController extends Controller
             foreach ($items->productRelated as $related) {
 
                 $productInfo            = Product::find($related->to_product_id);
-                
+
                 $category               = $productInfo->productCategory;
                 $salePrices1            = getProductPrice($productInfo);
 
@@ -463,7 +472,7 @@ class FilterController extends Controller
                 $qr->where('product_name', 'like', "%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
             })->where('status', 'published')->get();
-            
+
             if (count($productInfo) == 0) {
                 $productInfo = Product::where(function ($qr) use ($query) {
                     $qr->whereRaw("MATCH (mm_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
@@ -604,7 +613,7 @@ class FilterController extends Controller
                 ->where('products.stock_status', 'in_stock')
                 ->where('product_attribute_sets.is_searchable', '1')
                 ->groupBy('title')->get();
-            
+
             if (isset($topLevelData) && !empty($topLevelData)) {
                 foreach ($topLevelData as $vals) {
                     $tmp = [];
@@ -654,17 +663,17 @@ class FilterController extends Controller
 
                     $attributes[] = $tmp;
                 }
-            } 
+            }
         } else {
             $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
-            ->join('brands', 'brands.id', '=', 'products.brand_id')
-            ->join('product_categories', function ($join) {
-                $join->on('product_categories.id', '=', 'products.category_id');
-                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
-            })
-            ->where('products.stock_status', 'in_stock')
-            ->where('products.status', 'published')->groupBy('products.brand_id')
-            ->get();
+                ->join('brands', 'brands.id', '=', 'products.brand_id')
+                ->join('product_categories', function ($join) {
+                    $join->on('product_categories.id', '=', 'products.category_id');
+                    $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+                })
+                ->where('products.stock_status', 'in_stock')
+                ->where('products.status', 'published')->groupBy('products.brand_id')
+                ->get();
         }
         return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
     }
