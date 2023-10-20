@@ -117,14 +117,14 @@ class FilterController extends Controller
         }
 
         $category_info = ProductCategory::where('slug', $filter_category)->first();
-        $sub_category_info = isset($filter_sub_category) ?  ProductCategory::where('slug', $filter_sub_category)->first() : [];
+        /* $sub_category_info = isset($filter_sub_category) ?  ProductCategory::where('slug', $filter_sub_category)->first() : [];
 
         $catId = isset($filter_sub_category) ? $sub_category_info->id : $category_info->id;
         if ($catId && $catId != 0) {
             $meta = CategoryMetaTags::where('category_id', $catId)->first();
         }else{
             $meta = null;
-        }
+        } */
 
         $cat_id = $category_info->id ?? '';
         $productAttrNames = [];
