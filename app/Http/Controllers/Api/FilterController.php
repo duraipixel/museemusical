@@ -317,7 +317,7 @@ class FilterController extends Controller
         //     $to = $total;
         // }
         $to = count($details);
-        return array('products' => $tmp, 'mets' => $meta ,'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
+        return array('products' => $tmp, 'mets' => [] ,'total_count' => $total, 'from' => ($total == 0 ? '0' : '1'), 'to' => $to);
     }
 
     public function getProductBySlug(Request $request)
