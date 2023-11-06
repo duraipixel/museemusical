@@ -26,31 +26,30 @@ class CustomerController extends Controller
 
     public function verifyAccount(Request $request)
     {
-        
+
         $email = $request->token;
         $email = base64_decode($email);
         $error = 1;
         $message = 'Token Expired';
         $customer = Customer::with('customerAddress')->where('email', $email)->whereNull('deleted_at')->first();
-        if( $customer ) {
-            if( !empty($customer->verification_token) ) {
+        if ($customer) {
+            if (!empty($customer->verification_token)) {
                 $customer->email_verified_at = Carbon::now();
                 $customer->verification_token = null;
                 $customer->update();
                 $error = 0;
                 $message = 'Account Verified Succesfull';
-            } 
+            }
         }
 
         return array('error' => $error, 'message' => $message, 'customer' => $customer);
-
     }
 
     public function registerCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'firstName' => 'required|string',
-            'email' => 'required|email|unique:customers,email,id,deleted_at,NULL', 
+            'email' => 'required|email|unique:customers,email,id,deleted_at,NULL',
             'password' => 'required|string',
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);
@@ -77,7 +76,7 @@ class CustomerController extends Controller
             $globalInfo = GlobalSettings::first();
 
             // $link = 'http://192.168.0.35:3000/#/verify-account/' . $token_id;
-            $link = 'https://museemusical.shop/#/verify-account/' . $token_id;
+            $link = 'https://museemusical.shop/verify-account/' . $token_id;
 
             $customer_data->verification_token = $token_id;
             $customer_data->update();
@@ -124,7 +123,7 @@ class CustomerController extends Controller
             $message = ['Email id is already exists'];
             $status = 'error';
         }
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '');
     }
 
     public function doLogin(Request $request)
@@ -134,10 +133,10 @@ class CustomerController extends Controller
         $guest_token = $request->guest_token;
         $total_cart_count = 0;
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
-        
+
         if ($checkCustomer) {
             if (Hash::check($password, $checkCustomer->password)) {
-                if( $checkCustomer->email_verified_at == null ) {
+                if ($checkCustomer->email_verified_at == null) {
                     $error = 1;
                     $message = 'Verification pending check your mail';
                     $status = 'error';
@@ -150,19 +149,17 @@ class CustomerController extends Controller
                     $status = 'success';
                     $customer_data = $checkCustomer;
                     $customer_address = $checkCustomer->customerAddress ?? [];
-    
-                    if( $guest_token ) {
-    
+
+                    if ($guest_token) {
+
                         $cartData = Cart::where('token', $guest_token)->get();
-                        if( isset( $cartData ) && count($cartData) > 0 ) {
-                            Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                        if (isset($cartData) && count($cartData) > 0) {
+                            Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id]);
                         }
-                        
                     }
-                    $cart_count = Cart::where('customer_id', $checkCustomer->id )->get();
+                    $cart_count = Cart::where('customer_id', $checkCustomer->id)->get();
                     $total_cart_count = count($cart_count);
                 }
-
             } else {
                 $error = 1;
                 $message = 'Invalid credentials';
@@ -208,9 +205,9 @@ class CustomerController extends Controller
         $address_info = CustomerAddress::create($ins);
 
         $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        if( isset( $cart_info ) && !empty( $cart_info ) ) {
+        if (isset($cart_info) && !empty($cart_info)) {
             CartAddress::where('customer_id', $request->customer_id)
-                            ->where('address_type', $from_address_type )->delete();
+                ->where('address_type', $from_address_type)->delete();
             $ins_cart = [];
             $ins_cart['cart_token'] = $cart_info->guest_token;
             $ins_cart['customer_id'] = $request->customer_id;
@@ -218,7 +215,7 @@ class CustomerController extends Controller
             $ins_cart['name'] = $request->contact_name;
             $ins_cart['email'] = $request->email;
             $ins_cart['mobile_no'] = $request->mobile_no;
-            $ins_cart['address_line1'] = $request->address;          
+            $ins_cart['address_line1'] = $request->address;
             $ins_cart['country'] = 'india';
             $ins_cart['post_code'] = $request->post_code;
             $ins_cart['state'] = $ins['state'];
@@ -227,7 +224,7 @@ class CustomerController extends Controller
             CartAddress::create($ins_cart);
         }
         $shipRocketDetails = [];
-        if( $from_address_type == 'shipping') {
+        if ($from_address_type == 'shipping') {
             // $details = $service->getShippingRocketOrderDimensions($request->customer_id);
         }
         return array('error' => 0, 'shipRocketDetails' => $shipRocketDetails, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
@@ -257,18 +254,17 @@ class CustomerController extends Controller
         $request->profile_image;
         if ($request->hasFile('profile_image')) {
             $filename       = time() . '_' . $request->profile_image->getClientOriginalName();
-            $directory      = 'customer/'.$customerId;
-            $filename       = $directory.'/'.$filename;
-            Storage::deleteDirectory('public/'.$directory);
+            $directory      = 'customer/' . $customerId;
+            $filename       = $directory . '/' . $filename;
+            Storage::deleteDirectory('public/' . $directory);
             Storage::disk('public')->put($filename, File::get($request->profile_image));
-            
+
             $customerInfo->profile_image = $filename;
             $customerInfo->save();
         }
         return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer_id' => $customerId);
-        
     }
-    
+
     public function changePassword(Request $request)
     {
 
@@ -316,7 +312,7 @@ class CustomerController extends Controller
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
-        
+
         $ins['customer_id'] = $request->customer_id;
         $ins['address_type_id'] = $request->address_type_id;
         $ins['name'] = $request->name;
@@ -338,7 +334,7 @@ class CustomerController extends Controller
     {
         $address_id = $request->address_id;
         $res = [];
-        if (isset($address_id) && !empty( $address_id) ) {
+        if (isset($address_id) && !empty($address_id)) {
             $addressInfo = CustomerAddress::find($address_id);
             $res['address_id'] = $addressInfo->id;
             $res['address_line'] = $addressInfo->address_line1 ?? '';
@@ -379,7 +375,8 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
             // $link = 'http://192.168.0.35:3000/#/reset-password/' . $token_id;
-            $link = 'https://museemusical.shop/#/reset-password/' . $token_id;
+            //$link = 'https://museemusical.shop/#/reset-password/' . $token_id;
+            $link = 'https://museemusical.shop/reset-password/' . $token_id;
             $extract = array(
                 'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
                 'link' => '<a href="' . $link . '"> Reset Password </a>',
@@ -398,7 +395,6 @@ class CustomerController extends Controller
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
             Mail::to($request->email)->send($send_mail);
-            
         } else {
             $error = 1;
             $message = 'Email id is not exists';
