@@ -13,13 +13,13 @@
 @if (isset($brands) && !empty($brands))
 @foreach ($brands as $brand)
     <url>
-        <loc>https://museemusical.shop/#/brands/{{ $brand->slug }}</loc>
+        <loc>https://museemusical.shop/brands/{{ $brand->slug }}</loc>
     </url>
 @endforeach
 @endif
 @foreach ($products as $items)
     <url>
-        <loc>https://museemusical.shop/#/product/{{ $items->product_url }}</loc>
+        <loc>https://museemusical.shop/product/{{ $items->product_url }}</loc>
         <lastmod>{{ $items->created_at->tz('UTC')->toAtomString() }}</lastmod>
     </url>
 @endforeach
