@@ -181,8 +181,8 @@ class CustomerController extends Controller
     public function addCustomerAddress(Request $request, ShipRocketService $service)
     {
 
-        if ($request->state) {
-            $state_info = State::find($request->state);
+        if ($request->state_id) {
+            $state_info = State::find($request->state_id);
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }

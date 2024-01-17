@@ -171,9 +171,10 @@
             @if ($check_discount == 1)
                 <th rowspan="2"> Discount </th>
             @endif
-            <th colspan="2"> CGST </th>
-            <th colspan="2"> SGST </th>
-            <th rowspan="2"> Amount </th>
+            @if (isset($order_info->billing_state) && $order_info->billing_state == 'Tamil Nadu')
+                <th colspan="2"> CGST </th>
+                <th colspan="2"> SGST </th>
+                <th rowspan="2"> Amount </th>
         </tr>
         <tr>
             <th>%</th>
@@ -181,6 +182,15 @@
             <th>%</th>
             <th>Amt</th>
         </tr>
+    @else
+        <th colspan="2"> IGST </th>
+        <th rowspan="2"> Amount </th>
+        </tr>
+        <tr>
+            <th>%</th>
+            <th>Amt</th>
+        </tr>
+        @endif
         @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
             @php
                 $i = 1;
@@ -198,11 +208,17 @@
                     @if ($check_discount == 1)
                         <td>{{ $item->discount_percentage }}%</td>
                     @endif
+                    @if ((isset($order_info->billing_state)) && ($order_info->billing_state == 'Tamil Nadu'))
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ number_format($item->sub_total, 2) }}</td>
+                    @else
+                    <td>{{ $item->tax_percentage }}%</td>
+                    <td>{{ number_format($item->tax_amount, 2) }}</td>
+                    <td>{{ number_format($item->sub_total, 2) }}</td>
+                    @endif
                 </tr>
                 @php
                     $i++;
