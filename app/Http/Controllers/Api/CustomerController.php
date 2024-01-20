@@ -307,8 +307,8 @@ class CustomerController extends Controller
     public function updateCustomerAddress(Request $request)
     {
         $address_id = $request->address_id;
-        if ($request->stateid) {
-            $state_info = State::find($request->stateid);
+        if ($request->state_id) {
+            $state_info = State::find($request->state_id);
             $ins['state'] = $state_info->state_name;
             $ins['stateid'] = $state_info->id;
         }
