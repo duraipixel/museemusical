@@ -195,12 +195,11 @@ class CheckoutController extends Controller
             ];
 
             $razorpayOrder = $api->order->create($orderData);
+            dd($razorpayOrder);
             $razorpayOrderId = $razorpayOrder['id'];
 
             session()->put('razorpay_order_id', $razorpayOrderId);
-            if ($razorpayOrder->error_code === 'AMOUNT_EXCEEDS_MAX') {
-                       dd(12);
-             }
+            
             $amount = $orderData['amount'];
             $displayCurrency        = "INR";
             $data = [
