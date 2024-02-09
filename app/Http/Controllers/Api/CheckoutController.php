@@ -92,7 +92,7 @@ class CheckoutController extends Controller
         }
 
         if (!empty($errors)) {
-           dd($errors);
+          
             $error = 1;
             $response['error'] = $error;
             $response['message'] = implode(',', $errors);
@@ -229,10 +229,14 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ]);
+        if ($e instanceof RazorpayException) {
+      dd(01);
+         }
+         dd(23);
+            // return response()->json([
+            //     'status' => false,
+            //     'message' => $e->getMessage()
+            // ]);
         }
     }
 
