@@ -229,10 +229,12 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-        if ($e instanceof RazorpayException) {
-      dd(01);
-         }
-         dd(23);
+       if ($e->getCode() === 'AMOUNT_EXCEEDS_MAX') {
+        return response()->json([
+                'status' => false,
+                'message' => 'sorry'
+            ]);
+       }
             // return response()->json([
             //     'status' => false,
             //     'message' => $e->getMessage()
