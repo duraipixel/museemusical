@@ -229,6 +229,7 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
+            dd($e->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
