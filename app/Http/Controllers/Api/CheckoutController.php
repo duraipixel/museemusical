@@ -92,7 +92,7 @@ class CheckoutController extends Controller
         }
 
         if (!empty($errors)) {
-
+           dd($errors);
             $error = 1;
             $response['error'] = $error;
             $response['message'] = implode(',', $errors);
@@ -195,11 +195,10 @@ class CheckoutController extends Controller
             ];
 
             $razorpayOrder = $api->order->create($orderData);
-            dd($razorpayOrder);
             $razorpayOrderId = $razorpayOrder['id'];
 
             session()->put('razorpay_order_id', $razorpayOrderId);
-            
+
             $amount = $orderData['amount'];
             $displayCurrency        = "INR";
             $data = [
@@ -230,7 +229,6 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-        
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
