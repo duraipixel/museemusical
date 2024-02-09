@@ -229,16 +229,16 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-       if ($e->getMessage() =="Amount exceeds maximum amount allowed.") {
-        return response()->json([
+           if ($e->getMessage() =="Amount exceeds maximum amount allowed.") {
+            return response()->json([
+                    'status' => false,
+                    'message' => 'The order amount is exceeded the Razorpay transaction limits, please contact Musee musicals Support Team.'
+                ]);
+           }
+            return response()->json([
                 'status' => false,
-                'message' => 'sorry'
+                'message' => $e->getMessage()
             ]);
-       }
-            // return response()->json([
-            //     'status' => false,
-            //     'message' => $e->getMessage()
-            // ]);
         }
     }
 
