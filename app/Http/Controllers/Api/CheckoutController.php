@@ -229,7 +229,7 @@ class CheckoutController extends Controller
 
             return $data;
         } catch (Exception $e) {
-       if ($e->getCode() === 'AMOUNT_EXCEEDS_MAX') {
+       if ($e->getMessage() =="Amount exceeds maximum amount allowed.") {
         return response()->json([
                 'status' => false,
                 'message' => 'sorry'
